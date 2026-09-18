@@ -5,3 +5,6 @@ title: "CAMCOS 2026 Fall"
 ```{r}
 1 + 1
 ```
+
+
+## Matrix Encoding
