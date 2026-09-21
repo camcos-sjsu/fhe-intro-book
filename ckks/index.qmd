@@ -2,9 +2,1035 @@
 title: "CAMCOS 2026 Fall"
 ---
 
-```{r}
-1 + 1
-```
+<!-- Quick links
+- Problem Pitch: ["Programming in FHE"](https://hackmd.io/iNaMy-caQMejO4PlCq-BPA)
+- [Hackmd Markdown syntax](https://hackmd.io/c/codimd-documentation/%2F%40codimd%2Fmarkdown-syntax)
+- [Quick LaTeX guide](https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes)
+- [Last Semester's Project](https://hackmd.io/Jnr5JaxHSTiXgdmh9tQAaA)
+- [Backburner Stash](https://hackmd.io/Z4c6GwCiT2aljyWtJnmhhw)
+- [Tech Tree MD](https://hackmd.io/@BdK1iuvsSg2AB5K8X38qfg/SJS64QCqWe)
+-->
+
+In this report, we explore functions that can be built under the CKKS homomorphic encryption scheme:
+1. We introduce a simplified problem setup in Section I, then examine some initial functions which can be built from these base moves in Section II. 
+2. In Section III we explore division, which is surprisingly tricky but important. 
+3. In Section IV and V we study "discrete math" concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have). 
+4. In Section VI we look at statistical applications to linear regression. 
+5. We end with some more speculative approaches to various topics in Section VII, including an iterative approach to log and some linear algebra.
+6. In the Appendix we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.
 
 
-## Matrix Encoding
+# I. Introduction
+
+**CKKS**[^CKKS] (Jung Hee **C**heon, Andrey **K**im, Miran **K**im, and Yongsoo **S**ong) is a **fully homomorphic encryption (FHE)** scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.
+
+CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of "batching" techniques à la SIMD[^simd] (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are "packed" into a single ciphertext and computed upon simultaneously.
+
+[^simd]: Michael J. Flynn; **Some Computer Organizations and Their Effectiveness** available from https://users.cs.utah.edu/~hari/teaching/paralg/Flynn72.pdf
+
+Our simplified CKKS setup is as follows:
+
+1. Let $N$ be a power of $2$ (concrete default: $N = 2^{16}$).
+2. The users provide ciphertext $\mathsf{ct}$ with each such ciphertext encrypting $N/2$ complex numbers. In other words, $$\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2}).$$ 
+3. As a default bound on the numbers involved, suppose the complex numbers have form $z_j = x_j + iy_j$ where $x_j, y_j \in \mathbb{R}$. We can assume the $x_j$ and $y_j$ are bounded above by $10^6$ and have precision $10^{-10}$.
+
+As $\mathsf{ct}$ is just encrypting some data, we are allowed to make copies of $\mathsf{ct}$, save them, etc. Any further operations on $\mathsf{ct}$ are considered difficult by default, and we must instead "build" them from a limited set of basic "moves" given by the encryption scheme. These moves are as follows:
+- **addition**: given ciphertext $\mathsf{ct}_1 = \mathtt{enc}(r_*)$, $\mathsf{ct}_2 = \mathtt{enc}(s_*)$, (where each $r_j, s_j \in \mathbb{C}$) we can generate a ciphertext $$\mathsf{ct} = \mathtt{enc}(r_1 + s_1, r_2 + s_2, \cdots, r_{N/2} + s_{N/2}).$$
+- (element-wise) **multiplication**: given ciphertext $\mathsf{ct}_1 = \mathtt{enc}(r_*)$, $\mathsf{ct}_2 = \mathtt{enc}(s_*)$, we can generate a ciphertext $$\mathsf{ct} = \mathtt{enc}(r_1 s_1, r_2 s_2, \cdots, r_{N/2} s_{N/2}).$$
+- **complex conjugation**: given ciphertext $\mathsf{ct} = \mathtt{enc}(z_*)$, we can generate a ciphertext $$\mathsf{ct}' = \mathtt{enc}(\overline{z_1}, \ldots, \overline{z_{N/2}}).$$ Recall that $\overline{x+iy} = x-iy$ for real numbers $x$ and $y$.
+- **cycle**: given a ciphertext $\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2})$, we can, for any $k \in \{1, 2, \dots, N/2\}$, create a ciphertext $$\mathsf{ct}' = \mathtt{enc}(z_k, \ldots, z_{N/2}, z_1, \ldots, z_{k-1}).$$
+
+This is not an exhaustive list of moves and part of open research is determining what other techniques are possible in CKKS. For the scope of our doc, we will assume this is the complete list of moves. We note two practical things that we will mostly ignore for the rest of our work:
+1. We can assume these moves are fast but not negligible. Think of all of these moves as taking place on the order of milliseconds with addition being faster at microseconds. 
+2. In our scheme, numbers get worse in two ways as we compute on them: they accumulate noise (like floating point arithmetic accumulates error) and they also become potentially easier to decrypt by an adversary. 
+
+[^CKKS]: Jung Hee Cheon, Andrey Kim, Miran Kim,  Yongsoo Song; **Homomorphic Encryption
+for Arithmetic of Approximate Numbers** available from https://eprint.iacr.org/2016/421.pdf
+
+:::info
+**Remarks**: 
+1. for brevity, we will often write as shorthand $\mathtt{enc}(z_*)$ or suppress the $\mathtt{enc}$ and discuss the vectors directly.
+2. for many use cases (especially order-dependent notions like median, sign, etc.), we can assume that we are only dealing with real numbers (formally, the imaginary coordinate is 0). Since this is often clear from context, we omit disclaimers for clarity.
+:::
+
+# II. Auxiliary Functions
+
+In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions:
+- sums / higher moments
+- exponentiation
+- square root
+- log
+
+We will also be using these functions as examples to show **techniques** that would be useful in other scenarios. Specifically:
+1. exponentiation shows the power of **Taylor series**.
+2. the square root conveys the utility of **giving computation back to the user post-FHE**.
+
+## II.1 Intravector Sums 
+
+Suppose we wanted the sums of the *entries* of a vector; we call this the **intra-vector sum** to differentiate from the "inter-vector sum" of summing vectors, which is already supplied as a basic move. A naive approach would be to repeatedly use cycle to obtain encryptions of
+$$(z_1, \ldots, z_{N/2}), (z_2, \ldots, z_{N/2}, z_1), \ldots, (z_{N/2}, z_1, \ldots, z_{N/2-1})$$ and then add them as in the inter-vector case. This puts the sum in every coordinate.
+
+However, we can make this faster by noticing the following. Suppose we cycled by $1$ and added instead, then we would be able to get:
+$$\mathtt{enc}(z_1 + z_2, z_2 + z_3, z_3 + z_4, \cdots)$$ then cycling by $2$ and adding to itself would put $z_1 + z_2 + z_3 + z_4$ in the first position, but with only 2 additions instead of $3$. Extending this method, we can sum all the numbers with $\log({N/2})$ operations.
+
+Here are a couple of general consequences of being able to sum:
+1. **dot product**: given encrypted vectors of $c_*$ and $d_*$, we can multiply to get $\mathtt{enc}(c_1d_1, c_2d_2, \ldots)$, and then sum to get the dot product.
+2. **(complex) inner product**: since we can take the conjugate of $d_*$, we can compute the complex inner product $$c_1\overline{d_1} + \cdots + c_{N/2}\overline{d_{N/2}}.$$
+
+## II.2 Higher Moments 
+
+Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently. Define the $k$-th **(raw) moment** to be the expectation of the $k^{th}$ power of the random variable $X$ (let vector $x$ be a series of $n$ sample measurements): $$E[X^k]=\frac{1}{n}(x_1^k+x_2^k+\dots+x_n^k).$$
+
+
+First, while we can naively obtain $(x_1^k, \ldots, x_n^k)$ in $O(k)$ time by repeated multiplication, it is faster to 
+1. compute via the "fast squaring trick" $$ X \rightarrow X*X \rightarrow \cdots \rightarrow X * \cdots * X (k \text{ times}) $$ in $O(\log(k))$ operations. 
+2. Then, performing the sum operation from the previous section allows us to get the vector $(x_1^k + \cdots + x_n^k) \cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ more operations. 
+3. Finally, we can divide by $n$ (a known constant) by multiplying by the vector $(1/n) \cdot (1, 1, \cdots, 1)$.
+
+We are naturally able to compute the following variations:
+1. **central moment**: The $k^{th}$ central moment of $X$ about mean $\mu$ is $$E[(X-\mu)^k]=E[(X-E[X])^k].$$ Note: The $2^{nd}$ central moment is used to calculate the variance:
+$$\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.$$ We can expensively calculate $\sqrt{\mathtt{var}(X)} = \sigma$, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see **square roots** later)
+2. **standardized moment**: This is the same idea as the central moment but $X-\mu$ is scaled by the standard deviation $\sigma$ before exponentiation:
+$$E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].$$
+
+
+## II.3 Taylor Approximation (and Exponentiation)
+
+Beyond our base moves, many functions which are of interest to us can be approximated with **Taylor approximation**: approximate a function by the first few terms of its power series. This is fairly straightforward in CKKS, involving only a combination of basic moves: additions, powers (multiplications), and scalar divisions. 
+
+We show the Taylor approximation of the **exponential function** as an illustrative example:
+$$e^z \approx \sum_{k=0}^{N} \frac{z^k}{k!} = 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \dots + \frac{z^N}{N!}$$
+
+Our main thoughts on Taylor approximation are:
+1. In a purely mathematical setting, a higher $N$ results in higher accuracy, yet in FHE, too large of an $N$ can result in lower accuracy as noise accumulates. We desire a middle-ground $N$ that produces a close approximation while mitigating cost and noise concerns.
+2. We need to have a good sense of where our input lies for convergence assumptions. In general, there is a radius of convergence for $z$ (or $x$), which in the exponential case is infinite. But even within the radius of convergence you may in practice want the assumed domain to be even tighter for faster convergence.
+3. In several cases, it seems possible to employ "range reduction" techniques to tighten domains.  For example, here we can make $x$ smaller using $e^x = (e^{x/k})^k$ -- in other words, we approximate $e^{x/k}$ then compute the $k$-th power of the result. Even better, when applicable, we may just pass the $k$-th power computation to the client. 
+
+
+## II.4 The Square Root (and User Input)
+
+We can similarly take the square root by expanding a Taylor series. The square root has no Taylor series at $x=0$, but can be expanded elsewhere, such as at $x=1$: $$\sqrt{1-x} = 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16} - \frac{5 x^4}{128} - \frac{7 x^5}{256} + O(x^6) + \cdots $$ which converges when $|x| \leq 1$. 
+
+However, if we give the user $x$, it might be easier for the user to compute $\sqrt{x}$ on the client side! Thus, frequently we might just consider *not* doing some computation over FHE, given business logic allows us to do so. 
+
+To summarize, 
+1. we can (and at times must) take Taylor series around points other than $x=0$, 
+2. but frequently we may be able to skirt the problem using user output (and input). We think this is an important mindset but will mostly operate as if we do not have this possibility for the remainder of this report. 
+
+
+:::info
+**Remark**: we also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See Section III (Division) for more information.
+:::
+
+[^bab]: **Square root algorithms** available from https://en.wikipedia.org/wiki/Square_root_algorithms
+
+## II.5 Logarithm (First Glance)
+
+As usual, the Taylor approximation is a good default, and immediately doable with basic moves here: additions, powers (multiplications), and scalar divisions. 
+
+Importantly, as $\log_2(x)$ is undefined at $0$, there is no Taylor expansion centered at $0$ to use for approximation. We bypass this by approximating around $x=1$, writing $x=1+u$. Now we can use a standard Taylor series expansion:
+$$\log_2(1+u)=\log_2(x) \approx \frac{1}{\log_e(2)} \sum_{k=1}^{N} (-1)^{k+1} \frac{(x-1)^k}{k}$$
+$$= \frac{1}{\log_e(2)} \Bigg[ (x-1) - \frac{(x-1)^2}{2} + \frac{(x-1)^3}{3} - \frac{(x-1)^4}{4} + \dots \Bigg].$$
+
+The series only converges for $x \in (0, 2]$.
+
+:::info
+**Remark**: in Section VII we will explore another approach to log which is not ripe now for practical use, but can give ideas on how to push FHE further.
+:::
+
+
+# III. Division
+
+Since we have multiplication, it is easy to divide by *known constants*, since we can multiply by their inverse. Specifically, we can take $$\mathtt{enc}(z_*), \mathtt{enc}(\frac{1}{c_*}) \rightarrow \mathtt{enc}(\frac{z_1}{c_1}, \ldots, \frac{z_{N/2}}{c_{N/2}})$$ by precomputing constants $1/c_*$ from $c_*$. 
+
+In this section, we tackle **division,** which is surprisingly tricky in our specialized context. Here, by division we mean dividing by an encrypted unknown value, such as wanting $\mathtt{enc}(\frac{1}{z_*})$ given $\mathtt{enc}(z_*)$. This is not obvious and cannot be precomputed.
+
+:::info
+**Remark**: of course, this depends on context. For example, in a hypothetical scenario where we only ever divide by *user input*, we can just ask the users to supply inverses to their own numbers (that is, if every time we get an encryption of $x_i$ we also get $\mathtt{enc}(1/x_i)$), then this is not a hard problem.
+:::
+
+If we unlock division, we are then able to compute many other useful functions. More than just being able to obtain the function, however, our main contribution here is comparing different types of approaches to division, many of which may be useful for future endeavors (specifically, **Newton's Method**, some variants, and our more speculative **adaptive Newton's Method** in Section VII).
+
+## III.1 Geometric Series
+
+As usual, our initial instinct should be Taylor series: supposing $z_i$ is not far from $1$, we can expand $$\frac{1}{z} = \frac{1}{(1-(1-z))} = 1 + (1-z) + (1-z)^2 + \cdots$$ Explicitly, this means we can first compute
+$$\mathtt{enc}(z_*') := \mathtt{enc}(1 - z_*)$$ by subtracting the vector from a precomputed constant vector $\mathtt{enc}(1, \ldots, 1)$, then compute powers and add 
+$$\mathtt{enc}(1, \cdots, 1) + \mathtt{enc}(z_*') + \mathtt{enc}((z_*')^2) + \mathtt{enc}((z_*')^3) + \cdots$$
+
+The partial sum of the geometric series method has some potential issues. For one, if the value being inverted is too far ($>1$) away from $1$, then the series will not converge. We can employ some algebraic tricks to shift the convergence interval. Another issue, assuming convergence, is the cost associated with repeated multiplications within the exponential terms.
+
+For instance, suppose we require an error of no greater than $10^{-10}$ for one of these approximations, the number of partial sum terms needed for this much accuracy is shown:
+
+**Sample Series Convergences**
+
+| $z_i$  | $1/z_i$ (Target) | $r = 1−z_i$ | Iterations to $\epsilon\leq10⁻¹⁰$ |
+|:-------:|:------------:|:-------:|:-------------------:|
+| 0.1482  | 6.746761986503 | 0.8518  | 155 |
+| 0.5656  | 1.767918114060 | 0.4344  | 28  |
+| 0.5941  | 1.683233435953 | 0.4059  | 26  |
+| 0.6340  | 1.577252912141 | 0.3660  | 23  |
+| 1.3748  | 0.727355832051 | −0.3748 | 23  |
+
+Note the  correlation of $1/z_i$ with the number of iterations required.
+
+![geom_animation](https://hackmd.io/_uploads/HJ7Q2lqWfx.gif)
+
+ 
+## III.2 Newton's Method
+
+We considered another approach with Newton's method[^new], which finds the roots of a function $f(x)$. In this case, we can find the decimal value of $x^*=\frac{1}{d}$ so that $f(x)=\frac{1}{x}-x^*=0.$ Think of $x^*$ as an unknown decimal that we're looking for.
+
+[^new]: **Newton's method** available from https://en.wikipedia.org/wiki/Newton%27s_method
+
+We use Newton's formula $f(x^*)\approx f(x_n)+f'(x_n)(x^*-x_n)$, and set $f(x^*)=0:$
+$$x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}$$
+
+$$x_n-\frac{f(x_n)}{f'(x_n)}=x_n-\frac{\frac{1}{x_n}-d}{\frac{-1}{x_n^2}}=x_n+x_n^2(\frac{1}{x_n}-d)=x_n+(x_n-x_n^2d)$$
+
+$$x_{n+1}=2x_n-x_n^2d$$
+
+:::info
+**Remark**: see an independently developed discussion in Prantl et al.[^prantl]
+:::
+
+[^prantl]: Prantl et al.; **Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations** available from https://www.sciencedirect.com/science/article/pii/S2214212625001474#sec2
+
+This allows us to approximate $1/x$ in a chain of $2n$ multiplications and $n$ additions. We can do a simple test of approximating $\frac{1}{48}$ with Newton's method versus a geometric series as follows:
+
+
+![convergence_digits(1)](https://hackmd.io/_uploads/BJfxYcF5Zg.png)
+
+The one catch with Newton's method is that in order to be effective, it has to initially guess reasonably close to the root. 
+
+### Guessing a Starting Point
+
+Naively, one (impossible) approach would be to make some different buckets of $n$ based on powers of $2$: 
+
+|n|$ct_{2^n}$|$ct_{2^{-n}}$|
+|:--:|:-----:|:-----:|
+|0|1|1|
+|1|2|$\frac{1}{2}$|
+|2|4|$\frac{1}{4}$|
+|$\vdots$|$\vdots$|$\vdots$|
+|33|$2^{33}$|$2^{-33}$|
+
+Note: we only go to $n=33$ since $\log_2(10^{10})\approx33$, where $10^{-10}$ is the approximate "round to zero" threshold. This would need a tweak to include negatives.
+
+What we want to do is to figure out where the divisor belongs based on where $n$ belongs, and then make our guess $x_0$ be based on the corresponding boundary bucket. Sadly, this does not work because we cannot (yet) do different executions depending on branching logic. 
+
+Unless we try some more complex methods, we will need to come up with a universal $x_0$ guess[^guess] that will work regardless of what $\frac{1}{x}$ is.
+
+[^guess]: Prantl et al.; **De Bello Homomorphico: Investigation of the extensibility of the OpenFHE library with basic mathematical functions by means of common approaches using the example of the CKKS cryptosystem** available from https://link.springer.com/article/10.1007/s10207-023-00781-0
+
+Fortunately, the basin of convergence[^basin] for Newton's method approximation of $\frac{1}{x}$ is $\big(0,\frac{2}{x}\big)$ if $x>0$ and $\big(\frac{2}{x},0\big)$ if $x<0$. 
+
+[^basin]: Knott et al.; **CRYPTEN: Secure Multi-Party Computation Meets Machine Learning** available from https://arxiv.org/pdf/2109.00984
+
+1. To guarantee convergence we can simply pick the closest number to zero that does not get eliminated by rounding, maybe $\approx 10^{-10}$ or $-(10^{-10})$, depending on the sign of $\frac{1}{x}$ (which needs to be known), every time. 
+2. If we want to account for the sign and have a Sign function, we would be able to capture it with something like $(x<0)*(x_0=-(10^{-10}))+(x>0)*(x_0=10^{-10})$. See Section IV for similar methods.
+
+![newton_animation](https://hackmd.io/_uploads/BkpSix5bzl.gif)
+
+3. If we have additional knowledge about the actual range of values, e.g. if we know that values are in $[a,b]$ then we can uuse something like the geometric mean $1/\sqrt{ab}$. (concretely, if weight is always between $50$ and $5000$ pounds, we can take an initial guess of 1/500).
+
+:::danger
+**Disclaimers**:
+
+1. The "closest number to $0$" method might cause overflow issues. This would require testing.
+2. Starting so close to zero makes a very steep derivative of $\frac{1}{x}$ at that point, leading to the second guess $x_1$ being within the error bound of $x_0$: a sort of false convergence. Even attempting a remedy with stricter difference criteria leads to 30+ iterations before true convergence, wiping out some of the initial savings, which in fact may be more expensive than the geometric series.
+:::
+
+## III.3 A Hybrid Approach
+
+The sum of the geometric series does most of its heavy lifting in the first few iterations, and then closes in slowly and expensively. Newton's method has the opposite problem: the only universal good starting point would be too far to the edge of the basin, and would waste the bulk of its moves in the beginning, making almost no progress toward sufficient convergence.
+
+Perhaps the two approaches could be combined into a hybrid. The first one or two terms of the sum of the geometric series are less expensive and put us strongly within the basin of convergence, at which point we can put Newton in the driver's seat. Our opening guess for Newton's $x_0$ would be guaranteed to be in the convergence basin and well ahead of the default universal guess.
+
+![hybrid_animation](https://hackmd.io/_uploads/S1Djilqbfe.gif)
+
+## III.4 Softmax Function 
+
+A good example of a function that is directly unlocked by division is the **softmax function**[^soft], which takes a vector $x = (x_1, \ldots, l_k) \in \mathbb{R_+^k}$ and returns a probability distribution $r(x) = (p_1, \ldots, p_k) \in (0,1)^k$ as follows: $$\rho(x)_i = \frac{e^{x_i}}{\sum_j e^{x_j}}.$$
+The function is important for many applications, but especially recently in neural nets for turning vectors into probability distributions for decision making.
+
+[^soft]: **Softmax function** available from https://en.wikipedia.org/wiki/Softmax_function
+
+The basic strategy is:
+1. Make a vector $x'$ where $x'_i = e^{x_i}$ (this can be done by Taylor approximation or by asking the user to supply the exponentials);
+2. make a vector $s$ where all $s_i = \mathtt{sum}(x_i)$;
+3. lastly, divide $x'$ by $s$.
+
+:::success
+**Concrete Example**: take $z$ = (4, 2, 24, 6). We first exponentiate the vector's entries, or ideally pass to client: ($e^4$, $e^2$, $e^{24}$, $e^6$). Separately compute the sum $S = e^4 + e^2 + e^{24} + e^6$. We now normalize our vector to get ($e^4/S$, $e^2/S$, $e^{24}/S$, $e^6/S$) which rounds off to approximately (0, 0, 1, 0).
+:::
+
+# IV. Discrete Math
+
+In this section we study some "discrete" operations involving comparisons and sorting. At the basis of everything, we need **sign**, **equality**, and **inequality** functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it's essentially the same as inequality. 
+
+:::danger
+**Disclaimer**: Taylor approximations for sign run into many (unavoidable) issues, and can only be used if we have a very tight understanding of the domain of the function. We stress that what we do in the remainder of this section (and other parts of our work that rely on sign functions) is speculative because everything rests on an idealized sign function, which we do not quite have in practice. Conservatively, we should interpret our following work as an exploration of what we can unlock if we have an idealized sign function.
+:::
+
+With this disclaimer, we perform the following explorations:
+1. We try to use series approximations for sign anyway, and quantify how close the approximations are (we suspect it would be usable for very small-scale work, but not beyond that).
+2. Assuming an "idealized sign", we use a "local swap" / "bubble" as a building block for **sorting** (and as a bonus, computing **max**/min type of summary statistics). The functions we will implement are represented in the following "tech tree".
+3. We provide a speculative approach to sign / inequality type of functions with binary arithmetic in the Appendix.
+
+![Discrete.drawio](https://hackmd.io/_uploads/BJubYSw-ze.png)
+
+
+## IV.I Sign Function
+
+In many function constructions it would be of great value to have conditional logic, however, this is not immediate or straightforward in the CKKS setup. Though, we see an opportunity to do things in a "branchless" way via algebra. As a proof-of-concept (and a very important tool), we show computational approaches for a **sign** function that gives one of two possible values. Later we will use this function to build more powerful functions. 
+
+1. We think of a "basic" sign function as a function $\mathtt{sign}(x)$ assigning a value of $0$ or $1$ depending on whether the input is respectively negative or positive. 
+    - It is useful to think of the output value $1/2$ as a "necessary" evil for when the input is extremely close to $0$ (this will basically be a necessity since our computations are inherently continuous). In practice, we will try to avoid those values as purposefully appearing in our computations.
+2. We can generalize into any Heaviside-type function[^heavi] that takes two possible values via the following: $$\mathtt{sign}_{a,b,c}(x) = a + (b-a)\mathtt{sign}(x-c),$$ which gives values $a$ for $x < c$, $b$ for $x > c$, and $(a+b)/2$ for $x = c$ (though it is advised to avoid being dependent on the "true equality" case). We can then think of the "original" $\mathtt{sign(x)}$ as $\mathtt{sign_{0,1,0}(x)}$.
+
+
+[^heavi]: **Heaviside step function** available from https://en.wikipedia.org/wiki/Heaviside_step_function
+
+To approximate this naturally discontinuous function, we present two smooth avenues in the sigmoid family:
+
+### Logistic
+
+![sign_approx](https://hackmd.io/_uploads/ryPBmCDFbe.png)
+
+A **sigmoid function**[^sig] is an S-shaped curve that smoothly transitions between two values, essentially converging to the discontinuous sign function as its steepness increases, making such functions natural choices for our approximation. A common instance of a sigmoid function is the **logistic function**, which has standard definition $\sigma(x) = \frac{1}{1+e^{-x}}$. We begin our approximation of logistic using the series expansion for exponentiation: $$e^x\approx1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots$$
+
+[^sig]: **Sigmoid function** available from https://en.wikipedia.org/wiki/Sigmoid_function
+
+$$1+e^{-x}\approx2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}+\dots$$
+
+$$\sigma(x)=\frac{1}{1+e^{-x}}\approx\frac{1}{2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}}$$
+
+$$\sigma(x)\approx\frac{1}{2} \cdot \frac{1}{1 - \left(-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12} + \frac{x^4}{48} - \frac{x^5}{240} + \frac{x^6}{1440} - \frac{x^7}{10080} + \frac{x^8}{80640} - \frac{x^9}{725760}\right)}$$
+
+Denoting the entire term inside the parentheses as $r$, i.e. $r=-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12}+\dots$ , we can then use the geometric series identity $\frac{1}{1+r}=1+r+r^2+\dots$ ; computing powers of $r$ then canceling/ simplifying, we arrive at
+
+$$\sigma(x)\approx\frac{725760+362880*x-30240*x^3+3024*x^5-306*x^7+31*x^9}{1451520}-\cdots$$
+
+which reduces to an ordinary polynomial multiplied with an integer reciprocal, legal under the CKKS moves! However...
+1. in theory, this series will only converge within $0<x<\pi$. This is for two separate reasons, one being that the "$r$" term of the geometric series is $e^{-x}$, which is greater than $1$ for $x<0$ and will diverge. The other reason is that the nearest singularity to $0$ is at $\pi$.
+2. in practice, the approximation error is very large, and the function will quickly diverge.
+
+![image](https://hackmd.io/_uploads/Hy0MLEqbfe.png)
+**Figure**: different graphs of the function  $\sigma(kx)$  with steepness parameter $k$.
+
+### Hyperbolic Tangent
+
+Also belonging to the sigmoid family is the hyperbolic tangent function[^ht]: $$\tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}=\frac{1-e^{-2x}}{1+e^{-2x}}$$
+
+[^ht]: **Hyperbolic functions** available from https://en.wikipedia.org/wiki/Hyperbolic_functions
+
+where $e^{-2x}\approx1-2x+\frac{4x^2}{2!}-\frac{8x^3}{3!}+\cdots$ ,
+
+$$\tanh(x)\approx\frac{2x-\frac{4x^2}{2!}+\frac{8x^3}{3!}-\cdots}{2-2x+\frac{4x^2}{2!}-\frac{8x^3}{3!}+\cdots}=\frac{2x}{2}*\frac{1-\frac{2x}{2!}+\frac{4x^2}{3!}-\cdots}{1-x+\frac{2x^2}{2!}-\frac{4x^3}{3!}+\cdots}$$
+
+Using the same trick as we did with the logistic expansion, we build a geometric series:
+
+$$r = \Big(-x+\frac{2x^2}{2!}-\frac{4x^2}{3!}+\cdots\Big)$$
+
+$$\frac{1}{1+r}=\frac{1}{1-(-r)}=1-r+r^2-r^3+\cdots$$
+
+After plugging back in,
+$$\tanh(x)\approx x*\Big(1-\frac{2x}{2!}+\frac{4x^3}{3!}-\cdots\Big)*(1-r+r^2-r^3+\cdots)$$
+Computing powers of $r$, simplifying terms then finding the least common multiple for up to power $9$,
+$$\tanh(x)\approx \frac{2835x-945x^3+378x^5-153x^7+62x^9}{2835}-\cdots$$
+
+This series has a radius of convergence $\pi/2$, so it will tolerate less distance between points than the logistic (but possibly require more precomputation).
+
+![tanh_by_k_steepness](https://hackmd.io/_uploads/Skm4LV9Zfe.png)
+**Figure**: different graphs of the function $\tanh(kx)$  with steepness parameter $k$.
+
+### Sign Applicability
+
+Here we provide the windows in which our (naive) implementation of sign (via logistic function approximation) has an error of $10\%$ or less. Error is calculated based off of a target of $0$ or $1$. The target is set to $0$ for an input $x \lt \frac{1}{2}$ and $1$ for input $x \gt \frac{1}{2}$. The error is the absolute difference between the target and approximate values expressed as a percentage. 
+
+| `k` | Left band | Right band | Window width |
+|----:|:---------:|:----------:|:------------:|
+|  1  | [-2.543, -2.210] | [2.210, 2.543] | 0.333 |
+|  2  | [-1.272, -1.105] | [1.105, 1.272] | 0.167 |
+|  4  | [-0.636, -0.553] | [0.553, 0.636] | 0.083 |
+|  8  | [-0.318, -0.277] | [0.277, 0.318] | 0.041 |
+| 16  | [-0.159, -0.139] | [0.139, 0.159] | 0.020 |
+| 32  | [-0.079, -0.070] | [0.070, 0.079] | 0.009 |
+| 64  | [-0.040, -0.035] | [0.035, 0.040] | 0.005 |
+
+![sigmoid_accuracy_ring](https://hackmd.io/_uploads/rJfsCM9ZMg.png)
+
+
+Now we present the analogous accuracy windows for hyperbolic tangent as previously described for the logistic function. Error is calculated in the same manner. 
+
+It is worth noting that these accuracy windows are about half the size compared to those of the logistic function. This is due to the radii of convergence being $\pi/2$ and $\pi$ for hyperbolic tangent and logistic respectively. Hence, hyperbolic tangent is naturally steeper than logistic and approximates the real value faster on a similar interval.
+
+| `k` | Left band | Right band | Window width |
+|----:|:---------:|:----------:|:------------:|
+|  1  | [-1.272, -1.105] | [1.105, 1.272] | 0.167 |
+|  2  | [-0.636, -0.553] | [0.553, 0.636] | 0.083 |
+|  4  | [-0.318, -0.277] | [0.277, 0.318] | 0.041 |
+|  8  | [-0.159, -0.139] | [0.139, 0.159] | 0.020 |
+| 16  | [-0.079, -0.070] | [0.070, 0.079] | 0.009 |
+| 32  | [-0.040, -0.035] | [0.035, 0.040] | 0.005 |
+| 64  | [-0.020, -0.018] | [0.018, 0.020] | 0.002 |
+
+![tanh_accuracy_ring](https://hackmd.io/_uploads/SkjYRz9WGe.png)
+
+
+
+:::info
+**Remark**: we can see a higher $k$ compresses the interval of high accuracy towards 0. We note that given the right compression method for a dataset we could approximate a reasonable sign value for the whole dataset. Requiring a user input of known maximum and minimum value of the input (beyond $(-\infty,\infty)$ ) would support this scaling. [^prantl]
+:::
+
+Within our current experimentation we found the window of high accuracy convergence scaled in proportion to the window of convergence, roughly $15\%$ of the observed data. 
+
+### Inequality and Equality
+
+Inequality and sign functions are essentially equivalent. If we have an useful sign function, we can effectively do an "inequality" function as follows:
+$$(x > a) := \mathtt{sign}_{0, 1, a} (x),$$ which returns $1$ for each element $x_i$ of the vector $x$ if $x_i > a$ or $0$ otherwise. Of course, problems may happen very close to $a$, so one must be careful while using it in the construction of other operations.
+
+With this, we can do an "equality" function. Because we are doing floating point arithmetic, it is inadvisable to do a "true equality" check, so what we mean when we say "$x$ is equal to $a$" means that their difference is small (up to an error $\epsilon$). This can be done via
+$$(x == a) := (x > a-\epsilon) * (x < a+\epsilon),$$ which gives $1$ exactly when both conditions are met; that is, $x$ is within $\epsilon$ of $a$ and $0$ otherwise. As an example, $$(x_i == 0) := (x_i\ge-0.01)*(x_i\le0.01)$$  obtains a $0$-$1$ vector, which has $1$ in place $i$ if and only if $x_i$ is close (within $0.01$) to $0$.
+
+
+
+## IV.2 Sorting
+
+Many of the "classical" sorting algorithms (quicksort[^qs], etc.) are going to have issues in our setup due to their reliance on logical branching, dynamic memory allocation, etc. 
+
+
+### Bubble Sort 
+
+As a proof-of-concept, we choose to use bubble sort as a starting point for sorting. The **bubble sort**[^bub] function passes through a given vector, performing $O(n^2)$ repeated pairwise element comparisons to finish the sort. It has the benefit of having local operations, mostly comparisons and swaps, without more advanced logic such as dynamic memory allocation (that e.g. quicksort would need), so it is a good candidate for FHE prototyping despite being a well-known "slow" sorting algorithm.
+
+[^qs]: **Quicksort** available from https://en.wikipedia.org/wiki/Quicksort
+[^bub]: **Bubble sort** available from https://en.wikipedia.org/wiki/Bubble_sort
+
+Given an $n$-length vector $x$, the following move will return an $n$-length vector $y$ that is equal to $x$ in every coordinate except possibly $x_i$ and $x_j$. We call one pass of this function over a vector as a "bubble," $\mathtt{bub_{i,j}(x)}$:
+
+> Compare $x_i, x_j$ (typically, $i+1 = j$).
+(1) If $x_i < x_j$, then $y = x$ with no swapping performed.
+(2) If $x_i > x_j$, then $y$ has $x_i$ and $x_j$ swapped.
+
+
+To perform the pairwise comparisons in a non-logical-branching FHE setting, we can use a polynomial-approximated sign function. Recall that we can implement a sign function $\mathtt{sign}(x)$ that returns $1$ if $x \geq 0$ and $0$ otherwise. As a proof of concept, define $s=\mathtt{sign}(x_i-x_j)$ and consider:
+$$
+\begin{aligned}
+y_i &= s \cdot x_j + (1-s) \cdot x_i \\
+y_j &= s \cdot x_i + (1-s) \cdot x_j.
+\end{aligned} $$ We can see that this would give $y_i$ the smaller value between $\{x_i, x_j\}$ and $y_j$ the larger value. 
+
+It's a bit tricky to actually implement this with vector-wide operations without being wasteful. Here is one draft:
+1. Construct constant $1$-hot vectors $c_1 = (1, \ldots, 0, 0, 0)$, $c_2 = (0, 1, 0, \ldots)$, ... Let $x = (x_1, \ldots, x_{n/2})$.
+2. For a given $i, j$, compute $$m' = (c_i - c_j) * (x_i, x_i, \ldots, x_i) + (c_j - c_i) * (x_j, x_j, \ldots, x_j).$$ This will have a $0$ everywhere, except $m'_i = x_i - x_j$ and $m'_j = x_j - x_i.$
+3. Now multiply $m = (c_i - c_j) * m'$. This will also have a $0$ everywhere, except $m_i = m_j = x_i - x_j$.
+4. Let $s = -\mathtt{sign}(-m)*m'$. Here,
+    - $s_i$ will be $x_j - x_i$ if $x_j > x_i$, 0 otherwise.
+    - $s_j$ will be $x_i - x_j$ if $x_j > x_i$, 0 otherwise.
+    - all other elements are 0.
+5. Compute $y = x + s$. If $x_j < x_i$ then $s_k = 0$ everywhere, so $y = x$. If $x_j > x_i$ then $y_i = x_i + (x_j - x_i) = x_j$, and $y_j = x_j + (x_i-x_j) = x_i$. In other words, the result flips $x_j$ and $x_i$ if $x_j > x_i$, meaning the larger element goes to $x_i$ and the lower element goes to $x_j$.
+
+We can then define $\mathtt{bub_{i,j}}(x)$ to be the operation that changes $x$ to the resulting $y$. Note this is fully FHE legal and involves no branching. 
+1. Perform $\mathtt{bub_{{n/2-1},n/2}}(x)$, ... $\mathtt{bub_{1,2}}(x)$. These $n-1$ moves ensure the maximum element is now at $x_1$.
+2. Perform $\mathtt{bub_{{n/2-1},n/2}}(x)$, ... $\mathtt{bub_{2,3}}(x)$. These $n-2$ moves ensure the second-largest element is now at $x_2$.
+3. ...
+
+$O(n^2)$ total comparisons (with $O(n)$ per pass) will entirely sort $x$. However, this gets fairly costly and noisy due to the multiplications in the approximated comparisons.
+
+### Improvements to Sorting
+
+[^oe]: N. Habermann; **Parallel neighbor-sort (or the glory of the induction principle)** available from https://kilthub.cmu.edu/articles/journal_contribution/Parallel_neighbor-sort_or_the_glory_of_the_induction_principle_/6608258?file=12099395 
+
+We have found various ideas for improving the bubble sort algorithm. We sketch out the space of ideas and their pros and cons here; more detailed dives would make for good later explorations.
+
+First, instead of sorting one bubble at a time, like in the max case, we can perform several independent bubbles at the same time. A single bubble $\mathtt{bub_{i,j}}(x)$ only changes two coordinates, $x_i$ and $x_j$, so two bubbles can be computed in parallel as long as they do not overlap. For example,
+$$
+\mathtt{bub_{1,2}}(x)
+\quad \text{and} \quad
+\mathtt{bub_{3,4}}(x)
+$$
+are independent, since the first only uses coordinates $1,2$ and the second only uses coordinates $3,4$.
+
+If the active vector has length $N = n/2$, then one parallel layer can contain up to $n/4$ independent bubbles. This leads naturally to **odd-even sort** [^oe], which alternates between two adjacent transposition layers.
+
+Perform the odd layer:
+$$
+\mathtt{bub_{1,2}}(x),\ \mathtt{bub_{3,4}}(x),\ \mathtt{bub_{5,6}}(x),\ldots
+$$
+Perform the even layer:
+$$
+\mathtt{bub_{2,3}}(x),\ \mathtt{bub_{4,5}}(x),\ \mathtt{bub_{6,7}}(x),\ldots
+$$
+Repeat these alternating odd and even layers for $O(N)$ rounds.
+
+Each layer contains only disjoint pairs, so all bubbles inside that layer can be evaluated in parallel using vector-wide FHE operations. The total number of pairwise comparisons is still $O(N^2)$, but the  depth is only $O(N)$, which is a better approximation of cost in this setting because at each level many swaps are performed at once.
+
+
+1. To make this more effcicient we can upgrade to the **Batcher odd–even mergesort**,[^ken] which has $O(\log^2(n))$ depth.
+3. A similar type of improvement would be the very parallel **bitonic sort**.[^ken] Similar to odd-even mergesort, it has a depth of $O(\log^2(n))$, but is more parallel in struture and thus may be a better choice long-term. 
+
+[^ken]: K.E. Batcher; **Sorting networks and their applications** available from https://www.cs.kent.edu/~batcher/sort.pdf
+
+To summarize, it is very relevant to consider **sorting networks**[^sn], of which these are special cases. Sorting networks are sequences of comparisons which are preordained for each $n$ that have no logical branching, which is exactly our situation.
+
+[^sn]: **Sorting network** available from https://en.wikipedia.org/wiki/Sorting_network
+
+
+## IV.3 Max Function
+
+As a consequence of (any) sorting we get the max function for free, since a single $n-1$ bubble pass has allowed the largest element to "float" to the rightmost element. A reversed setup reveals the minimum value if desired. An $n$-length mask vector $(0, 0, \dots, 0, 1)$ can be used to isolate the maximum if needed. A dot product or intravector sum can then be used to collapse the resulting vector into the maximum element as a single scalar.
+
+However, if we *just* want the max function, we can do quite a bit better and get it in $O(\log(n))$ time. The idea is to separate the vector into $n/4$ bubbles, and on each turn act in a way that moves the max into the "better half" of the remaining "contenders for the max", like a tournament. This is similar to using our bubbles $(i,j)$ encoded by $c_i$ and $c_j$, but instead of using $1$-hot vectors, we will generalize $c_*$ to be $0$-$1$ vectors to do more comparisons at the same time.
+
+Let $x = (x_1, \ldots, x_{n/2})$. We iterate on $i$, starting with $i = 0$.
+1. At the start of iteration $i$, construct constant binary vectors $c_L$ and $c_R$ which have a 1 at every index $k$ that satisfies  $k = 2^{i+1} - 2 \pmod {2^{k+1}}$ for $c_L$, and $k = 2^{i+1} -1 \pmod {2^{i+1}}$ for $c_R$,
+    - On the first iteration $i=0$, we have $c_L = (1,0,1,0,\cdots)$ and $c_R = (0,1,0,1,\cdots)$.
+    - On subsequent iterations the $1$s are separated by double the distance per iteration. For example, for $i = 2$, the period will be $8$: $c_L = (1,0,0,0,0,0,0,0,1,\cdots)$.   
+    - The $c_L$ and $c_R$ will match up pairs of numbers, acting as a kind of simultaneous bubble.
+5. We now match up the bubbles by splitting the relevant entries into two vectors holding the two halves of the bubbles, and cycling the left half so it matches the right:
+    - Construct vectors $L' = x * c_L$ and $R = x * c_R$.
+    - On iteration $i$, let $L := \mathtt{cyc}_{2^{i+1} - 1}(L')$.
+    - Compute $c = L - R$. This will give a vector populated by zeros, and $L_i - R_i$ in populated index positions $i$. 
+    - In $c$, any positive values in c represent index positions where the $L$ value is larger, and vice-versa for negative values and $R$.
+9. We now create a vector with only the "winners" in their respective positions.
+    - Compute $e = L * \mathtt{sign}{(c)}$. This contains only $L$ values that were greater in their respective bubble comparisons.
+    - Similarly, computing $f = b * (0 - \mathtt{sign}{(c))}$ will return a vector of only $0$'s and $R$ values that were greater in their respective comparisons.
+    - $x' := e + f$ gives a vector with only the winners from each respective bubble. 
+13. Treating $x'$ as the new $x$, after $\log_2(n/2)$ iterations $x$ will only have the max of the original $x$, in the rightmost position.
+    - We note that after iteration $i-1$ and before iteration $i$, the new $x$ will have nonzero entries only in places (indexed starting at $0$) whose binary expansions have $i$ $0$s at the right. For example, after the first iteration only the even indices will have nonzero entries; the other "loser" entries have been eliminated.
+
+:::info
+**Remark**: an immediate "improvement" is that we do not actually need to make these different $C_L$ and $C_R$; 
+1. We can keep $c_L = (1,0,1,0,\cdots)$ and $c_R = (0,1,0,1,\cdots)$ the whole time;
+2. If we do this, then we will still get the same comparisons that lead us to the max in this algorithm, however, the other $1$'s will be doing something with the "eliminated" entries, which we can ignore.
+
+Thus, overall we can be more effcicient by doing less, though we kept our exposition since we think it does a better job of focusing on the key comparisons.
+:::
+
+
+# V. Difference Matrix Method
+
+A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don't have. We introduce what we call the **difference matrix method** which will allow us to implement both statistics in a similar way (though still requiring tools from the Discrete Math section, especially Equality and Max).
+
+![median-mode.drawio (1)](https://hackmd.io/_uploads/rkgUFSP-ze.png)
+
+The method is as follows:
+
+Given a vector $z = (z_1, \ldots, z_{N/2})$, we construct an $(N/2) \times (N/2)$ matrix $D$ where $D_{i,j} = z_i - z_j$. We will call our matrix the **difference matrix.**
+
+:::info
+**Remark**: our method is general enough that we should be able to compute $D$ where $D_{ij} = f(z_i, z_j)$ for some function $f$. We mention this but do not use the more general method in this work.
+:::
+
+Here is how we would generate the difference matrix: 
+1. Assuming we are in the inter-vectors case, we can assume the $x_i$ are given as $u^{(i)} = (0, \ldots, 0, x_i, 0, \ldots, 0)$. 
+2. We can "broadcast" the $x_i$ into every entry by computing $$v^{(i)} := \mathtt{sum}(u^{(i)}) = (x_i, \ldots, x_i).$$
+3. Now we can separately compute:
+- $d_{i}=x-v^{(i)}=(x_1-x_i,x_2-x_i,\dots,x_{N/2}-x_i)$ for all $i$.
+- If we wanted the transpose instead, we can compute $d'_{i}=v^{(i)}-x=(x_i-x_1, x_i-x_2,\dots, x_i-x_{N/2})$.
+
+4. We can think of the matrix as the combination of these vectors, though we might also want to isolate the use of our $N/2$ "difference vectors" of the form $$d_{i} = (d_{i,1}, \ldots, d_{i,N/2}).$$
+
+:::info
+**Remark**: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following: 
+1. given an input vector $(x_1, \ldots, x_{N/2})$,
+2. define indicator vectors $c_i = (0,0,\dots,1_i,0\dots,0)$.
+3. Compute $x_i = \sum_{i=1}^{N/2}(c_i*x)$; this will isolate the $x$'s vector value at index $i$,
+4. ...and then the rest is the same as before.
+:::
+
+## V.1 Mode
+
+Obtaining the mode should be a bit easier for discrete values (it would be similar to bucketing), so we approach the continuous case, given a vector $z$ with assumed real values for simplicity.
+
+Here we compute the difference matrix for $x_i$, which results in a matrix (stored as row vectors).
+
+\begin{array}{c|ccccc}
+  & x_1 & x_2 & x_3 & \cdots & x_{N/2} \\
+\hline
+x_1 & 0 & \delta_{1,2} & \delta_{1,3} & \cdots & \delta_{1,N/2} \\
+x_2 & \delta_{2,1} & 0 & \delta_{2,3} & \cdots & \delta_{2,N/2} \\
+x_3 & \delta_{3,1} & \delta_{3,2} & 0 & \cdots & \delta_{3,N/2} \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+x_{N/2} & \delta_{N/2,1} & \delta_{N/2,2} & \delta_{N/2,3} & \cdots & 0
+\end{array}
+
+Note: Some of the non-diagonal elelents $\delta_{i,j}$ can also be $0$. For instance, we expect the most nondiagonal zeros in the row of the mode $x_i$.
+
+Now, the idea here is to check every $x_i$ and then look for the one with the most number of (approximate) zeros. This will correspond to the mode. Specifically,
+1. for every $x_i$, we can compute $$y_i := (x_i == 1)$$ on it (element-wise) to get a $0$-$1$ vector $y_i$ that has a number of $1$s equal to the terms approximately equal to $z_i$. 
+2. Now we compute $$s_i = \mathtt{sum}(y_i)$$ to get these counts (see II.1 for how to compute sums).
+3. Computing a max over this would get the mode.
+
+## V.2 Median
+
+We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and $N/2$ is odd.
+1. Create a matrix $D$ where $$D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).$$ We can just compute the same matrix and then run the sign function over every row. This looks like: \begin{array}{c|ccccc}
+  & x_1 & x_2 & x_3 & \cdots & x_{N/2} \\
+\hline
+x_1 & 0 & -1 & -1 & \cdots & -1 \\
+x_2 & 1 & 0 & -1 & \cdots & -1 \\
+x_3 & 1 & 1 & 0 & \cdots & -1 \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+x_{N/2} & 1 & 1 & 1 & \cdots & 0
+\end{array} though unlike $D$ from earlier, $\delta_{i,j} \in \{-1, 1\}$. We assume the diagonals are assigned $0$ here.[^distance]
+
+[^distance]: Landon Hurley; **Completing and studentising Spearman’s correlation in the presence of ties** available from https://arxiv.org/pdf/2512.23993
+
+2. Now, if $z_i$ were the median, then it would have an equal number of $-1$s and $1$s in its row, which is equivalent with having row sum $0$ (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).
+3. Thus, we can get a vector of the sums of the $x_i$ and then compute equality with zero: $$m := ((x_1 + x_2 + \cdots + x_{N/2}) == 0)$$ to obtain a $0$-$1$ vector that points out which *index* the median falls in. 
+4. If we are interested in the *value* of the median instead of the *index,* then we can just multiply $\mathtt{sum}(m * z)$. Note that this sum only works if exactly one element is the median: if, say, two elements are the median, then we would get twice the median if we sum.
+
+:::info
+**Remarks**:
+1. If we want to sort for any reason, then getting the median from the sort is immediate and we would not need to add extra computation.
+2. Constructing quartiles is similar to the median. If we use the "sum sign functions" method, then getting a 75% quartile is just finding something with row sum $N/2$ instead of $0$.
+:::
+Pushing onward, we now extend from univariate summaries to measures of dependence, such as correlation and related functions, which capture relationships between variables.
+
+# VI. Correlation and Related Functions
+
+This section constructs the correlation and regression coefficients, then extends to simple and multiple linear regression.
+
+## VI.1 Two Coefficients
+
+Given vectors $x$ and $y$, there are $2$ closely related quantities:
+1. The **correlation coefficient**[^cc], a measure of normalized linear association, is $$ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.$$
+    Often people are instead interested in the square $r^2$, which is called the **coefficient of determination**[^cod].
+3. The **regression coefficient**[^lr], a measure of linear rate of change, is $$\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_i-\bar{x})^2}$$
+
+[^cc]: **Correlation coefficient** available from https://en.wikipedia.org/wiki/Correlation_coefficient
+[^cod]: **Coefficient of determination** available from https://en.wikipedia.org/wiki/Coefficient_of_determination
+[^lr]: **Linear regression** available from https://en.wikipedia.org/wiki/Linear_regression
+
+These can be approached with the same general strategy:
+1. compute the means $\bar{x}$ and $\bar{y}$ and subtract them off from the original vectors;
+2. compute the numerators and denominators separately;
+3. divide (which might be costly).
+
+With some more detail:
+
+Given $x$ and $y$, we can compute vectors that contains their means: $x_m=(\bar{x}, \bar{x}, \cdots)$ and $y_m(\bar{y},\bar{y}, \cdots)$. Then we can subtract to obtain 
+$\begin{align}x'&=(x_1,x_2,\dots,x_{N/2})+(\bar{x})*(-1,-1,\dots,-1) \\
+&=(x_1-\bar{x}, x_2-\bar{x},\dots,x_{N/2}-\bar{x})\end{align}$
+and similarly
+$\begin{align} y'=(y_1-\bar{y}, y_2-\bar{y},\dots,y_{N/2}-\bar{y})\end{align}$
+
+Our task for $r$ then (the work for the regression coefficient is similar) becomes computing
+$$ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\sum_{i=1}^{N/2}(y'_i)^2}} $$
+
+1. The numerator is the intra-vector sum of $(x')*(y')$, which we know how to compute.
+2. The denominator is the square 
+of the (scalar) product of two intravector sums of $(x')^2$ and $(y')^2$.
+3. Finally, we need to do a division.
+
+:::info
+
+**Remark**: as usual (for the correlation coefficient; the regression coefficient is similar), we can avoid the possibly costly division and square roots for $r$ by giving the user the numerator and the *square* of the denominator separately and have the user compute the coeffcient. If we are willing to do the division but want to save a square root, we can just give them $r^2$ instead.
+:::
+
+## VI.2 Linear Regression
+
+### Simple Linear Regression
+
+Linear regression aims to find the line of best fit for a given set of data points. We assume a simple protocol where:
+1. take as client input $x=(x_1, \dots, x_n)$ and $y=(y_1, \dots, y_n)$ 
+2. output weight and intercept scalars (as vectors) $w=(w, w,\dots, w)$ and $b=(b, b,\dots, b)$ such that $y \approx wx + b$ for all $(x_i, y_i)$ with $i \in (1, n)$.
+
+These are immediate from our work:
+1. We can first compute $\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i$ and $\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i$, which we can do since they are **means**. 
+2. We can compute the weight scalar
+$$ w = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}$$ since it is a **regression coefficient**. 
+3. The result is then easily used to find $$b = \bar{y} - w \bar{x}$$using a multiplication and a subtraction.
+
+### (Sketch of) Multiple Linear Regression
+
+**Multiple linear regression** extends the prior one-dimensional context to allow for each data point to take multiple input features/ predictors. A natural protocol is:
+1. take as client input $n$ vectors $x^{(1)}, \dots, x^{(n)}$ with each $x^{(i)}=(x^{(i)}_1, \dots, x^{(i)}_m)$ and vector $y=(y_1, \dots, y_n)$. 
+2. output a weight vector $w=(w_1, \dots, w_m)$ and $m$-length scalar intercept $b = (b, b, \dots, b)$ such that $y_i \approx w \cdot x^{(i)} + b$ for all $i \in \{1, \dots, n\}$ where $w \cdot x^{(i)}$ is the **dot product**.
+
+We sketch an approach to this problem below:
+1. our desired weight vector $w$ can be computed with $$ w^T = (w_1, \dots, w_m)^T = (X^{T}X)^{-1}X^{T}y^T $$ where X is an $n \times m$ matrix constructed from the $m$ given $n$-length "$x$" vectors and $y$ is as above. 
+2. We compute $b$ with $b = \bar{y} - w^T \bar{x}$, where $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x^{(i)}$ is the mean predictor vector and $\bar{y} = \frac{1}{n}\sum_{i=1}^{n} y_i$ is the mean response.
+
+The underlying parts, however, need more work. First, this approach requires matrix operations, of which our explorations are very preliminary (see Section VII.1). Most crucially, the central difficulty is that we would need to invert an $m \times m$ matrix; at a quick glance, we can inherently approach this similarly to division using Newton's method, as $$(I-M)^{-1} = I + M +M^2 + \cdots,$$ but there are still many moving parts under the hood. 
+
+:::info
+**Remark**: see [^inv] for some independent work on matrix inversion under FHE.
+:::
+
+[^inv]: Seunghu Kim, Seongbong Choi, Hyung Tae Lee; **Improved Matrix Inversion with Packed Ciphertexts using Fully Homomorphic Encryption** available from https://eprint.iacr.org/2025/1274.pdf 
+
+# VII. Other Explorations
+
+Here, we collect some miscellaneous functions and extensions of previous sections we found interest in during our explorations.
+
+## VII.1 Dot Products and Matrix Multiplication
+
+Let us work with square matrices for simplicity. A client gives us $A, B \in \mathbb{C}^{n \times n}$ and we want to compute $C = A \cdot B$. For simplicity, we assume that the *rows* of $A$ and the *columns* of $B$ are given. If we only have rows of $B$, we can tweak them to obtain columns.
+
+Recall the dot product of two vectors $x = (x_1, \dots , x_n)$ and $y = (y_1, \dots , y_n)$ is defined as $x \cdot y = x_1y_1 + \dots + x_ny_n = \sum_{i=1}^{n} x_i y_i$. 
+
+1. Suppose we had two encoded vectors $x$ and $y$. We can obtain the vector $x*y = (x_1y_1, x_2y_2, \dots, x_ny_n)$ with element-wise multiplication. 
+2. We then perform an intravector sum to obtain a vector $$v(x,y) = \mathtt{sum}(x * y) = (d,d,\ldots, d),$$ where $d = x \cdot y$.
+3. We can then e.g. multiply it with a $1$-hot mask vector $(0, 0, \ldots, 1, 0, \ldots, 0)$ or use it in any other way we wish.
+
+This directly lets us compute the *entries* of the $n \times n$ matrix $C = A \times B$, since those are dot products:
+1. let the encoded first row of $A$ be denoted $A_1 = (a_{11}, a_{12}, \dots, a_{1n})$ and the encoded first column of $B$ as $B_1 = (b_{11}, b_{21}, \dots, b_{n1})$. 
+2. As just stated, we can get $c_{11}$, the $(1,1)$ entry of $C$, by just taking the dot product $A_1 \cdot B_1$. In general, we can get $c_{ij} = a_i \cdot b_j$, though underneath the hood we are actually getting vectors of the form $v(A_1, B_j) = (c_{ij}, c_{ij}, \ldots, c_{ij})$. 
+
+To get actual row / column vectors of $C$, we could get the entries, take some dot products by $1$-hot vectors, and add. Specifically, if we wanted the $i$-th row vector $C_i$, we would add
+$$ (1, 0, \ldots, 0) * v(A_i, B_1) + (0, 1, \ldots, 0) * v(A_i, B_2) + \cdots + (0, \ldots, 0, 1) * v(A_i, B_n). $$
+
+
+It is possible that we may want to use a different representation of the matrices. For example, let $A$ be arranged such that each row $a_i$ is stored contiguously in ciphertext $A'$:
+$$A'=(a_1,a_2,...a_n)=(a_{11},a_{12},...,a_{1n},a_{21},a_{22},...,a_{nn})$$
+
+Likewise $B$ with columns $b_j$, denoted 
+$$B' = (b_{11},b_{21},...,b_{n1},b_{12},b_{22},...,b_{nn})$$ 
+
+Using these initial $n^2$ ciphertexts as an example:
+$$A'*B' = (a_{11}b_{11},a_{12}b_{21},
+         ...,a_{1n}b_{n1},a_{21}b_{12},
+         ...,a_{n,n-1}b_{n-1,n},a_{nn}b_{nn}).$$
+
+Now, we claim that if we can extend summing to do a $k$-th "partial" intravector sum for a $mk$-vector $x$:
+$$\begin{align}\mathtt{partsum}(x,k) = & (x_1 + \cdots + x_k, \cdots, x_1 + \cdots + x_k, \\
+& x_{k+1} + \cdots + x_{2k}, \cdots, x_{k+1} + \cdots + x_{2k}, \\
+& \vdots \\
+& x_{(m-1)k+1} + \cdots + x_{mk}, \cdots, x_{(m-1)k+1} + \cdots + x_{mk})
+\end{align}$$
+         
+we would be able to use $\mathtt{partsum}(n, A'*B')$ to compute $n$ of the correct terms; for example, $(A \times B)_{1,1}$ in position $1$. If we repeat this $n$ times after cycling $A'*B'$ (by $n$ each time), we can combine them to get the final vector. As a concrete example for $n=2$:
+
+:::success
+**Concrete $2 \times 2$ Example**:
+
+$\begin{array}{rrll}
+    A'    &=& (a_{11},\ a_{12},\ a_{21},\ a_{22})\\
+    B'    &=& (b_{11},\ b_{21},\ b_{12},\ b_{22})\\
+    B''   &=& (b_{12},\ b_{22},\ b_{11},\ b_{21})\ =\ \mathtt{cycle}(B',\ n=2)\\
+    X     &=& (1,0,0,1)\\
+    \overline{X} & = & (0,1,1,0) \\
+    C_x &=& A'*B' = (a_{11}b_{11},\ a_{12}b_{21},\ a_{21}b_{12},\ 
+              a_{22}b_{22})\ \\
+    C_y &=& A'*B'' = (a_{11}b_{12},\ a_{12}b_{22},\ a_{21}b_{11},\
+              a_{22}b_{21})\ \\
+    C_x'  &=& \mathtt{partsum}(C_x,\ 2)\\
+          &=& (a_{11}b_{11}+a_{12}b_{21},\ a_{11}b_{11}+a_{12}b_{21},\
+              a_{21}b_{12}+a_{22}b_{22},\ a_{21}b_{12}+a_{22}b_{22})\\
+    C_y'  &=& \mathtt{partsum}(C_y,\ 2)\\
+          &=& (a_{11}b_{12}+a_{12}b_{22},\ a_{11}b_{12}+a_{12}b_{22},\
+              a_{21}b_{11}+a_{22}b_{21},\ a_{21}b_{11}+a_{22}b_{21})\\
+    C_x'*X&=& (a_{11}b_{11}+a_{12}b_{21},\quad 0,\quad 0,\quad 
+              a_{21}b_{12}+a_{22}b_{22}) \ =\ C_x''\\
+    C_y'*\overline{X} &=& (0,\quad a_{11}b_{12}+a_{12}b_{22},
+              \quad a_{21}b_{11}+a_{22}b_{21},\quad0) \ =\ C_y''\\
+    C_x''+C_y'' &=& (a_{11}b_{11}+a_{12}b_{21},
+              \ a_{11}b_{12}+a_{12}b_{22},
+              \ a_{21}b_{11}+a_{22}b_{21},
+              \ a_{21}b_{12}+a_{22}b_{22})\\ 
+          &=& C'\\
+\end{array}$
+:::
+
+It seems premature to go too deeply into this representation as it seems more complex and might use more memory by default because of the longer vectors.
+
+
+## VII.2 Shannon Entropy
+
+Suppose we have a discrete random variable $X$ with possible outcomes $x_1,x_2,\dots,x_n$ each with corresponding probabilities $P(x_1), P(x_2),\dots,P(x_n)$. 
+
+The **Shannon entropy**[^sh] is defined as
+
+[^sh]: **Entropy (information theory)** available from  https://en.wikipedia.org/wiki/Entropy_(information_theory)
+
+$$H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i),$$
+
+where $P(x_i)$ represents the probability of each outcome $x_i$.
+
+First, commenting on the input:
+1. Shannon entropy only works on a probability distribution, so all the input must be non-negative and add up to 1.
+2. For sake of focus, we will assume that *this is already solved.* 
+3. Otherwise, this seems to be a routine case of a "normalization step" where each user input is divided by their sum, which is a combination of a **sum** and a **division** of the form
+$$
+P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}.
+$$
+
+We should then end up with a vector $x = (P(x_1), \ldots, P(x_n))$.
+
+Now, we need the logarithms of the probabilities. These can also be done in various ways; when applicable, we black-box the details, deferring to previous sections:
+1. we can use a Taylor series approximation, centered necessarily away from $0$.
+2. we can have the user simply give the $\log(x_i)$ as part of their input.
+
+In any case, we should end up with a vector $l$ with each $l_i = \log(P(x_i))$.
+
+Then it suffices to compute the element-wise product $x * l * (-1)$ to obtain a single vector, after which using a sum operation gives
+$$H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i)$$
+(or more precisely, a vector where every element is $H(x)$).
+
+The main difficulties while computing entropy arise in situations where $x_i = 0$. In this case, L'Hopitals rule dictates that the correct contribution of the $-P(x) \log P(x) = 0 * (\infty)$ should be $0$. We have two suggestions, and it is not clear to us which one is better (it is likely to be very implementation-dependent):
+1. "iron out" the eventual answer with multiplication by an $\texttt{equal(x_i, 0)}$ vector at the very end (before the summation), which would ensure all elements coming from an $x_i$ very close to $0$ actually contributes $0$;
+2. interrupt the computation right before the $\log()$ step by **adding** the $\texttt{equal(x_i, 0)}$ vector, which would switch the $x_i$s close to $0$ to close to $1$ (therefore making the $\log(x_i) \approx 0$.
+
+In production, any method would require extensive testing to prevent blowup.
+
+## VII.3 "Adaptive" Division
+
+We cannot do If statements, but we can *encode* If statements with sign functions. Here's a design that might work and require some testing, but gives an idea of how we might do "adaptive" computations unadaptively:
+1. For simplicity, we assume the number to invert, $x$, is positive and within the region $[1, 2^{16}]$.
+2. We try to make a function that is essentially "the largest power of $2$ smaller than $x$"
+
+Suppose we have an idealized sign function, then consider the following sum, where $(x > k) = \mathtt{sign}{(x-k)}$ is a sign indicator function (so it is $1$ if the comparision is TRUE, and $0$ otherwise):
+$$ - \frac{1}{2^{15}} (x > 2^{15}) - \frac{1}{2^{14}}(x > 2^{14}) + \cdots - \frac{1}{2}(x > 2) + 1.$$ Note:
+1. if $2 > x \geq 1$, it returns $1$ since none of the comparisons are true.
+2. if $4 > x \geq 2$, then it returns $1-1/2 = 1/2$.
+3. if $8 > x \geq 4$, then it returns $1 -1/2 - 1/4 = 1/4$.
+4. ...the idea is that it will return $1/2^n$ if it is between $2^{n+1}$ and $2^n$.
+
+This essentially creates a "guess" in $\log(b)$ steps (for transparency: each step is a sign call and so may be expensive), where $b$ is an upper bound of $x$. The method needs tweaking for numbers under $1$ or negative numbers, which we omit.
+
+## VII.4 Logarithm (Revisited)
+
+In Section I we showed how to get logarithms via Taylor expansion. In addition to that standard approach, we explored a distinct iterative method that seems interesting, though not immediately practical, using some niceness particular to the log function.
+
+Suppose we have 
+$$ n \leq \log_2(x) < n+1, $$
+using the inverse relationship between the logarithm and exponentiation, this can be rewritten as: 
+$$ 2^n \leq x < 2^{n+1}.$$
+If we define $m = \frac{x}{2^n}$ (so $x = m \cdot 2^n$), we can divide both sides by $2^n$ to obtain 
+$1 \leq m < 2$. Using $m$, we can write
+$$ \log_2(x) = \log_2(m \cdot 2^n). $$
+This effectively breaks up the log into two components: a real and a fractional part, which can be treated separately. In other words, this is noticing that if $x = m \cdot 2^n$, where $m \in [1,2)$, then $$\log_2(x) = \log_2(m \cdot 2^n) = n + \log_2(m).$$
+
+As a first iteration of this strategy, we can approximate only in the range $[1,2)$ and add back a scaling factor later. As an example, to compute $log_2(20)$, we can compute $log_2(1.25)+4$ instead. The $n$ part can be given or "solved for" in a method similar to the previous section VII.3 to "detect" the largest $n$ such that $2^n < x$. 
+
+With the strategy just mentioned, we break the log function into an integer and fractional part. Afterwards, we can deal with the fractional part with a "fixed point iteration" method using binary representations.
+
+Suppose $y = \log_2(m)$, and written as $y = 0.b_1b_2b_3\cdots,$ (in other words, $y = b_1/2 + b_2/4+b_3/8 \cdots$). Note that if we square $m$, $y$ shifts by exactly one decimal point to
+$$2y = b_1.b_2b_3b_4\cdots.$$ 
+
+As a result, we are able to find the binary represenation, one bit at a time. For example, if $u = m^2$, then $u \in [1^2, 2^2) = [1,4)$. This allows for $\log_2(u) \in [0,2)$ This process helps us create our iteration: 
+$$
+|b_k| = \begin{cases}
+    0, & \text{if } u_k < 2 \rightarrow \log_2(u_{k-1}) < 1 \\
+    1, & \text{if } u_k \ge 2 \rightarrow \log_2(u_{k-1}) \ge 1
+\end{cases},
+$$
+after which we can recover 
+$$
+\sum_{i=-m}^{k} b_i \, 2^i, \quad \text{where } b_i \in \{0,1\}.
+$$
+
+:::success 
+**Concrete Example**: we work through some explicit initial iterations as an illustrative practice.  Take $x=0.75$.  We aim to obtain an approximation of $\log_2(0.75)$.  Rewriting $x$ in the desired form $x = m * 2^n$, we see that $n = -1$ and $m = 1.5$.  
+
+In the first iteration, squaring $m$ gives $2.25>2$ hence the first bit is $1$, and we must renormalize, dividing $2.25$ by $2$ resulting in $1.125=u_1$.  For the second iteration, squaring $1.125$ we get $1.265625<2$ so our next bit is $0$ and we do not need to renormalize.  
+
+If we continue iterating twice more we would obtain the binary digits $1001$, which we interpret as the fractional part of a binary number, corresponding to the value $0.5625$.  This is our approximation for $\log_2(m)$.  We now add $n= -1$ to give an initial approximation for $x$ as $-0.4375$.  For reference, the actual value is approximately $-0.4150$.  We can get closer to the actual value of $x$ with a higher number of iterations, but recall that with more iterations, we naturally have performed more computations, so error accumulates.
+:::
+
+
+[^quo]: Thomas Prantl, Lukas Horn, Simon Engel, André Bauer, Samuel Kounev;  **Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations** available from  https://www.sciencedirect.com/science/article/pii/S2214212625001474 
+
+<!-- 
+# VIII. Literature Review
+
+WIP– add misc. reflections on "Quo Vadis.." paper and other literature as appropriate 
+
+During our exploration, we found a paper that we believe to be of great relevance and value here: "Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations" from Prantl et al. (2025)[^quo].  Our understanding of and reflections on this work are as follows:
+
+- uses openfhe 👏 
+- **metrics** : multiplicative dpeth , precision bits
+    - precision bits: decrypted ciphertext precision
+        - dependent on og precision & actual numbers being multiplied
+- evaluates **without bootstrapping** only degree 25 possible
+
+polynomials 🔺
+- newton interpolation with chebyshev nodes
+- chebyshev
+    -  goat accuracy
+- de bello
+  - good accuracy , close to goat
+   - good across many intervals including with gaps
+- remez
+  - doesn't always find polynomial for range
+  - good precision bits, esp on large intervals
+  - wins on tight polynomial degree budget
+- hermite
+  - not notable
+
+functions & picks
+- sqrt() - chebyshev, de bello
+- 1/x - de bello
+- log() - chebyshev 
+- log() near 0 - de bello
+- exp() - de bello, chebyshev
+
+[WIP]
+-->
+
+# Appendix A. Discrete Computational Models
+
+Here's a proof-of-concept of a different computational model where the entries represent discrete numbers instead of general complex/real numbers. 
+
+In this computational model, each ciphertext vector with length $n/2$ stores $n/(2k)$ numbers, using $k$ components to store each number.  The user supplies not only (or instead of, but it seems fairly cheap to have both representations) $x$, but also the digits of $x$ (assuming integers for simplicity, maybe $x = (x_{k-1} \cdots x_0)|_b$ in base $b$, and each $x_i$ represents an element of $\{0, 1, \ldots, b-1\}$.
+
+We show an example of how the inequality function is simpler in this model, then discuss other uses such as the sign function and multiplication. In our github repo (https://github.com/fieldextension/discrete-methods) we show how our methods can be used to sort numbers with very little floating point error.
+
+### A Binary Approach to Inequality and Sorting
+
+For this example, assume $b=2$ so things are stored in binary. We will show that the inequality function can be done "exactly" as polynomials instead of approximated with a Taylor expansion.
+
+1. When $x$ and $y$ are *single bits*, the equality function $(x == y)$ is an algebraic condition $$(x==y) := \frac{1}{2}(xy + (1-x)(1-y)),$$ 
+2. and whether $(x > y)$ is also an exact condition, namely $$(x > y) := (x==1) * (y==0);$$
+3. Therefore, when $x$ and $y$ are $k$-bit numbers (assuming positive), we can write $x > y$ as an OR (and thus a polynomial) of the following values:
+    - $(x_{k -1} > y_{k-1})$ OR
+    - ($(x_{k-1} == y_{k-1})$ AND $(x_{k-2} > y_{k-2})$) OR
+    - ($(x_{k-1} == y_{k-1})$ AND $(x_{k-2} == y_{k-2})$ AND $(x_{k-3} > y_{k-3})$) OR ...
+This is simply *some* polynomial in the $x_i$ and $y_i$, so it is obtainable under FHE. 
+
+Thus, doing inequalities with high accuracy at least becomes possible when we do binary operations. The (high!) tradeoff is that adding and multiplying become difficult (due to carries). But if we are only doing comparative work, then much of the sorting / maxing related operations in Section IV becomes very viable. 
+
+
+### Modular Operations
+
+For higher bases, we are effectively doing modular arithmetic. The problem is we are storing integers. Thankfully, the fact we are using complex numbers allow us to "modularize" fairly painlessly. We give a sketch of this approach:
+1. Suppose we wanted to add or multiply numbers "mod N" (for this, we are agnostic to whether the numbers are digits of a single number or just different numbers we want to add / multiply in batch; things like carrying need to be dealt with separately). Then we can perform the algebra and end up with some results in $\mathbb{Z}$. Then,
+2. Compute $e^{2\pi i z/N}$ on the vector (specifically, first multiply the vector by $2\pi i/N$, then compute $(1 + z + z^2/2 + \cdots)$ as usual)
+3. Then compute $\log()$ to undo the computation, which will get us (with the correct branch) integers back in $\{0, \ldots, N-1\}$ after multiplying back by $N/(2\pi i)$. The convergence of this will be quite good as the numbers will be far from $0$ after step $2$. 
+
+In this representation, the sign function (and inequality, etc.) can be viewed as discrete polynomials.
+
+:::success
+**Concrete Example**: suppose we wanted a function to return $1$ for all elements at least $3 \pmod {7}$ and $0$ otherwise:
+1. Recall from Lagrange interpolation that if we want to send $a$ to $1$ and the other elements to $0$, we can just use the function $f_a(x) = (x-0)(x-1)\cdots(x-a+1)(x-a-1)\cdots (x-p+1)$ (suitably scaled to obtain 1).
+2. Add the functions for $f_3 + \cdots f_6$ to obtain a function that evaluates to $1$ on $3, 4, 5, 6$ but $0$ on the others.
+3. (this can be done for any function on $\mathbb{Z}/7\mathbb{Z}$)
+:::
+
+### Roots of Unity 
+
+Yet another possible variation is to store the numbers as *roots of unity*. Let $\zeta$ be a primitive $N$-th root of unity for some fixed prime $N$. Then we represent $a$ by $\zeta^a$ for $a \in \{0, 1, \ldots, N-1\}$. Then we can do **modular addition** mod $N$ via multiplication: $$(\zeta^k)(\zeta^l) = \zeta^{k+l}.$$ However, **modular multiplication** becomes much more difficult. 
+
+## Appendix B: An Application to Sorting
+
+We combine some of the previous tricks to do a more robust sorting, to showcase the capabilities of Appendix A.
+
+### Index To One-Hot
+
+Using roots-of-unity, we can do a one-hot conversion function (this will be used later for sorting). Specifically, given a ciphertext input for integer $i$, stored in root-of-unity form (from this point we use $\sqrt{-1}$ to distinguish from $i$)
+$$
+\zeta^i = e^{2\pi i \sqrt{-1}/k},
+$$
+where $\zeta = e^{2\pi \sqrt{-1}/k},$ we wish to create a one-hot vector $v$ which is $1$ in the $i$-th coordinate and $0$ elsewhere. We can do this as follows:
+
+1. Create a vector $v'$ whose $j$-th coordinate is $\zeta^{-j}$.
+2. Multiply entrywise by $\zeta^i$: $v'' = v' \cdot \zeta^i.$
+3. Then the $j$-th coordinate of $v''$ is $\zeta^{i-j}$. In particular, the $i$-th coordinate is (1), while every other coordinate is a nontrivial $k$-th root of unity.
+4. For each entry $w$ of $v''$, compute $$1 + w + w^2 + \cdots + w^{k-1}.$$ This expression equals $k$ if $w = 1$ and equals $0$ if $w$ is a nontrivial $k$-th root of unity. 
+5. Therefore, after dividing by $k$, we obtain the desired vector $v$.
+
+### Comparison and Extended Binary Numbers
+
+In this section, we show we can compare an input integer ciphertext $c$ with $0$, meaning a function which outputs $1$ if $c > 0$ and $0$ otherwise. (it will be clear how to do variants of this, such as with nonstrict inequalities). Our main trick is to use what we call the **extended binary expansion** of $c$.
+
+Define $S_1 := {-1,0,1}.$ We say that a number $a$ is in **extended binary** form if it is represented as
+$$
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+$$
+
+where each digit satisfies $a_i \in S_1.$ 
+
+:::info
+**Remark ($S_1$): The main intuition is this: we need the slightly larger digit set $S_1$ because the difference of two ordinary binary numbers has digits in $\{-1,0,1\}$. This avoids needing to perform carrying, which is hard in CKKS.
+:::
+
+Now:
+1. Assume that we have the extended binary digits of $c$ as $c_0, c_1, \ldots, c_{b-1},$ in little-endian order, where each $c_i \in S_1$.
+2. We construct the functions “$\geq 0$” and “$=0$” on the finite set $S_1$. Since $S_1$ is finite, these functions are polynomials on $S_1$! (furthermore, with operations that are not likely to accumulate a lot of floating point error)
+    - For example, on $S_1$, the function $\mathbf{1}_{x > 0}$ is given by $$ \frac{x^2+x}{2}. $$ Indeed, this is $0, 0, 1$ at $x=-1, 0, 1$ respectively.
+    - Similarly, the function $\mathbf{1}_{x=0}$ is given by $1 - x^2.$
+3. This allows us to construct a comparison function on the space of extended binary numbers. The key logic is that an extended binary number $$ a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1} $$ is positive if and only if at least one of the following events occurs: $$
+a_i = 1 \quad\text{and}\quad a_{i'} = 0 \text{ for all } i' > i. $$ In words: the most significant nonzero digit of (a) is positive.
+
+Therefore,
+
+$$
+\mathbf{1}_{a>0} = \bigvee_{i=0}^{b-1}
+\left(
+(\mathbf{1}({a_i=1})
+\wedge
+\bigwedge_{i' > i} \mathbf{1}({a_{i'}=0})
+\right).
+$$
+
+The logical AND and OR operations can themselves be written as polynomials on Boolean values:
+
+$$
+A \wedge B = AB,
+$$
+
+and
+
+$$
+A \vee B = 1 - (1-A)(1-B).
+$$
+
+Thus the comparison function can be implemented as a polynomial in the extended binary digits.
+
+Since the intermediate values are essentially Boolean or integer-valued, this construction avoids the main numerical instability of trying to compare arbitrary real CKKS values directly.
+
+### Sorting
+
+Now we are ready to do sorting. Specifically, take $k$ inputs and return a sorted vector. As a corollary, this makes it easy to read off the median, maximum, minimum, and other simple summary statistics.
+
+For simplicity, we make the following assumptions.
+
+1. The inputs are distinct.
+2. We have $k = 2^s$ for some integer $s$, and $2 \cdot 2^s < S,$ where $S$ is the number of slots per ciphertext.
+3. The inputs are nonnegative integers in some fixed range. For simplicity, assume $c_j \in {0,1,\ldots,2^b-1}$ for some positive integer $b$.
+
+Now we give the algorithm.
+1. Start with the ciphertext numbers to be sorted: $c_1, c_2, \ldots, c_k.$
+2. Create $b$ batched extended binary base-vectors
+$c_0, c_1, \ldots, c_{b-1},$ where $c_{ij}$ is the $i$-th binary digit of $c_j$, in little-endian order. Thus, for example,
+$$
+c_{03} + 2c_{13} + 4c_{23} + \cdots = c_3.
+$$
+3. By the comparison trick, we can construct a polynomial comparison function on extended binary numbers of the form $$
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+$$ where each $a_i \in S_1 = \{-1,0,1\}$.
+4. Given the $k$ ciphertexts, construct $b$ length-$k^2$ ciphertexts $d_0, d_1, \ldots, d_{b-1}$ from the base-vectors, so that the extended binary number represented at coordinate $j = xk + y$ is $c_x - c_y.$ In other words, the vectors $d_*$ represent all pairwise differences between the inputs. Since each $c_x$ and $c_y$ is represented in ordinary binary, each digit of the difference $c_x - c_y$ lies in $S_1$.
+5. Apply the comparison function in batch to all $k^2$ pairwise differences. This produces a vector $d$ such that
+$$
+d_{xk+y} =
+\begin{cases}
+1, & c_x > c_y, \\
+0, & \text{otherwise}.
+\end{cases}
+$$
+6. From this comparison matrix, compute the rank index of each $c_j$. Namely, the index of $c_j$ is the number of inputs smaller than it: $$ \operatorname{Ind}(j) = 
+|\{x : c_j > c_x\}|.
+$$ This can be obtained by summing the appropriate entries of the comparison matrix. However, instead of summing ordinary (0)-(1) comparison values, transform the comparison outputs so that a positive comparison contributes
+$$
+\zeta = e^{2\pi \sqrt{-1}/k}
+$$
+instead of $1$, while a non-positive comparison contributes $1$. Then multiply these contributions rather than adding them. This gives the index in root-of-unity form:
+$$
+\zeta^{\operatorname{Ind}(j)} = e^{2\pi \sqrt{-1}\operatorname{Ind}(j)/k}.
+$$
+8. Now apply the index-to-one-hot trick to each ($\zeta^{\operatorname{Ind}(j)}$. This gives, for each input $c_j$, a one-hot vector $o(j)$ supported in coordinate $\operatorname{Ind}(j)$.
+9. Finally, compute $\sum_{j=1}^k c_j o(j).$ The result is the sorted vector.
+
+
+:::info
+**Summary**: 
+1. A discrete representation of numbers is useful to have as a substitute / in addition to the standard input. Can consider writing down the "digits" as integers or as the roots of unity.
+2. With each choice, certain things become much easier (or at least doable) such as the sign / inequality function, but certain things become harder as well (such as addition or multiplication).
+3. We give a proof-of-concept in the following repository: https://github.com/fieldextension/discrete-methods 
+:::
+
+
+# References
