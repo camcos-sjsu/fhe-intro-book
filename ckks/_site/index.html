@@ -26,41 +26,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -109,6 +74,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -149,8 +143,82 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#i.-introduction" id="toc-i.-introduction" class="nav-link active" data-scroll-target="#i.-introduction">I. Introduction</a></li>
+  <li><a href="#ii.-auxiliary-functions" id="toc-ii.-auxiliary-functions" class="nav-link" data-scroll-target="#ii.-auxiliary-functions">II. Auxiliary Functions</a>
+  <ul class="collapse">
+  <li><a href="#ii.1-intravector-sums" id="toc-ii.1-intravector-sums" class="nav-link" data-scroll-target="#ii.1-intravector-sums">II.1 Intravector Sums</a></li>
+  <li><a href="#ii.2-higher-moments" id="toc-ii.2-higher-moments" class="nav-link" data-scroll-target="#ii.2-higher-moments">II.2 Higher Moments</a></li>
+  <li><a href="#ii.3-taylor-approximation-and-exponentiation" id="toc-ii.3-taylor-approximation-and-exponentiation" class="nav-link" data-scroll-target="#ii.3-taylor-approximation-and-exponentiation">II.3 Taylor Approximation (and Exponentiation)</a></li>
+  <li><a href="#ii.4-the-square-root-and-user-input" id="toc-ii.4-the-square-root-and-user-input" class="nav-link" data-scroll-target="#ii.4-the-square-root-and-user-input">II.4 The Square Root (and User Input)</a></li>
+  <li><a href="#ii.5-logarithm-first-glance" id="toc-ii.5-logarithm-first-glance" class="nav-link" data-scroll-target="#ii.5-logarithm-first-glance">II.5 Logarithm (First Glance)</a></li>
+  </ul></li>
+  <li><a href="#iii.-division" id="toc-iii.-division" class="nav-link" data-scroll-target="#iii.-division">III. Division</a>
+  <ul class="collapse">
+  <li><a href="#iii.1-geometric-series" id="toc-iii.1-geometric-series" class="nav-link" data-scroll-target="#iii.1-geometric-series">III.1 Geometric Series</a></li>
+  <li><a href="#iii.2-newtons-method" id="toc-iii.2-newtons-method" class="nav-link" data-scroll-target="#iii.2-newtons-method">III.2 Newton’s Method</a>
+  <ul class="collapse">
+  <li><a href="#guessing-a-starting-point" id="toc-guessing-a-starting-point" class="nav-link" data-scroll-target="#guessing-a-starting-point">Guessing a Starting Point</a></li>
+  </ul></li>
+  <li><a href="#iii.3-a-hybrid-approach" id="toc-iii.3-a-hybrid-approach" class="nav-link" data-scroll-target="#iii.3-a-hybrid-approach">III.3 A Hybrid Approach</a></li>
+  <li><a href="#iii.4-softmax-function" id="toc-iii.4-softmax-function" class="nav-link" data-scroll-target="#iii.4-softmax-function">III.4 Softmax Function</a></li>
+  </ul></li>
+  <li><a href="#iv.-discrete-math" id="toc-iv.-discrete-math" class="nav-link" data-scroll-target="#iv.-discrete-math">IV. Discrete Math</a>
+  <ul class="collapse">
+  <li><a href="#iv.i-sign-function" id="toc-iv.i-sign-function" class="nav-link" data-scroll-target="#iv.i-sign-function">IV.I Sign Function</a>
+  <ul class="collapse">
+  <li><a href="#logistic" id="toc-logistic" class="nav-link" data-scroll-target="#logistic">Logistic</a></li>
+  <li><a href="#hyperbolic-tangent" id="toc-hyperbolic-tangent" class="nav-link" data-scroll-target="#hyperbolic-tangent">Hyperbolic Tangent</a></li>
+  <li><a href="#sign-applicability" id="toc-sign-applicability" class="nav-link" data-scroll-target="#sign-applicability">Sign Applicability</a></li>
+  <li><a href="#inequality-and-equality" id="toc-inequality-and-equality" class="nav-link" data-scroll-target="#inequality-and-equality">Inequality and Equality</a></li>
+  </ul></li>
+  <li><a href="#iv.2-sorting" id="toc-iv.2-sorting" class="nav-link" data-scroll-target="#iv.2-sorting">IV.2 Sorting</a>
+  <ul class="collapse">
+  <li><a href="#bubble-sort" id="toc-bubble-sort" class="nav-link" data-scroll-target="#bubble-sort">Bubble Sort</a></li>
+  <li><a href="#improvements-to-sorting" id="toc-improvements-to-sorting" class="nav-link" data-scroll-target="#improvements-to-sorting">Improvements to Sorting</a></li>
+  </ul></li>
+  <li><a href="#iv.3-max-function" id="toc-iv.3-max-function" class="nav-link" data-scroll-target="#iv.3-max-function">IV.3 Max Function</a></li>
+  </ul></li>
+  <li><a href="#v.-difference-matrix-method" id="toc-v.-difference-matrix-method" class="nav-link" data-scroll-target="#v.-difference-matrix-method">V. Difference Matrix Method</a>
+  <ul class="collapse">
+  <li><a href="#v.1-mode" id="toc-v.1-mode" class="nav-link" data-scroll-target="#v.1-mode">V.1 Mode</a></li>
+  <li><a href="#v.2-median" id="toc-v.2-median" class="nav-link" data-scroll-target="#v.2-median">V.2 Median</a></li>
+  </ul></li>
+  <li><a href="#vi.-correlation-and-related-functions" id="toc-vi.-correlation-and-related-functions" class="nav-link" data-scroll-target="#vi.-correlation-and-related-functions">VI. Correlation and Related Functions</a>
+  <ul class="collapse">
+  <li><a href="#vi.1-two-coefficients" id="toc-vi.1-two-coefficients" class="nav-link" data-scroll-target="#vi.1-two-coefficients">VI.1 Two Coefficients</a></li>
+  <li><a href="#vi.2-linear-regression" id="toc-vi.2-linear-regression" class="nav-link" data-scroll-target="#vi.2-linear-regression">VI.2 Linear Regression</a>
+  <ul class="collapse">
+  <li><a href="#simple-linear-regression" id="toc-simple-linear-regression" class="nav-link" data-scroll-target="#simple-linear-regression">Simple Linear Regression</a></li>
+  <li><a href="#sketch-of-multiple-linear-regression" id="toc-sketch-of-multiple-linear-regression" class="nav-link" data-scroll-target="#sketch-of-multiple-linear-regression">(Sketch of) Multiple Linear Regression</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#vii.-other-explorations" id="toc-vii.-other-explorations" class="nav-link" data-scroll-target="#vii.-other-explorations">VII. Other Explorations</a>
+  <ul class="collapse">
+  <li><a href="#vii.1-dot-products-and-matrix-multiplication" id="toc-vii.1-dot-products-and-matrix-multiplication" class="nav-link" data-scroll-target="#vii.1-dot-products-and-matrix-multiplication">VII.1 Dot Products and Matrix Multiplication</a></li>
+  <li><a href="#vii.2-shannon-entropy" id="toc-vii.2-shannon-entropy" class="nav-link" data-scroll-target="#vii.2-shannon-entropy">VII.2 Shannon Entropy</a></li>
+  <li><a href="#vii.3-adaptive-division" id="toc-vii.3-adaptive-division" class="nav-link" data-scroll-target="#vii.3-adaptive-division">VII.3 “Adaptive” Division</a></li>
+  <li><a href="#vii.4-logarithm-revisited" id="toc-vii.4-logarithm-revisited" class="nav-link" data-scroll-target="#vii.4-logarithm-revisited">VII.4 Logarithm (Revisited)</a></li>
+  </ul></li>
+  <li><a href="#appendix-a.-discrete-computational-models" id="toc-appendix-a.-discrete-computational-models" class="nav-link" data-scroll-target="#appendix-a.-discrete-computational-models">Appendix A. Discrete Computational Models</a>
+  <ul class="collapse">
+  <li><a href="#a-binary-approach-to-inequality-and-sorting" id="toc-a-binary-approach-to-inequality-and-sorting" class="nav-link" data-scroll-target="#a-binary-approach-to-inequality-and-sorting">A Binary Approach to Inequality and Sorting</a></li>
+  <li><a href="#modular-operations" id="toc-modular-operations" class="nav-link" data-scroll-target="#modular-operations">Modular Operations</a></li>
+  <li><a href="#roots-of-unity" id="toc-roots-of-unity" class="nav-link" data-scroll-target="#roots-of-unity">Roots of Unity</a></li>
+  <li><a href="#appendix-b-an-application-to-sorting" id="toc-appendix-b-an-application-to-sorting" class="nav-link" data-scroll-target="#appendix-b-an-application-to-sorting">Appendix B: An Application to Sorting</a>
+  <ul class="collapse">
+  <li><a href="#index-to-one-hot" id="toc-index-to-one-hot" class="nav-link" data-scroll-target="#index-to-one-hot">Index To One-Hot</a></li>
+  <li><a href="#comparison-and-extended-binary-numbers" id="toc-comparison-and-extended-binary-numbers" class="nav-link" data-scroll-target="#comparison-and-extended-binary-numbers">Comparison and Extended Binary Numbers</a></li>
+  <li><a href="#sorting" id="toc-sorting" class="nav-link" data-scroll-target="#sorting">Sorting</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -174,16 +242,869 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<!-- Quick links
+- Problem Pitch: ["Programming in FHE"](https://hackmd.io/iNaMy-caQMejO4PlCq-BPA)
+- [Hackmd Markdown syntax](https://hackmd.io/c/codimd-documentation/%2F%40codimd%2Fmarkdown-syntax)
+- [Quick LaTeX guide](https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes)
+- [Last Semester's Project](https://hackmd.io/Jnr5JaxHSTiXgdmh9tQAaA)
+- [Backburner Stash](https://hackmd.io/Z4c6GwCiT2aljyWtJnmhhw)
+- [Tech Tree MD](https://hackmd.io/@BdK1iuvsSg2AB5K8X38qfg/SJS64QCqWe)
+-->
+<p>In this report, we explore functions that can be built under the CKKS homomorphic encryption scheme: 1. We introduce a simplified problem setup in Section I, then examine some initial functions which can be built from these base moves in Section II. 2. In Section III we explore division, which is surprisingly tricky but important. 3. In Section IV and V we study “discrete math” concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have). 4. In Section VI we look at statistical applications to linear regression. 5. We end with some more speculative approaches to various topics in Section VII, including an iterative approach to log and some linear algebra. 6. In the Appendix we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.</p>
+<section id="i.-introduction" class="level1">
+<h1>I. Introduction</h1>
+<p><strong>CKKS</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> (Jung Hee <strong>C</strong>heon, Andrey <strong>K</strong>im, Miran <strong>K</strong>im, and Yongsoo <strong>S</strong>ong) is a <strong>fully homomorphic encryption (FHE)</strong> scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.</p>
+<p>CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of “batching” techniques à la SIMD<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are “packed” into a single ciphertext and computed upon simultaneously.</p>
+<p>Our simplified CKKS setup is as follows:</p>
+<ol type="1">
+<li>Let <span class="math inline">\(N\)</span> be a power of <span class="math inline">\(2\)</span> (concrete default: <span class="math inline">\(N = 2^{16}\)</span>).</li>
+<li>The users provide ciphertext <span class="math inline">\(\mathsf{ct}\)</span> with each such ciphertext encrypting <span class="math inline">\(N/2\)</span> complex numbers. In other words, <span class="math display">\[\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2}).\]</span></li>
+<li>As a default bound on the numbers involved, suppose the complex numbers have form <span class="math inline">\(z_j = x_j + iy_j\)</span> where <span class="math inline">\(x_j, y_j \in \mathbb{R}\)</span>. We can assume the <span class="math inline">\(x_j\)</span> and <span class="math inline">\(y_j\)</span> are bounded above by <span class="math inline">\(10^6\)</span> and have precision <span class="math inline">\(10^{-10}\)</span>.</li>
+</ol>
+<p>As <span class="math inline">\(\mathsf{ct}\)</span> is just encrypting some data, we are allowed to make copies of <span class="math inline">\(\mathsf{ct}\)</span>, save them, etc. Any further operations on <span class="math inline">\(\mathsf{ct}\)</span> are considered difficult by default, and we must instead “build” them from a limited set of basic “moves” given by the encryption scheme. These moves are as follows: - <strong>addition</strong>: given ciphertext <span class="math inline">\(\mathsf{ct}_1 = \mathtt{enc}(r_*)\)</span>, <span class="math inline">\(\mathsf{ct}_2 = \mathtt{enc}(s_*)\)</span>, (where each <span class="math inline">\(r_j, s_j \in \mathbb{C}\)</span>) we can generate a ciphertext <span class="math display">\[\mathsf{ct} = \mathtt{enc}(r_1 + s_1, r_2 + s_2, \cdots, r_{N/2} + s_{N/2}).\]</span> - (element-wise) <strong>multiplication</strong>: given ciphertext <span class="math inline">\(\mathsf{ct}_1 = \mathtt{enc}(r_*)\)</span>, <span class="math inline">\(\mathsf{ct}_2 = \mathtt{enc}(s_*)\)</span>, we can generate a ciphertext <span class="math display">\[\mathsf{ct} = \mathtt{enc}(r_1 s_1, r_2 s_2, \cdots, r_{N/2} s_{N/2}).\]</span> - <strong>complex conjugation</strong>: given ciphertext <span class="math inline">\(\mathsf{ct} = \mathtt{enc}(z_*)\)</span>, we can generate a ciphertext <span class="math display">\[\mathsf{ct}' = \mathtt{enc}(\overline{z_1}, \ldots, \overline{z_{N/2}}).\]</span> Recall that <span class="math inline">\(\overline{x+iy} = x-iy\)</span> for real numbers <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. - <strong>cycle</strong>: given a ciphertext <span class="math inline">\(\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2})\)</span>, we can, for any <span class="math inline">\(k \in \{1, 2, \dots, N/2\}\)</span>, create a ciphertext <span class="math display">\[\mathsf{ct}' = \mathtt{enc}(z_k, \ldots, z_{N/2}, z_1, \ldots, z_{k-1}).\]</span></p>
+<p>This is not an exhaustive list of moves and part of open research is determining what other techniques are possible in CKKS. For the scope of our doc, we will assume this is the complete list of moves. We note two practical things that we will mostly ignore for the rest of our work: 1. We can assume these moves are fast but not negligible. Think of all of these moves as taking place on the order of milliseconds with addition being faster at microseconds. 2. In our scheme, numbers get worse in two ways as we compute on them: they accumulate noise (like floating point arithmetic accumulates error) and they also become potentially easier to decrypt by an adversary.</p>
+<div class="info">
+<p><strong>Remarks</strong>: 1. for brevity, we will often write as shorthand <span class="math inline">\(\mathtt{enc}(z_*)\)</span> or suppress the <span class="math inline">\(\mathtt{enc}\)</span> and discuss the vectors directly. 2. for many use cases (especially order-dependent notions like median, sign, etc.), we can assume that we are only dealing with real numbers (formally, the imaginary coordinate is 0). Since this is often clear from context, we omit disclaimers for clarity.</p>
 </div>
+</section>
+<section id="ii.-auxiliary-functions" class="level1">
+<h1>II. Auxiliary Functions</h1>
+<p>In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums / higher moments - exponentiation - square root - log</p>
+<p>We will also be using these functions as examples to show <strong>techniques</strong> that would be useful in other scenarios. Specifically: 1. exponentiation shows the power of <strong>Taylor series</strong>. 2. the square root conveys the utility of <strong>giving computation back to the user post-FHE</strong>.</p>
+<section id="ii.1-intravector-sums" class="level2">
+<h2 class="anchored" data-anchor-id="ii.1-intravector-sums">II.1 Intravector Sums</h2>
+<p>Suppose we wanted the sums of the <em>entries</em> of a vector; we call this the <strong>intra-vector sum</strong> to differentiate from the “inter-vector sum” of summing vectors, which is already supplied as a basic move. A naive approach would be to repeatedly use cycle to obtain encryptions of <span class="math display">\[(z_1, \ldots, z_{N/2}), (z_2, \ldots, z_{N/2}, z_1), \ldots, (z_{N/2}, z_1, \ldots, z_{N/2-1})\]</span> and then add them as in the inter-vector case. This puts the sum in every coordinate.</p>
+<p>However, we can make this faster by noticing the following. Suppose we cycled by <span class="math inline">\(1\)</span> and added instead, then we would be able to get: <span class="math display">\[\mathtt{enc}(z_1 + z_2, z_2 + z_3, z_3 + z_4, \cdots)\]</span> then cycling by <span class="math inline">\(2\)</span> and adding to itself would put <span class="math inline">\(z_1 + z_2 + z_3 + z_4\)</span> in the first position, but with only 2 additions instead of <span class="math inline">\(3\)</span>. Extending this method, we can sum all the numbers with <span class="math inline">\(\log({N/2})\)</span> operations.</p>
+<p>Here are a couple of general consequences of being able to sum: 1. <strong>dot product</strong>: given encrypted vectors of <span class="math inline">\(c_*\)</span> and <span class="math inline">\(d_*\)</span>, we can multiply to get <span class="math inline">\(\mathtt{enc}(c_1d_1, c_2d_2, \ldots)\)</span>, and then sum to get the dot product. 2. <strong>(complex) inner product</strong>: since we can take the conjugate of <span class="math inline">\(d_*\)</span>, we can compute the complex inner product <span class="math display">\[c_1\overline{d_1} + \cdots + c_{N/2}\overline{d_{N/2}}.\]</span></p>
+</section>
+<section id="ii.2-higher-moments" class="level2">
+<h2 class="anchored" data-anchor-id="ii.2-higher-moments">II.2 Higher Moments</h2>
+<p>Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently. Define the <span class="math inline">\(k\)</span>-th <strong>(raw) moment</strong> to be the expectation of the <span class="math inline">\(k^{th}\)</span> power of the random variable <span class="math inline">\(X\)</span> (let vector <span class="math inline">\(x\)</span> be a series of <span class="math inline">\(n\)</span> sample measurements): <span class="math display">\[E[X^k]=\frac{1}{n}(x_1^k+x_2^k+\dots+x_n^k).\]</span></p>
+<p>First, while we can naively obtain <span class="math inline">\((x_1^k, \ldots, x_n^k)\)</span> in <span class="math inline">\(O(k)\)</span> time by repeated multiplication, it is faster to 1. compute via the “fast squaring trick” <span class="math display">\[ X \rightarrow X*X \rightarrow \cdots \rightarrow X * \cdots * X (k \text{ times}) \]</span> in <span class="math inline">\(O(\log(k))\)</span> operations. 2. Then, performing the sum operation from the previous section allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_n^k) \cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> more operations. 3. Finally, we can divide by <span class="math inline">\(n\)</span> (a known constant) by multiplying by the vector <span class="math inline">\((1/n) \cdot (1, 1, \cdots, 1)\)</span>.</p>
+<p>We are naturally able to compute the following variations: 1. <strong>central moment</strong>: The <span class="math inline">\(k^{th}\)</span> central moment of <span class="math inline">\(X\)</span> about mean <span class="math inline">\(\mu\)</span> is <span class="math display">\[E[(X-\mu)^k]=E[(X-E[X])^k].\]</span> Note: The <span class="math inline">\(2^{nd}\)</span> central moment is used to calculate the variance: <span class="math display">\[\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.\]</span> We can expensively calculate <span class="math inline">\(\sqrt{\mathtt{var}(X)} = \sigma\)</span>, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see <strong>square roots</strong> later) 2. <strong>standardized moment</strong>: This is the same idea as the central moment but <span class="math inline">\(X-\mu\)</span> is scaled by the standard deviation <span class="math inline">\(\sigma\)</span> before exponentiation: <span class="math display">\[E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].\]</span></p>
+</section>
+<section id="ii.3-taylor-approximation-and-exponentiation" class="level2">
+<h2 class="anchored" data-anchor-id="ii.3-taylor-approximation-and-exponentiation">II.3 Taylor Approximation (and Exponentiation)</h2>
+<p>Beyond our base moves, many functions which are of interest to us can be approximated with <strong>Taylor approximation</strong>: approximate a function by the first few terms of its power series. This is fairly straightforward in CKKS, involving only a combination of basic moves: additions, powers (multiplications), and scalar divisions.</p>
+<p>We show the Taylor approximation of the <strong>exponential function</strong> as an illustrative example: <span class="math display">\[e^z \approx \sum_{k=0}^{N} \frac{z^k}{k!} = 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \dots + \frac{z^N}{N!}\]</span></p>
+<p>Our main thoughts on Taylor approximation are: 1. In a purely mathematical setting, a higher <span class="math inline">\(N\)</span> results in higher accuracy, yet in FHE, too large of an <span class="math inline">\(N\)</span> can result in lower accuracy as noise accumulates. We desire a middle-ground <span class="math inline">\(N\)</span> that produces a close approximation while mitigating cost and noise concerns. 2. We need to have a good sense of where our input lies for convergence assumptions. In general, there is a radius of convergence for <span class="math inline">\(z\)</span> (or <span class="math inline">\(x\)</span>), which in the exponential case is infinite. But even within the radius of convergence you may in practice want the assumed domain to be even tighter for faster convergence. 3. In several cases, it seems possible to employ “range reduction” techniques to tighten domains. For example, here we can make <span class="math inline">\(x\)</span> smaller using <span class="math inline">\(e^x = (e^{x/k})^k\)</span> – in other words, we approximate <span class="math inline">\(e^{x/k}\)</span> then compute the <span class="math inline">\(k\)</span>-th power of the result. Even better, when applicable, we may just pass the <span class="math inline">\(k\)</span>-th power computation to the client.</p>
+</section>
+<section id="ii.4-the-square-root-and-user-input" class="level2">
+<h2 class="anchored" data-anchor-id="ii.4-the-square-root-and-user-input">II.4 The Square Root (and User Input)</h2>
+<p>We can similarly take the square root by expanding a Taylor series. The square root has no Taylor series at <span class="math inline">\(x=0\)</span>, but can be expanded elsewhere, such as at <span class="math inline">\(x=1\)</span>: <span class="math display">\[\sqrt{1-x} = 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16} - \frac{5 x^4}{128} - \frac{7 x^5}{256} + O(x^6) + \cdots \]</span> which converges when <span class="math inline">\(|x| \leq 1\)</span>.</p>
+<p>However, if we give the user <span class="math inline">\(x\)</span>, it might be easier for the user to compute <span class="math inline">\(\sqrt{x}\)</span> on the client side! Thus, frequently we might just consider <em>not</em> doing some computation over FHE, given business logic allows us to do so.</p>
+<p>To summarize, 1. we can (and at times must) take Taylor series around points other than <span class="math inline">\(x=0\)</span>, 2. but frequently we may be able to skirt the problem using user output (and input). We think this is an important mindset but will mostly operate as if we do not have this possibility for the remainder of this report.</p>
+<div class="info">
+<p><strong>Remark</strong>: we also explored e.g.&nbsp;the Babylonian approximation method<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> for taking the square root, but that would involve dividing by <span class="math inline">\(x\)</span>, which is expensive. See Section III (Division) for more information.</p>
 </div>
+</section>
+<section id="ii.5-logarithm-first-glance" class="level2">
+<h2 class="anchored" data-anchor-id="ii.5-logarithm-first-glance">II.5 Logarithm (First Glance)</h2>
+<p>As usual, the Taylor approximation is a good default, and immediately doable with basic moves here: additions, powers (multiplications), and scalar divisions.</p>
+<p>Importantly, as <span class="math inline">\(\log_2(x)\)</span> is undefined at <span class="math inline">\(0\)</span>, there is no Taylor expansion centered at <span class="math inline">\(0\)</span> to use for approximation. We bypass this by approximating around <span class="math inline">\(x=1\)</span>, writing <span class="math inline">\(x=1+u\)</span>. Now we can use a standard Taylor series expansion: <span class="math display">\[\log_2(1+u)=\log_2(x) \approx \frac{1}{\log_e(2)} \sum_{k=1}^{N} (-1)^{k+1} \frac{(x-1)^k}{k}\]</span> <span class="math display">\[= \frac{1}{\log_e(2)} \Bigg[ (x-1) - \frac{(x-1)^2}{2} + \frac{(x-1)^3}{3} - \frac{(x-1)^4}{4} + \dots \Bigg].\]</span></p>
+<p>The series only converges for <span class="math inline">\(x \in (0, 2]\)</span>.</p>
+<div class="info">
+<p><strong>Remark</strong>: in Section VII we will explore another approach to log which is not ripe now for practical use, but can give ideas on how to push FHE further.</p>
+</div>
+</section>
+</section>
+<section id="iii.-division" class="level1">
+<h1>III. Division</h1>
+<p>Since we have multiplication, it is easy to divide by <em>known constants</em>, since we can multiply by their inverse. Specifically, we can take <span class="math display">\[\mathtt{enc}(z_*), \mathtt{enc}(\frac{1}{c_*}) \rightarrow \mathtt{enc}(\frac{z_1}{c_1}, \ldots, \frac{z_{N/2}}{c_{N/2}})\]</span> by precomputing constants <span class="math inline">\(1/c_*\)</span> from <span class="math inline">\(c_*\)</span>.</p>
+<p>In this section, we tackle <strong>division,</strong> which is surprisingly tricky in our specialized context. Here, by division we mean dividing by an encrypted unknown value, such as wanting <span class="math inline">\(\mathtt{enc}(\frac{1}{z_*})\)</span> given <span class="math inline">\(\mathtt{enc}(z_*)\)</span>. This is not obvious and cannot be precomputed.</p>
+<div class="info">
+<p><strong>Remark</strong>: of course, this depends on context. For example, in a hypothetical scenario where we only ever divide by <em>user input</em>, we can just ask the users to supply inverses to their own numbers (that is, if every time we get an encryption of <span class="math inline">\(x_i\)</span> we also get <span class="math inline">\(\mathtt{enc}(1/x_i)\)</span>), then this is not a hard problem.</p>
+</div>
+<p>If we unlock division, we are then able to compute many other useful functions. More than just being able to obtain the function, however, our main contribution here is comparing different types of approaches to division, many of which may be useful for future endeavors (specifically, <strong>Newton’s Method</strong>, some variants, and our more speculative <strong>adaptive Newton’s Method</strong> in Section VII).</p>
+<section id="iii.1-geometric-series" class="level2">
+<h2 class="anchored" data-anchor-id="iii.1-geometric-series">III.1 Geometric Series</h2>
+<p>As usual, our initial instinct should be Taylor series: supposing <span class="math inline">\(z_i\)</span> is not far from <span class="math inline">\(1\)</span>, we can expand <span class="math display">\[\frac{1}{z} = \frac{1}{(1-(1-z))} = 1 + (1-z) + (1-z)^2 + \cdots\]</span> Explicitly, this means we can first compute <span class="math display">\[\mathtt{enc}(z_*') := \mathtt{enc}(1 - z_*)\]</span> by subtracting the vector from a precomputed constant vector <span class="math inline">\(\mathtt{enc}(1, \ldots, 1)\)</span>, then compute powers and add <span class="math display">\[\mathtt{enc}(1, \cdots, 1) + \mathtt{enc}(z_*') + \mathtt{enc}((z_*')^2) + \mathtt{enc}((z_*')^3) + \cdots\]</span></p>
+<p>The partial sum of the geometric series method has some potential issues. For one, if the value being inverted is too far (<span class="math inline">\(&gt;1\)</span>) away from <span class="math inline">\(1\)</span>, then the series will not converge. We can employ some algebraic tricks to shift the convergence interval. Another issue, assuming convergence, is the cost associated with repeated multiplications within the exponential terms.</p>
+<p>For instance, suppose we require an error of no greater than <span class="math inline">\(10^{-10}\)</span> for one of these approximations, the number of partial sum terms needed for this much accuracy is shown:</p>
+<p><strong>Sample Series Convergences</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 26%">
+<col style="width: 16%">
+<col style="width: 39%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(z_i\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(1/z_i\)</span> (Target)</th>
+<th style="text-align: center;"><span class="math inline">\(r = 1−z_i\)</span></th>
+<th style="text-align: center;">Iterations to <span class="math inline">\(\epsilon\leq10⁻¹⁰\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0.1482</td>
+<td style="text-align: center;">6.746761986503</td>
+<td style="text-align: center;">0.8518</td>
+<td style="text-align: center;">155</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.5656</td>
+<td style="text-align: center;">1.767918114060</td>
+<td style="text-align: center;">0.4344</td>
+<td style="text-align: center;">28</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.5941</td>
+<td style="text-align: center;">1.683233435953</td>
+<td style="text-align: center;">0.4059</td>
+<td style="text-align: center;">26</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.6340</td>
+<td style="text-align: center;">1.577252912141</td>
+<td style="text-align: center;">0.3660</td>
+<td style="text-align: center;">23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1.3748</td>
+<td style="text-align: center;">0.727355832051</td>
+<td style="text-align: center;">−0.3748</td>
+<td style="text-align: center;">23</td>
+</tr>
+</tbody>
+</table>
+<p>Note the correlation of <span class="math inline">\(1/z_i\)</span> with the number of iterations required.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/HJ7Q2lqWfx.gif" class="img-fluid figure-img"></p>
+<figcaption>geom_animation</figcaption>
+</figure>
+</div>
+</section>
+<section id="iii.2-newtons-method" class="level2">
+<h2 class="anchored" data-anchor-id="iii.2-newtons-method">III.2 Newton’s Method</h2>
+<p>We considered another approach with Newton’s method<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, which finds the roots of a function <span class="math inline">\(f(x)\)</span>. In this case, we can find the decimal value of <span class="math inline">\(x^*=\frac{1}{d}\)</span> so that <span class="math inline">\(f(x)=\frac{1}{x}-x^*=0.\)</span> Think of <span class="math inline">\(x^*\)</span> as an unknown decimal that we’re looking for.</p>
+<p>We use Newton’s formula <span class="math inline">\(f(x^*)\approx f(x_n)+f'(x_n)(x^*-x_n)\)</span>, and set <span class="math inline">\(f(x^*)=0:\)</span> <span class="math display">\[x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}\]</span></p>
+<p><span class="math display">\[x_n-\frac{f(x_n)}{f'(x_n)}=x_n-\frac{\frac{1}{x_n}-d}{\frac{-1}{x_n^2}}=x_n+x_n^2(\frac{1}{x_n}-d)=x_n+(x_n-x_n^2d)\]</span></p>
+<p><span class="math display">\[x_{n+1}=2x_n-x_n^2d\]</span></p>
+<div class="info">
+<p><strong>Remark</strong>: see an independently developed discussion in Prantl et al.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
+</div>
+<p>This allows us to approximate <span class="math inline">\(1/x\)</span> in a chain of <span class="math inline">\(2n\)</span> multiplications and <span class="math inline">\(n\)</span> additions. We can do a simple test of approximating <span class="math inline">\(\frac{1}{48}\)</span> with Newton’s method versus a geometric series as follows:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/BJfxYcF5Zg.png" class="img-fluid figure-img"></p>
+<figcaption>convergence_digits(1)</figcaption>
+</figure>
+</div>
+<p>The one catch with Newton’s method is that in order to be effective, it has to initially guess reasonably close to the root.</p>
+<section id="guessing-a-starting-point" class="level3">
+<h3 class="anchored" data-anchor-id="guessing-a-starting-point">Guessing a Starting Point</h3>
+<p>Naively, one (impossible) approach would be to make some different buckets of <span class="math inline">\(n\)</span> based on powers of <span class="math inline">\(2\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">n</th>
+<th style="text-align: center;"><span class="math inline">\(ct_{2^n}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(ct_{2^{-n}}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{1}{2}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;"><span class="math inline">\(\frac{1}{4}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">33</td>
+<td style="text-align: center;"><span class="math inline">\(2^{33}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2^{-33}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Note: we only go to <span class="math inline">\(n=33\)</span> since <span class="math inline">\(\log_2(10^{10})\approx33\)</span>, where <span class="math inline">\(10^{-10}\)</span> is the approximate “round to zero” threshold. This would need a tweak to include negatives.</p>
+<p>What we want to do is to figure out where the divisor belongs based on where <span class="math inline">\(n\)</span> belongs, and then make our guess <span class="math inline">\(x_0\)</span> be based on the corresponding boundary bucket. Sadly, this does not work because we cannot (yet) do different executions depending on branching logic.</p>
+<p>Unless we try some more complex methods, we will need to come up with a universal <span class="math inline">\(x_0\)</span> guess<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> that will work regardless of what <span class="math inline">\(\frac{1}{x}\)</span> is.</p>
+<p>Fortunately, the basin of convergence<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> for Newton’s method approximation of <span class="math inline">\(\frac{1}{x}\)</span> is <span class="math inline">\(\big(0,\frac{2}{x}\big)\)</span> if <span class="math inline">\(x&gt;0\)</span> and <span class="math inline">\(\big(\frac{2}{x},0\big)\)</span> if <span class="math inline">\(x&lt;0\)</span>.</p>
+<ol type="1">
+<li>To guarantee convergence we can simply pick the closest number to zero that does not get eliminated by rounding, maybe <span class="math inline">\(\approx 10^{-10}\)</span> or <span class="math inline">\(-(10^{-10})\)</span>, depending on the sign of <span class="math inline">\(\frac{1}{x}\)</span> (which needs to be known), every time.</li>
+<li>If we want to account for the sign and have a Sign function, we would be able to capture it with something like <span class="math inline">\((x&lt;0)*(x_0=-(10^{-10}))+(x&gt;0)*(x_0=10^{-10})\)</span>. See Section IV for similar methods.</li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/BkpSix5bzl.gif" class="img-fluid figure-img"></p>
+<figcaption>newton_animation</figcaption>
+</figure>
+</div>
+<ol start="3" type="1">
+<li>If we have additional knowledge about the actual range of values, e.g.&nbsp;if we know that values are in <span class="math inline">\([a,b]\)</span> then we can uuse something like the geometric mean <span class="math inline">\(1/\sqrt{ab}\)</span>. (concretely, if weight is always between <span class="math inline">\(50\)</span> and <span class="math inline">\(5000\)</span> pounds, we can take an initial guess of 1/500).</li>
+</ol>
+<div class="danger">
+<p><strong>Disclaimers</strong>:</p>
+<ol type="1">
+<li>The “closest number to <span class="math inline">\(0\)</span>” method might cause overflow issues. This would require testing.</li>
+<li>Starting so close to zero makes a very steep derivative of <span class="math inline">\(\frac{1}{x}\)</span> at that point, leading to the second guess <span class="math inline">\(x_1\)</span> being within the error bound of <span class="math inline">\(x_0\)</span>: a sort of false convergence. Even attempting a remedy with stricter difference criteria leads to 30+ iterations before true convergence, wiping out some of the initial savings, which in fact may be more expensive than the geometric series.</li>
+</ol>
+</div>
+</section>
+</section>
+<section id="iii.3-a-hybrid-approach" class="level2">
+<h2 class="anchored" data-anchor-id="iii.3-a-hybrid-approach">III.3 A Hybrid Approach</h2>
+<p>The sum of the geometric series does most of its heavy lifting in the first few iterations, and then closes in slowly and expensively. Newton’s method has the opposite problem: the only universal good starting point would be too far to the edge of the basin, and would waste the bulk of its moves in the beginning, making almost no progress toward sufficient convergence.</p>
+<p>Perhaps the two approaches could be combined into a hybrid. The first one or two terms of the sum of the geometric series are less expensive and put us strongly within the basin of convergence, at which point we can put Newton in the driver’s seat. Our opening guess for Newton’s <span class="math inline">\(x_0\)</span> would be guaranteed to be in the convergence basin and well ahead of the default universal guess.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/S1Djilqbfe.gif" class="img-fluid figure-img"></p>
+<figcaption>hybrid_animation</figcaption>
+</figure>
+</div>
+</section>
+<section id="iii.4-softmax-function" class="level2">
+<h2 class="anchored" data-anchor-id="iii.4-softmax-function">III.4 Softmax Function</h2>
+<p>A good example of a function that is directly unlocked by division is the <strong>softmax function</strong><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, which takes a vector <span class="math inline">\(x = (x_1, \ldots, l_k) \in \mathbb{R_+^k}\)</span> and returns a probability distribution <span class="math inline">\(r(x) = (p_1, \ldots, p_k) \in (0,1)^k\)</span> as follows: <span class="math display">\[\rho(x)_i = \frac{e^{x_i}}{\sum_j e^{x_j}}.\]</span> The function is important for many applications, but especially recently in neural nets for turning vectors into probability distributions for decision making.</p>
+<p>The basic strategy is: 1. Make a vector <span class="math inline">\(x'\)</span> where <span class="math inline">\(x'_i = e^{x_i}\)</span> (this can be done by Taylor approximation or by asking the user to supply the exponentials); 2. make a vector <span class="math inline">\(s\)</span> where all <span class="math inline">\(s_i = \mathtt{sum}(x_i)\)</span>; 3. lastly, divide <span class="math inline">\(x'\)</span> by <span class="math inline">\(s\)</span>.</p>
+<div class="success">
+<p><strong>Concrete Example</strong>: take <span class="math inline">\(z\)</span> = (4, 2, 24, 6). We first exponentiate the vector’s entries, or ideally pass to client: (<span class="math inline">\(e^4\)</span>, <span class="math inline">\(e^2\)</span>, <span class="math inline">\(e^{24}\)</span>, <span class="math inline">\(e^6\)</span>). Separately compute the sum <span class="math inline">\(S = e^4 + e^2 + e^{24} + e^6\)</span>. We now normalize our vector to get (<span class="math inline">\(e^4/S\)</span>, <span class="math inline">\(e^2/S\)</span>, <span class="math inline">\(e^{24}/S\)</span>, <span class="math inline">\(e^6/S\)</span>) which rounds off to approximately (0, 0, 1, 0).</p>
+</div>
+</section>
+</section>
+<section id="iv.-discrete-math" class="level1">
+<h1>IV. Discrete Math</h1>
+<p>In this section we study some “discrete” operations involving comparisons and sorting. At the basis of everything, we need <strong>sign</strong>, <strong>equality</strong>, and <strong>inequality</strong> functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it’s essentially the same as inequality.</p>
+<div class="danger">
+<p><strong>Disclaimer</strong>: Taylor approximations for sign run into many (unavoidable) issues, and can only be used if we have a very tight understanding of the domain of the function. We stress that what we do in the remainder of this section (and other parts of our work that rely on sign functions) is speculative because everything rests on an idealized sign function, which we do not quite have in practice. Conservatively, we should interpret our following work as an exploration of what we can unlock if we have an idealized sign function.</p>
+</div>
+<p>With this disclaimer, we perform the following explorations: 1. We try to use series approximations for sign anyway, and quantify how close the approximations are (we suspect it would be usable for very small-scale work, but not beyond that). 2. Assuming an “idealized sign”, we use a “local swap” / “bubble” as a building block for <strong>sorting</strong> (and as a bonus, computing <strong>max</strong>/min type of summary statistics). The functions we will implement are represented in the following “tech tree”. 3. We provide a speculative approach to sign / inequality type of functions with binary arithmetic in the Appendix.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/BJubYSw-ze.png" class="img-fluid figure-img"></p>
+<figcaption>Discrete.drawio</figcaption>
+</figure>
+</div>
+<section id="iv.i-sign-function" class="level2">
+<h2 class="anchored" data-anchor-id="iv.i-sign-function">IV.I Sign Function</h2>
+<p>In many function constructions it would be of great value to have conditional logic, however, this is not immediate or straightforward in the CKKS setup. Though, we see an opportunity to do things in a “branchless” way via algebra. As a proof-of-concept (and a very important tool), we show computational approaches for a <strong>sign</strong> function that gives one of two possible values. Later we will use this function to build more powerful functions.</p>
+<ol type="1">
+<li>We think of a “basic” sign function as a function <span class="math inline">\(\mathtt{sign}(x)\)</span> assigning a value of <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> depending on whether the input is respectively negative or positive.
+<ul>
+<li>It is useful to think of the output value <span class="math inline">\(1/2\)</span> as a “necessary” evil for when the input is extremely close to <span class="math inline">\(0\)</span> (this will basically be a necessity since our computations are inherently continuous). In practice, we will try to avoid those values as purposefully appearing in our computations.</li>
+</ul></li>
+<li>We can generalize into any Heaviside-type function<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> that takes two possible values via the following: <span class="math display">\[\mathtt{sign}_{a,b,c}(x) = a + (b-a)\mathtt{sign}(x-c),\]</span> which gives values <span class="math inline">\(a\)</span> for <span class="math inline">\(x &lt; c\)</span>, <span class="math inline">\(b\)</span> for <span class="math inline">\(x &gt; c\)</span>, and <span class="math inline">\((a+b)/2\)</span> for <span class="math inline">\(x = c\)</span> (though it is advised to avoid being dependent on the “true equality” case). We can then think of the “original” <span class="math inline">\(\mathtt{sign(x)}\)</span> as <span class="math inline">\(\mathtt{sign_{0,1,0}(x)}\)</span>.</li>
+</ol>
+<p>To approximate this naturally discontinuous function, we present two smooth avenues in the sigmoid family:</p>
+<section id="logistic" class="level3">
+<h3 class="anchored" data-anchor-id="logistic">Logistic</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/ryPBmCDFbe.png" class="img-fluid figure-img"></p>
+<figcaption>sign_approx</figcaption>
+</figure>
+</div>
+<p>A <strong>sigmoid function</strong><a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> is an S-shaped curve that smoothly transitions between two values, essentially converging to the discontinuous sign function as its steepness increases, making such functions natural choices for our approximation. A common instance of a sigmoid function is the <strong>logistic function</strong>, which has standard definition <span class="math inline">\(\sigma(x) = \frac{1}{1+e^{-x}}\)</span>. We begin our approximation of logistic using the series expansion for exponentiation: <span class="math display">\[e^x\approx1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots\]</span></p>
+<p><span class="math display">\[1+e^{-x}\approx2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}+\dots\]</span></p>
+<p><span class="math display">\[\sigma(x)=\frac{1}{1+e^{-x}}\approx\frac{1}{2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}}\]</span></p>
+<p><span class="math display">\[\sigma(x)\approx\frac{1}{2} \cdot \frac{1}{1 - \left(-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12} + \frac{x^4}{48} - \frac{x^5}{240} + \frac{x^6}{1440} - \frac{x^7}{10080} + \frac{x^8}{80640} - \frac{x^9}{725760}\right)}\]</span></p>
+<p>Denoting the entire term inside the parentheses as <span class="math inline">\(r\)</span>, i.e.&nbsp;<span class="math inline">\(r=-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12}+\dots\)</span> , we can then use the geometric series identity <span class="math inline">\(\frac{1}{1+r}=1+r+r^2+\dots\)</span> ; computing powers of <span class="math inline">\(r\)</span> then canceling/ simplifying, we arrive at</p>
+<p><span class="math display">\[\sigma(x)\approx\frac{725760+362880*x-30240*x^3+3024*x^5-306*x^7+31*x^9}{1451520}-\cdots\]</span></p>
+<p>which reduces to an ordinary polynomial multiplied with an integer reciprocal, legal under the CKKS moves! However… 1. in theory, this series will only converge within <span class="math inline">\(0&lt;x&lt;\pi\)</span>. This is for two separate reasons, one being that the “<span class="math inline">\(r\)</span>” term of the geometric series is <span class="math inline">\(e^{-x}\)</span>, which is greater than <span class="math inline">\(1\)</span> for <span class="math inline">\(x&lt;0\)</span> and will diverge. The other reason is that the nearest singularity to <span class="math inline">\(0\)</span> is at <span class="math inline">\(\pi\)</span>. 2. in practice, the approximation error is very large, and the function will quickly diverge.</p>
+<p><img src="https://hackmd.io/_uploads/Hy0MLEqbfe.png" class="img-fluid" alt="image"> <strong>Figure</strong>: different graphs of the function <span class="math inline">\(\sigma(kx)\)</span> with steepness parameter <span class="math inline">\(k\)</span>.</p>
+</section>
+<section id="hyperbolic-tangent" class="level3">
+<h3 class="anchored" data-anchor-id="hyperbolic-tangent">Hyperbolic Tangent</h3>
+<p>Also belonging to the sigmoid family is the hyperbolic tangent function<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>: <span class="math display">\[\tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}=\frac{1-e^{-2x}}{1+e^{-2x}}\]</span></p>
+<p>where <span class="math inline">\(e^{-2x}\approx1-2x+\frac{4x^2}{2!}-\frac{8x^3}{3!}+\cdots\)</span> ,</p>
+<p><span class="math display">\[\tanh(x)\approx\frac{2x-\frac{4x^2}{2!}+\frac{8x^3}{3!}-\cdots}{2-2x+\frac{4x^2}{2!}-\frac{8x^3}{3!}+\cdots}=\frac{2x}{2}*\frac{1-\frac{2x}{2!}+\frac{4x^2}{3!}-\cdots}{1-x+\frac{2x^2}{2!}-\frac{4x^3}{3!}+\cdots}\]</span></p>
+<p>Using the same trick as we did with the logistic expansion, we build a geometric series:</p>
+<p><span class="math display">\[r = \Big(-x+\frac{2x^2}{2!}-\frac{4x^2}{3!}+\cdots\Big)\]</span></p>
+<p><span class="math display">\[\frac{1}{1+r}=\frac{1}{1-(-r)}=1-r+r^2-r^3+\cdots\]</span></p>
+<p>After plugging back in, <span class="math display">\[\tanh(x)\approx x*\Big(1-\frac{2x}{2!}+\frac{4x^3}{3!}-\cdots\Big)*(1-r+r^2-r^3+\cdots)\]</span> Computing powers of <span class="math inline">\(r\)</span>, simplifying terms then finding the least common multiple for up to power <span class="math inline">\(9\)</span>, <span class="math display">\[\tanh(x)\approx \frac{2835x-945x^3+378x^5-153x^7+62x^9}{2835}-\cdots\]</span></p>
+<p>This series has a radius of convergence <span class="math inline">\(\pi/2\)</span>, so it will tolerate less distance between points than the logistic (but possibly require more precomputation).</p>
+<p><img src="https://hackmd.io/_uploads/Skm4LV9Zfe.png" class="img-fluid" alt="tanh_by_k_steepness"> <strong>Figure</strong>: different graphs of the function <span class="math inline">\(\tanh(kx)\)</span> with steepness parameter <span class="math inline">\(k\)</span>.</p>
+</section>
+<section id="sign-applicability" class="level3">
+<h3 class="anchored" data-anchor-id="sign-applicability">Sign Applicability</h3>
+<p>Here we provide the windows in which our (naive) implementation of sign (via logistic function approximation) has an error of <span class="math inline">\(10\%\)</span> or less. Error is calculated based off of a target of <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>. The target is set to <span class="math inline">\(0\)</span> for an input <span class="math inline">\(x \lt \frac{1}{2}\)</span> and <span class="math inline">\(1\)</span> for input <span class="math inline">\(x \gt \frac{1}{2}\)</span>. The error is the absolute difference between the target and approximate values expressed as a percentage.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><code>k</code></th>
+<th style="text-align: center;">Left band</th>
+<th style="text-align: center;">Right band</th>
+<th style="text-align: center;">Window width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: center;">[-2.543, -2.210]</td>
+<td style="text-align: center;">[2.210, 2.543]</td>
+<td style="text-align: center;">0.333</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: center;">[-1.272, -1.105]</td>
+<td style="text-align: center;">[1.105, 1.272]</td>
+<td style="text-align: center;">0.167</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: center;">[-0.636, -0.553]</td>
+<td style="text-align: center;">[0.553, 0.636]</td>
+<td style="text-align: center;">0.083</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: center;">[-0.318, -0.277]</td>
+<td style="text-align: center;">[0.277, 0.318]</td>
+<td style="text-align: center;">0.041</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">16</td>
+<td style="text-align: center;">[-0.159, -0.139]</td>
+<td style="text-align: center;">[0.139, 0.159]</td>
+<td style="text-align: center;">0.020</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">32</td>
+<td style="text-align: center;">[-0.079, -0.070]</td>
+<td style="text-align: center;">[0.070, 0.079]</td>
+<td style="text-align: center;">0.009</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">64</td>
+<td style="text-align: center;">[-0.040, -0.035]</td>
+<td style="text-align: center;">[0.035, 0.040]</td>
+<td style="text-align: center;">0.005</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/rJfsCM9ZMg.png" class="img-fluid figure-img"></p>
+<figcaption>sigmoid_accuracy_ring</figcaption>
+</figure>
+</div>
+<p>Now we present the analogous accuracy windows for hyperbolic tangent as previously described for the logistic function. Error is calculated in the same manner.</p>
+<p>It is worth noting that these accuracy windows are about half the size compared to those of the logistic function. This is due to the radii of convergence being <span class="math inline">\(\pi/2\)</span> and <span class="math inline">\(\pi\)</span> for hyperbolic tangent and logistic respectively. Hence, hyperbolic tangent is naturally steeper than logistic and approximates the real value faster on a similar interval.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><code>k</code></th>
+<th style="text-align: center;">Left band</th>
+<th style="text-align: center;">Right band</th>
+<th style="text-align: center;">Window width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: center;">[-1.272, -1.105]</td>
+<td style="text-align: center;">[1.105, 1.272]</td>
+<td style="text-align: center;">0.167</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: center;">[-0.636, -0.553]</td>
+<td style="text-align: center;">[0.553, 0.636]</td>
+<td style="text-align: center;">0.083</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: center;">[-0.318, -0.277]</td>
+<td style="text-align: center;">[0.277, 0.318]</td>
+<td style="text-align: center;">0.041</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: center;">[-0.159, -0.139]</td>
+<td style="text-align: center;">[0.139, 0.159]</td>
+<td style="text-align: center;">0.020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">16</td>
+<td style="text-align: center;">[-0.079, -0.070]</td>
+<td style="text-align: center;">[0.070, 0.079]</td>
+<td style="text-align: center;">0.009</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">32</td>
+<td style="text-align: center;">[-0.040, -0.035]</td>
+<td style="text-align: center;">[0.035, 0.040]</td>
+<td style="text-align: center;">0.005</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">64</td>
+<td style="text-align: center;">[-0.020, -0.018]</td>
+<td style="text-align: center;">[0.018, 0.020]</td>
+<td style="text-align: center;">0.002</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/SkjYRz9WGe.png" class="img-fluid figure-img"></p>
+<figcaption>tanh_accuracy_ring</figcaption>
+</figure>
+</div>
+<div class="info">
+<p><strong>Remark</strong>: we can see a higher <span class="math inline">\(k\)</span> compresses the interval of high accuracy towards 0. We note that given the right compression method for a dataset we could approximate a reasonable sign value for the whole dataset. Requiring a user input of known maximum and minimum value of the input (beyond <span class="math inline">\((-\infty,\infty)\)</span> ) would support this scaling. <a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a></p>
+</div>
+<p>Within our current experimentation we found the window of high accuracy convergence scaled in proportion to the window of convergence, roughly <span class="math inline">\(15\%\)</span> of the observed data.</p>
+</section>
+<section id="inequality-and-equality" class="level3">
+<h3 class="anchored" data-anchor-id="inequality-and-equality">Inequality and Equality</h3>
+<p>Inequality and sign functions are essentially equivalent. If we have an useful sign function, we can effectively do an “inequality” function as follows: <span class="math display">\[(x &gt; a) := \mathtt{sign}_{0, 1, a} (x),\]</span> which returns <span class="math inline">\(1\)</span> for each element <span class="math inline">\(x_i\)</span> of the vector <span class="math inline">\(x\)</span> if <span class="math inline">\(x_i &gt; a\)</span> or <span class="math inline">\(0\)</span> otherwise. Of course, problems may happen very close to <span class="math inline">\(a\)</span>, so one must be careful while using it in the construction of other operations.</p>
+<p>With this, we can do an “equality” function. Because we are doing floating point arithmetic, it is inadvisable to do a “true equality” check, so what we mean when we say “<span class="math inline">\(x\)</span> is equal to <span class="math inline">\(a\)</span>” means that their difference is small (up to an error <span class="math inline">\(\epsilon\)</span>). This can be done via <span class="math display">\[(x == a) := (x &gt; a-\epsilon) * (x &lt; a+\epsilon),\]</span> which gives <span class="math inline">\(1\)</span> exactly when both conditions are met; that is, <span class="math inline">\(x\)</span> is within <span class="math inline">\(\epsilon\)</span> of <span class="math inline">\(a\)</span> and <span class="math inline">\(0\)</span> otherwise. As an example, <span class="math display">\[(x_i == 0) := (x_i\ge-0.01)*(x_i\le0.01)\]</span> obtains a <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vector, which has <span class="math inline">\(1\)</span> in place <span class="math inline">\(i\)</span> if and only if <span class="math inline">\(x_i\)</span> is close (within <span class="math inline">\(0.01\)</span>) to <span class="math inline">\(0\)</span>.</p>
+</section>
+</section>
+<section id="iv.2-sorting" class="level2">
+<h2 class="anchored" data-anchor-id="iv.2-sorting">IV.2 Sorting</h2>
+<p>Many of the “classical” sorting algorithms (quicksort<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>, etc.) are going to have issues in our setup due to their reliance on logical branching, dynamic memory allocation, etc.</p>
+<section id="bubble-sort" class="level3">
+<h3 class="anchored" data-anchor-id="bubble-sort">Bubble Sort</h3>
+<p>As a proof-of-concept, we choose to use bubble sort as a starting point for sorting. The <strong>bubble sort</strong><a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a> function passes through a given vector, performing <span class="math inline">\(O(n^2)\)</span> repeated pairwise element comparisons to finish the sort. It has the benefit of having local operations, mostly comparisons and swaps, without more advanced logic such as dynamic memory allocation (that e.g.&nbsp;quicksort would need), so it is a good candidate for FHE prototyping despite being a well-known “slow” sorting algorithm.</p>
+<p>Given an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(x\)</span>, the following move will return an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(y\)</span> that is equal to <span class="math inline">\(x\)</span> in every coordinate except possibly <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>. We call one pass of this function over a vector as a “bubble,” <span class="math inline">\(\mathtt{bub_{i,j}(x)}\)</span>:</p>
+<blockquote class="blockquote">
+<p>Compare <span class="math inline">\(x_i, x_j\)</span> (typically, <span class="math inline">\(i+1 = j\)</span>). (1) If <span class="math inline">\(x_i &lt; x_j\)</span>, then <span class="math inline">\(y = x\)</span> with no swapping performed. (2) If <span class="math inline">\(x_i &gt; x_j\)</span>, then <span class="math inline">\(y\)</span> has <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> swapped.</p>
+</blockquote>
+<p>To perform the pairwise comparisons in a non-logical-branching FHE setting, we can use a polynomial-approximated sign function. Recall that we can implement a sign function <span class="math inline">\(\mathtt{sign}(x)\)</span> that returns <span class="math inline">\(1\)</span> if <span class="math inline">\(x \geq 0\)</span> and <span class="math inline">\(0\)</span> otherwise. As a proof of concept, define <span class="math inline">\(s=\mathtt{sign}(x_i-x_j)\)</span> and consider: <span class="math display">\[
+\begin{aligned}
+y_i &amp;= s \cdot x_j + (1-s) \cdot x_i \\
+y_j &amp;= s \cdot x_i + (1-s) \cdot x_j.
+\end{aligned} \]</span> We can see that this would give <span class="math inline">\(y_i\)</span> the smaller value between <span class="math inline">\(\{x_i, x_j\}\)</span> and <span class="math inline">\(y_j\)</span> the larger value.</p>
+<p>It’s a bit tricky to actually implement this with vector-wide operations without being wasteful. Here is one draft: 1. Construct constant <span class="math inline">\(1\)</span>-hot vectors <span class="math inline">\(c_1 = (1, \ldots, 0, 0, 0)\)</span>, <span class="math inline">\(c_2 = (0, 1, 0, \ldots)\)</span>, … Let <span class="math inline">\(x = (x_1, \ldots, x_{n/2})\)</span>. 2. For a given <span class="math inline">\(i, j\)</span>, compute <span class="math display">\[m' = (c_i - c_j) * (x_i, x_i, \ldots, x_i) + (c_j - c_i) * (x_j, x_j, \ldots, x_j).\]</span> This will have a <span class="math inline">\(0\)</span> everywhere, except <span class="math inline">\(m'_i = x_i - x_j\)</span> and <span class="math inline">\(m'_j = x_j - x_i.\)</span> 3. Now multiply <span class="math inline">\(m = (c_i - c_j) * m'\)</span>. This will also have a <span class="math inline">\(0\)</span> everywhere, except <span class="math inline">\(m_i = m_j = x_i - x_j\)</span>. 4. Let <span class="math inline">\(s = -\mathtt{sign}(-m)*m'\)</span>. Here, - <span class="math inline">\(s_i\)</span> will be <span class="math inline">\(x_j - x_i\)</span> if <span class="math inline">\(x_j &gt; x_i\)</span>, 0 otherwise. - <span class="math inline">\(s_j\)</span> will be <span class="math inline">\(x_i - x_j\)</span> if <span class="math inline">\(x_j &gt; x_i\)</span>, 0 otherwise. - all other elements are 0. 5. Compute <span class="math inline">\(y = x + s\)</span>. If <span class="math inline">\(x_j &lt; x_i\)</span> then <span class="math inline">\(s_k = 0\)</span> everywhere, so <span class="math inline">\(y = x\)</span>. If <span class="math inline">\(x_j &gt; x_i\)</span> then <span class="math inline">\(y_i = x_i + (x_j - x_i) = x_j\)</span>, and <span class="math inline">\(y_j = x_j + (x_i-x_j) = x_i\)</span>. In other words, the result flips <span class="math inline">\(x_j\)</span> and <span class="math inline">\(x_i\)</span> if <span class="math inline">\(x_j &gt; x_i\)</span>, meaning the larger element goes to <span class="math inline">\(x_i\)</span> and the lower element goes to <span class="math inline">\(x_j\)</span>.</p>
+<p>We can then define <span class="math inline">\(\mathtt{bub_{i,j}}(x)\)</span> to be the operation that changes <span class="math inline">\(x\)</span> to the resulting <span class="math inline">\(y\)</span>. Note this is fully FHE legal and involves no branching. 1. Perform <span class="math inline">\(\mathtt{bub_{{n/2-1},n/2}}(x)\)</span>, … <span class="math inline">\(\mathtt{bub_{1,2}}(x)\)</span>. These <span class="math inline">\(n-1\)</span> moves ensure the maximum element is now at <span class="math inline">\(x_1\)</span>. 2. Perform <span class="math inline">\(\mathtt{bub_{{n/2-1},n/2}}(x)\)</span>, … <span class="math inline">\(\mathtt{bub_{2,3}}(x)\)</span>. These <span class="math inline">\(n-2\)</span> moves ensure the second-largest element is now at <span class="math inline">\(x_2\)</span>. 3. …</p>
+<p><span class="math inline">\(O(n^2)\)</span> total comparisons (with <span class="math inline">\(O(n)\)</span> per pass) will entirely sort <span class="math inline">\(x\)</span>. However, this gets fairly costly and noisy due to the multiplications in the approximated comparisons.</p>
+</section>
+<section id="improvements-to-sorting" class="level3">
+<h3 class="anchored" data-anchor-id="improvements-to-sorting">Improvements to Sorting</h3>
+<p>We have found various ideas for improving the bubble sort algorithm. We sketch out the space of ideas and their pros and cons here; more detailed dives would make for good later explorations.</p>
+<p>First, instead of sorting one bubble at a time, like in the max case, we can perform several independent bubbles at the same time. A single bubble <span class="math inline">\(\mathtt{bub_{i,j}}(x)\)</span> only changes two coordinates, <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>, so two bubbles can be computed in parallel as long as they do not overlap. For example, <span class="math display">\[
+\mathtt{bub_{1,2}}(x)
+\quad \text{and} \quad
+\mathtt{bub_{3,4}}(x)
+\]</span> are independent, since the first only uses coordinates <span class="math inline">\(1,2\)</span> and the second only uses coordinates <span class="math inline">\(3,4\)</span>.</p>
+<p>If the active vector has length <span class="math inline">\(N = n/2\)</span>, then one parallel layer can contain up to <span class="math inline">\(n/4\)</span> independent bubbles. This leads naturally to <strong>odd-even sort</strong> <a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>, which alternates between two adjacent transposition layers.</p>
+<p>Perform the odd layer: <span class="math display">\[
+\mathtt{bub_{1,2}}(x),\ \mathtt{bub_{3,4}}(x),\ \mathtt{bub_{5,6}}(x),\ldots
+\]</span> Perform the even layer: <span class="math display">\[
+\mathtt{bub_{2,3}}(x),\ \mathtt{bub_{4,5}}(x),\ \mathtt{bub_{6,7}}(x),\ldots
+\]</span> Repeat these alternating odd and even layers for <span class="math inline">\(O(N)\)</span> rounds.</p>
+<p>Each layer contains only disjoint pairs, so all bubbles inside that layer can be evaluated in parallel using vector-wide FHE operations. The total number of pairwise comparisons is still <span class="math inline">\(O(N^2)\)</span>, but the depth is only <span class="math inline">\(O(N)\)</span>, which is a better approximation of cost in this setting because at each level many swaps are performed at once.</p>
+<ol type="1">
+<li>To make this more effcicient we can upgrade to the <strong>Batcher odd–even mergesort</strong>,<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> which has <span class="math inline">\(O(\log^2(n))\)</span> depth.</li>
+<li>A similar type of improvement would be the very parallel <strong>bitonic sort</strong>.<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a> Similar to odd-even mergesort, it has a depth of <span class="math inline">\(O(\log^2(n))\)</span>, but is more parallel in struture and thus may be a better choice long-term.</li>
+</ol>
+<p>To summarize, it is very relevant to consider <strong>sorting networks</strong><a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>, of which these are special cases. Sorting networks are sequences of comparisons which are preordained for each <span class="math inline">\(n\)</span> that have no logical branching, which is exactly our situation.</p>
+</section>
+</section>
+<section id="iv.3-max-function" class="level2">
+<h2 class="anchored" data-anchor-id="iv.3-max-function">IV.3 Max Function</h2>
+<p>As a consequence of (any) sorting we get the max function for free, since a single <span class="math inline">\(n-1\)</span> bubble pass has allowed the largest element to “float” to the rightmost element. A reversed setup reveals the minimum value if desired. An <span class="math inline">\(n\)</span>-length mask vector <span class="math inline">\((0, 0, \dots, 0, 1)\)</span> can be used to isolate the maximum if needed. A dot product or intravector sum can then be used to collapse the resulting vector into the maximum element as a single scalar.</p>
+<p>However, if we <em>just</em> want the max function, we can do quite a bit better and get it in <span class="math inline">\(O(\log(n))\)</span> time. The idea is to separate the vector into <span class="math inline">\(n/4\)</span> bubbles, and on each turn act in a way that moves the max into the “better half” of the remaining “contenders for the max”, like a tournament. This is similar to using our bubbles <span class="math inline">\((i,j)\)</span> encoded by <span class="math inline">\(c_i\)</span> and <span class="math inline">\(c_j\)</span>, but instead of using <span class="math inline">\(1\)</span>-hot vectors, we will generalize <span class="math inline">\(c_*\)</span> to be <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vectors to do more comparisons at the same time.</p>
+<p>Let <span class="math inline">\(x = (x_1, \ldots, x_{n/2})\)</span>. We iterate on <span class="math inline">\(i\)</span>, starting with <span class="math inline">\(i = 0\)</span>. 1. At the start of iteration <span class="math inline">\(i\)</span>, construct constant binary vectors <span class="math inline">\(c_L\)</span> and <span class="math inline">\(c_R\)</span> which have a 1 at every index <span class="math inline">\(k\)</span> that satisfies <span class="math inline">\(k = 2^{i+1} - 2 \pmod {2^{k+1}}\)</span> for <span class="math inline">\(c_L\)</span>, and <span class="math inline">\(k = 2^{i+1} -1 \pmod {2^{i+1}}\)</span> for <span class="math inline">\(c_R\)</span>, - On the first iteration <span class="math inline">\(i=0\)</span>, we have <span class="math inline">\(c_L = (1,0,1,0,\cdots)\)</span> and <span class="math inline">\(c_R = (0,1,0,1,\cdots)\)</span>. - On subsequent iterations the <span class="math inline">\(1\)</span>s are separated by double the distance per iteration. For example, for <span class="math inline">\(i = 2\)</span>, the period will be <span class="math inline">\(8\)</span>: <span class="math inline">\(c_L = (1,0,0,0,0,0,0,0,1,\cdots)\)</span>.<br>
+- The <span class="math inline">\(c_L\)</span> and <span class="math inline">\(c_R\)</span> will match up pairs of numbers, acting as a kind of simultaneous bubble. 5. We now match up the bubbles by splitting the relevant entries into two vectors holding the two halves of the bubbles, and cycling the left half so it matches the right: - Construct vectors <span class="math inline">\(L' = x * c_L\)</span> and <span class="math inline">\(R = x * c_R\)</span>. - On iteration <span class="math inline">\(i\)</span>, let <span class="math inline">\(L := \mathtt{cyc}_{2^{i+1} - 1}(L')\)</span>. - Compute <span class="math inline">\(c = L - R\)</span>. This will give a vector populated by zeros, and <span class="math inline">\(L_i - R_i\)</span> in populated index positions <span class="math inline">\(i\)</span>. - In <span class="math inline">\(c\)</span>, any positive values in c represent index positions where the <span class="math inline">\(L\)</span> value is larger, and vice-versa for negative values and <span class="math inline">\(R\)</span>. 9. We now create a vector with only the “winners” in their respective positions. - Compute <span class="math inline">\(e = L * \mathtt{sign}{(c)}\)</span>. This contains only <span class="math inline">\(L\)</span> values that were greater in their respective bubble comparisons. - Similarly, computing <span class="math inline">\(f = b * (0 - \mathtt{sign}{(c))}\)</span> will return a vector of only <span class="math inline">\(0\)</span>’s and <span class="math inline">\(R\)</span> values that were greater in their respective comparisons. - <span class="math inline">\(x' := e + f\)</span> gives a vector with only the winners from each respective bubble. 13. Treating <span class="math inline">\(x'\)</span> as the new <span class="math inline">\(x\)</span>, after <span class="math inline">\(\log_2(n/2)\)</span> iterations <span class="math inline">\(x\)</span> will only have the max of the original <span class="math inline">\(x\)</span>, in the rightmost position. - We note that after iteration <span class="math inline">\(i-1\)</span> and before iteration <span class="math inline">\(i\)</span>, the new <span class="math inline">\(x\)</span> will have nonzero entries only in places (indexed starting at <span class="math inline">\(0\)</span>) whose binary expansions have <span class="math inline">\(i\)</span> <span class="math inline">\(0\)</span>s at the right. For example, after the first iteration only the even indices will have nonzero entries; the other “loser” entries have been eliminated.</p>
+<div class="info">
+<p><strong>Remark</strong>: an immediate “improvement” is that we do not actually need to make these different <span class="math inline">\(C_L\)</span> and <span class="math inline">\(C_R\)</span>; 1. We can keep <span class="math inline">\(c_L = (1,0,1,0,\cdots)\)</span> and <span class="math inline">\(c_R = (0,1,0,1,\cdots)\)</span> the whole time; 2. If we do this, then we will still get the same comparisons that lead us to the max in this algorithm, however, the other <span class="math inline">\(1\)</span>’s will be doing something with the “eliminated” entries, which we can ignore.</p>
+<p>Thus, overall we can be more effcicient by doing less, though we kept our exposition since we think it does a better job of focusing on the key comparisons.</p>
+</div>
+</section>
+</section>
+<section id="v.-difference-matrix-method" class="level1">
+<h1>V. Difference Matrix Method</h1>
+<p>A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don’t have. We introduce what we call the <strong>difference matrix method</strong> which will allow us to implement both statistics in a similar way (though still requiring tools from the Discrete Math section, especially Equality and Max).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/rkgUFSP-ze.png" class="img-fluid figure-img"></p>
+<figcaption>median-mode.drawio (1)</figcaption>
+</figure>
+</div>
+<p>The method is as follows:</p>
+<p>Given a vector <span class="math inline">\(z = (z_1, \ldots, z_{N/2})\)</span>, we construct an <span class="math inline">\((N/2) \times (N/2)\)</span> matrix <span class="math inline">\(D\)</span> where <span class="math inline">\(D_{i,j} = z_i - z_j\)</span>. We will call our matrix the <strong>difference matrix.</strong></p>
+<div class="info">
+<p><strong>Remark</strong>: our method is general enough that we should be able to compute <span class="math inline">\(D\)</span> where <span class="math inline">\(D_{ij} = f(z_i, z_j)\)</span> for some function <span class="math inline">\(f\)</span>. We mention this but do not use the more general method in this work.</p>
+</div>
+<p>Here is how we would generate the difference matrix: 1. Assuming we are in the inter-vectors case, we can assume the <span class="math inline">\(x_i\)</span> are given as <span class="math inline">\(u^{(i)} = (0, \ldots, 0, x_i, 0, \ldots, 0)\)</span>. 2. We can “broadcast” the <span class="math inline">\(x_i\)</span> into every entry by computing <span class="math display">\[v^{(i)} := \mathtt{sum}(u^{(i)}) = (x_i, \ldots, x_i).\]</span> 3. Now we can separately compute: - <span class="math inline">\(d_{i}=x-v^{(i)}=(x_1-x_i,x_2-x_i,\dots,x_{N/2}-x_i)\)</span> for all <span class="math inline">\(i\)</span>. - If we wanted the transpose instead, we can compute <span class="math inline">\(d'_{i}=v^{(i)}-x=(x_i-x_1, x_i-x_2,\dots, x_i-x_{N/2})\)</span>.</p>
+<ol start="4" type="1">
+<li>We can think of the matrix as the combination of these vectors, though we might also want to isolate the use of our <span class="math inline">\(N/2\)</span> “difference vectors” of the form <span class="math display">\[d_{i} = (d_{i,1}, \ldots, d_{i,N/2}).\]</span></li>
+</ol>
+<div class="info">
+<p><strong>Remark</strong>: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following: 1. given an input vector <span class="math inline">\((x_1, \ldots, x_{N/2})\)</span>, 2. define indicator vectors <span class="math inline">\(c_i = (0,0,\dots,1_i,0\dots,0)\)</span>. 3. Compute <span class="math inline">\(x_i = \sum_{i=1}^{N/2}(c_i*x)\)</span>; this will isolate the <span class="math inline">\(x\)</span>’s vector value at index <span class="math inline">\(i\)</span>, 4. …and then the rest is the same as before.</p>
+</div>
+<section id="v.1-mode" class="level2">
+<h2 class="anchored" data-anchor-id="v.1-mode">V.1 Mode</h2>
+<p>Obtaining the mode should be a bit easier for discrete values (it would be similar to bucketing), so we approach the continuous case, given a vector <span class="math inline">\(z\)</span> with assumed real values for simplicity.</p>
+<p>Here we compute the difference matrix for <span class="math inline">\(x_i\)</span>, which results in a matrix (stored as row vectors).</p>
+<span class="math display">\[\begin{array}{c|ccccc}
+  &amp; x_1 &amp; x_2 &amp; x_3 &amp; \cdots &amp; x_{N/2} \\
+\hline
+x_1 &amp; 0 &amp; \delta_{1,2} &amp; \delta_{1,3} &amp; \cdots &amp; \delta_{1,N/2} \\
+x_2 &amp; \delta_{2,1} &amp; 0 &amp; \delta_{2,3} &amp; \cdots &amp; \delta_{2,N/2} \\
+x_3 &amp; \delta_{3,1} &amp; \delta_{3,2} &amp; 0 &amp; \cdots &amp; \delta_{3,N/2} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+x_{N/2} &amp; \delta_{N/2,1} &amp; \delta_{N/2,2} &amp; \delta_{N/2,3} &amp; \cdots &amp; 0
+\end{array}\]</span>
+<p>Note: Some of the non-diagonal elelents <span class="math inline">\(\delta_{i,j}\)</span> can also be <span class="math inline">\(0\)</span>. For instance, we expect the most nondiagonal zeros in the row of the mode <span class="math inline">\(x_i\)</span>.</p>
+<p>Now, the idea here is to check every <span class="math inline">\(x_i\)</span> and then look for the one with the most number of (approximate) zeros. This will correspond to the mode. Specifically, 1. for every <span class="math inline">\(x_i\)</span>, we can compute <span class="math display">\[y_i := (x_i == 1)\]</span> on it (element-wise) to get a <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vector <span class="math inline">\(y_i\)</span> that has a number of <span class="math inline">\(1\)</span>s equal to the terms approximately equal to <span class="math inline">\(z_i\)</span>. 2. Now we compute <span class="math display">\[s_i = \mathtt{sum}(y_i)\]</span> to get these counts (see II.1 for how to compute sums). 3. Computing a max over this would get the mode.</p>
+</section>
+<section id="v.2-median" class="level2">
+<h2 class="anchored" data-anchor-id="v.2-median">V.2 Median</h2>
+We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and <span class="math inline">\(N/2\)</span> is odd. 1. Create a matrix <span class="math inline">\(D\)</span> where <span class="math display">\[D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).\]</span> We can just compute the same matrix and then run the sign function over every row. This looks like:
+<span class="math display">\[\begin{array}{c|ccccc}
+  &amp; x_1 &amp; x_2 &amp; x_3 &amp; \cdots &amp; x_{N/2} \\
+\hline
+x_1 &amp; 0 &amp; -1 &amp; -1 &amp; \cdots &amp; -1 \\
+x_2 &amp; 1 &amp; 0 &amp; -1 &amp; \cdots &amp; -1 \\
+x_3 &amp; 1 &amp; 1 &amp; 0 &amp; \cdots &amp; -1 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+x_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
+\end{array}\]</span>
+<p>though unlike <span class="math inline">\(D\)</span> from earlier, <span class="math inline">\(\delta_{i,j} \in \{-1, 1\}\)</span>. We assume the diagonals are assigned <span class="math inline">\(0\)</span> here.<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a></p>
+<ol start="2" type="1">
+<li>Now, if <span class="math inline">\(z_i\)</span> were the median, then it would have an equal number of <span class="math inline">\(-1\)</span>s and <span class="math inline">\(1\)</span>s in its row, which is equivalent with having row sum <span class="math inline">\(0\)</span> (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).</li>
+<li>Thus, we can get a vector of the sums of the <span class="math inline">\(x_i\)</span> and then compute equality with zero: <span class="math display">\[m := ((x_1 + x_2 + \cdots + x_{N/2}) == 0)\]</span> to obtain a <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vector that points out which <em>index</em> the median falls in.</li>
+<li>If we are interested in the <em>value</em> of the median instead of the <em>index,</em> then we can just multiply <span class="math inline">\(\mathtt{sum}(m * z)\)</span>. Note that this sum only works if exactly one element is the median: if, say, two elements are the median, then we would get twice the median if we sum.</li>
+</ol>
+<div class="info">
+<p><strong>Remarks</strong>: 1. If we want to sort for any reason, then getting the median from the sort is immediate and we would not need to add extra computation. 2. Constructing quartiles is similar to the median. If we use the “sum sign functions” method, then getting a 75% quartile is just finding something with row sum <span class="math inline">\(N/2\)</span> instead of <span class="math inline">\(0\)</span>.</p>
+</div>
+<p>Pushing onward, we now extend from univariate summaries to measures of dependence, such as correlation and related functions, which capture relationships between variables.</p>
+</section>
+</section>
+<section id="vi.-correlation-and-related-functions" class="level1">
+<h1>VI. Correlation and Related Functions</h1>
+<p>This section constructs the correlation and regression coefficients, then extends to simple and multiple linear regression.</p>
+<section id="vi.1-two-coefficients" class="level2">
+<h2 class="anchored" data-anchor-id="vi.1-two-coefficients">VI.1 Two Coefficients</h2>
+<p>Given vectors <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, there are <span class="math inline">\(2\)</span> closely related quantities: 1. The <strong>correlation coefficient</strong><a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a>, a measure of normalized linear association, is <span class="math display">\[ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.\]</span> Often people are instead interested in the square <span class="math inline">\(r^2\)</span>, which is called the <strong>coefficient of determination</strong><a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a>. 3. The <strong>regression coefficient</strong><a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a>, a measure of linear rate of change, is <span class="math display">\[\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_i-\bar{x})^2}\]</span></p>
+<p>These can be approached with the same general strategy: 1. compute the means <span class="math inline">\(\bar{x}\)</span> and <span class="math inline">\(\bar{y}\)</span> and subtract them off from the original vectors; 2. compute the numerators and denominators separately; 3. divide (which might be costly).</p>
+<p>With some more detail:</p>
+<p>Given <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, we can compute vectors that contains their means: <span class="math inline">\(x_m=(\bar{x}, \bar{x}, \cdots)\)</span> and <span class="math inline">\(y_m(\bar{y},\bar{y}, \cdots)\)</span>. Then we can subtract to obtain <span class="math inline">\(\begin{align}x'&amp;=(x_1,x_2,\dots,x_{N/2})+(\bar{x})*(-1,-1,\dots,-1) \\
+&amp;=(x_1-\bar{x}, x_2-\bar{x},\dots,x_{N/2}-\bar{x})\end{align}\)</span> and similarly <span class="math inline">\(\begin{align} y'=(y_1-\bar{y}, y_2-\bar{y},\dots,y_{N/2}-\bar{y})\end{align}\)</span></p>
+<p>Our task for <span class="math inline">\(r\)</span> then (the work for the regression coefficient is similar) becomes computing <span class="math display">\[ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\sum_{i=1}^{N/2}(y'_i)^2}} \]</span></p>
+<ol type="1">
+<li>The numerator is the intra-vector sum of <span class="math inline">\((x')*(y')\)</span>, which we know how to compute.</li>
+<li>The denominator is the square of the (scalar) product of two intravector sums of <span class="math inline">\((x')^2\)</span> and <span class="math inline">\((y')^2\)</span>.</li>
+<li>Finally, we need to do a division.</li>
+</ol>
+<div class="info">
+<p><strong>Remark</strong>: as usual (for the correlation coefficient; the regression coefficient is similar), we can avoid the possibly costly division and square roots for <span class="math inline">\(r\)</span> by giving the user the numerator and the <em>square</em> of the denominator separately and have the user compute the coeffcient. If we are willing to do the division but want to save a square root, we can just give them <span class="math inline">\(r^2\)</span> instead.</p>
+</div>
+</section>
+<section id="vi.2-linear-regression" class="level2">
+<h2 class="anchored" data-anchor-id="vi.2-linear-regression">VI.2 Linear Regression</h2>
+<section id="simple-linear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="simple-linear-regression">Simple Linear Regression</h3>
+<p>Linear regression aims to find the line of best fit for a given set of data points. We assume a simple protocol where: 1. take as client input <span class="math inline">\(x=(x_1, \dots, x_n)\)</span> and <span class="math inline">\(y=(y_1, \dots, y_n)\)</span> 2. output weight and intercept scalars (as vectors) <span class="math inline">\(w=(w, w,\dots, w)\)</span> and <span class="math inline">\(b=(b, b,\dots, b)\)</span> such that <span class="math inline">\(y \approx wx + b\)</span> for all <span class="math inline">\((x_i, y_i)\)</span> with <span class="math inline">\(i \in (1, n)\)</span>.</p>
+<p>These are immediate from our work: 1. We can first compute <span class="math inline">\(\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i\)</span> and <span class="math inline">\(\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i\)</span>, which we can do since they are <strong>means</strong>. 2. We can compute the weight scalar <span class="math display">\[ w = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}\]</span> since it is a <strong>regression coefficient</strong>. 3. The result is then easily used to find <span class="math display">\[b = \bar{y} - w \bar{x}\]</span>using a multiplication and a subtraction.</p>
+</section>
+<section id="sketch-of-multiple-linear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="sketch-of-multiple-linear-regression">(Sketch of) Multiple Linear Regression</h3>
+<p><strong>Multiple linear regression</strong> extends the prior one-dimensional context to allow for each data point to take multiple input features/ predictors. A natural protocol is: 1. take as client input <span class="math inline">\(n\)</span> vectors <span class="math inline">\(x^{(1)}, \dots, x^{(n)}\)</span> with each <span class="math inline">\(x^{(i)}=(x^{(i)}_1, \dots, x^{(i)}_m)\)</span> and vector <span class="math inline">\(y=(y_1, \dots, y_n)\)</span>. 2. output a weight vector <span class="math inline">\(w=(w_1, \dots, w_m)\)</span> and <span class="math inline">\(m\)</span>-length scalar intercept <span class="math inline">\(b = (b, b, \dots, b)\)</span> such that <span class="math inline">\(y_i \approx w \cdot x^{(i)} + b\)</span> for all <span class="math inline">\(i \in \{1, \dots, n\}\)</span> where <span class="math inline">\(w \cdot x^{(i)}\)</span> is the <strong>dot product</strong>.</p>
+<p>We sketch an approach to this problem below: 1. our desired weight vector <span class="math inline">\(w\)</span> can be computed with <span class="math display">\[ w^T = (w_1, \dots, w_m)^T = (X^{T}X)^{-1}X^{T}y^T \]</span> where X is an <span class="math inline">\(n \times m\)</span> matrix constructed from the <span class="math inline">\(m\)</span> given <span class="math inline">\(n\)</span>-length “<span class="math inline">\(x\)</span>” vectors and <span class="math inline">\(y\)</span> is as above. 2. We compute <span class="math inline">\(b\)</span> with <span class="math inline">\(b = \bar{y} - w^T \bar{x}\)</span>, where <span class="math inline">\(\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x^{(i)}\)</span> is the mean predictor vector and <span class="math inline">\(\bar{y} = \frac{1}{n}\sum_{i=1}^{n} y_i\)</span> is the mean response.</p>
+<p>The underlying parts, however, need more work. First, this approach requires matrix operations, of which our explorations are very preliminary (see Section VII.1). Most crucially, the central difficulty is that we would need to invert an <span class="math inline">\(m \times m\)</span> matrix; at a quick glance, we can inherently approach this similarly to division using Newton’s method, as <span class="math display">\[(I-M)^{-1} = I + M +M^2 + \cdots,\]</span> but there are still many moving parts under the hood.</p>
+<div class="info">
+<p><strong>Remark</strong>: see <a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> for some independent work on matrix inversion under FHE.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="vii.-other-explorations" class="level1">
+<h1>VII. Other Explorations</h1>
+<p>Here, we collect some miscellaneous functions and extensions of previous sections we found interest in during our explorations.</p>
+<section id="vii.1-dot-products-and-matrix-multiplication" class="level2">
+<h2 class="anchored" data-anchor-id="vii.1-dot-products-and-matrix-multiplication">VII.1 Dot Products and Matrix Multiplication</h2>
+<p>Let us work with square matrices for simplicity. A client gives us <span class="math inline">\(A, B \in \mathbb{C}^{n \times n}\)</span> and we want to compute <span class="math inline">\(C = A \cdot B\)</span>. For simplicity, we assume that the <em>rows</em> of <span class="math inline">\(A\)</span> and the <em>columns</em> of <span class="math inline">\(B\)</span> are given. If we only have rows of <span class="math inline">\(B\)</span>, we can tweak them to obtain columns.</p>
+<p>Recall the dot product of two vectors <span class="math inline">\(x = (x_1, \dots , x_n)\)</span> and <span class="math inline">\(y = (y_1, \dots , y_n)\)</span> is defined as <span class="math inline">\(x \cdot y = x_1y_1 + \dots + x_ny_n = \sum_{i=1}^{n} x_i y_i\)</span>.</p>
+<ol type="1">
+<li>Suppose we had two encoded vectors <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. We can obtain the vector <span class="math inline">\(x*y = (x_1y_1, x_2y_2, \dots, x_ny_n)\)</span> with element-wise multiplication.</li>
+<li>We then perform an intravector sum to obtain a vector <span class="math display">\[v(x,y) = \mathtt{sum}(x * y) = (d,d,\ldots, d),\]</span> where <span class="math inline">\(d = x \cdot y\)</span>.</li>
+<li>We can then e.g.&nbsp;multiply it with a <span class="math inline">\(1\)</span>-hot mask vector <span class="math inline">\((0, 0, \ldots, 1, 0, \ldots, 0)\)</span> or use it in any other way we wish.</li>
+</ol>
+<p>This directly lets us compute the <em>entries</em> of the <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(C = A \times B\)</span>, since those are dot products: 1. let the encoded first row of <span class="math inline">\(A\)</span> be denoted <span class="math inline">\(A_1 = (a_{11}, a_{12}, \dots, a_{1n})\)</span> and the encoded first column of <span class="math inline">\(B\)</span> as <span class="math inline">\(B_1 = (b_{11}, b_{21}, \dots, b_{n1})\)</span>. 2. As just stated, we can get <span class="math inline">\(c_{11}\)</span>, the <span class="math inline">\((1,1)\)</span> entry of <span class="math inline">\(C\)</span>, by just taking the dot product <span class="math inline">\(A_1 \cdot B_1\)</span>. In general, we can get <span class="math inline">\(c_{ij} = a_i \cdot b_j\)</span>, though underneath the hood we are actually getting vectors of the form <span class="math inline">\(v(A_1, B_j) = (c_{ij}, c_{ij}, \ldots, c_{ij})\)</span>.</p>
+<p>To get actual row / column vectors of <span class="math inline">\(C\)</span>, we could get the entries, take some dot products by <span class="math inline">\(1\)</span>-hot vectors, and add. Specifically, if we wanted the <span class="math inline">\(i\)</span>-th row vector <span class="math inline">\(C_i\)</span>, we would add <span class="math display">\[ (1, 0, \ldots, 0) * v(A_i, B_1) + (0, 1, \ldots, 0) * v(A_i, B_2) + \cdots + (0, \ldots, 0, 1) * v(A_i, B_n). \]</span></p>
+<p>It is possible that we may want to use a different representation of the matrices. For example, let <span class="math inline">\(A\)</span> be arranged such that each row <span class="math inline">\(a_i\)</span> is stored contiguously in ciphertext <span class="math inline">\(A'\)</span>: <span class="math display">\[A'=(a_1,a_2,...a_n)=(a_{11},a_{12},...,a_{1n},a_{21},a_{22},...,a_{nn})\]</span></p>
+<p>Likewise <span class="math inline">\(B\)</span> with columns <span class="math inline">\(b_j\)</span>, denoted <span class="math display">\[B' = (b_{11},b_{21},...,b_{n1},b_{12},b_{22},...,b_{nn})\]</span></p>
+<p>Using these initial <span class="math inline">\(n^2\)</span> ciphertexts as an example: <span class="math display">\[A'*B' = (a_{11}b_{11},a_{12}b_{21},
+         ...,a_{1n}b_{n1},a_{21}b_{12},
+         ...,a_{n,n-1}b_{n-1,n},a_{nn}b_{nn}).\]</span></p>
+<p>Now, we claim that if we can extend summing to do a <span class="math inline">\(k\)</span>-th “partial” intravector sum for a <span class="math inline">\(mk\)</span>-vector <span class="math inline">\(x\)</span>: <span class="math display">\[\begin{align}\mathtt{partsum}(x,k) = &amp; (x_1 + \cdots + x_k, \cdots, x_1 + \cdots + x_k, \\
+&amp; x_{k+1} + \cdots + x_{2k}, \cdots, x_{k+1} + \cdots + x_{2k}, \\
+&amp; \vdots \\
+&amp; x_{(m-1)k+1} + \cdots + x_{mk}, \cdots, x_{(m-1)k+1} + \cdots + x_{mk})
+\end{align}\]</span></p>
+<p>we would be able to use <span class="math inline">\(\mathtt{partsum}(n, A'*B')\)</span> to compute <span class="math inline">\(n\)</span> of the correct terms; for example, <span class="math inline">\((A \times B)_{1,1}\)</span> in position <span class="math inline">\(1\)</span>. If we repeat this <span class="math inline">\(n\)</span> times after cycling <span class="math inline">\(A'*B'\)</span> (by <span class="math inline">\(n\)</span> each time), we can combine them to get the final vector. As a concrete example for <span class="math inline">\(n=2\)</span>:</p>
+<div class="success">
+<p><strong>Concrete <span class="math inline">\(2 \times 2\)</span> Example</strong>:</p>
+<p><span class="math inline">\(\begin{array}{rrll}
+    A'    &amp;=&amp; (a_{11},\ a_{12},\ a_{21},\ a_{22})\\
+    B'    &amp;=&amp; (b_{11},\ b_{21},\ b_{12},\ b_{22})\\
+    B''   &amp;=&amp; (b_{12},\ b_{22},\ b_{11},\ b_{21})\ =\ \mathtt{cycle}(B',\ n=2)\\
+    X     &amp;=&amp; (1,0,0,1)\\
+    \overline{X} &amp; = &amp; (0,1,1,0) \\
+    C_x &amp;=&amp; A'*B' = (a_{11}b_{11},\ a_{12}b_{21},\ a_{21}b_{12},\
+              a_{22}b_{22})\ \\
+    C_y &amp;=&amp; A'*B'' = (a_{11}b_{12},\ a_{12}b_{22},\ a_{21}b_{11},\
+              a_{22}b_{21})\ \\
+    C_x'  &amp;=&amp; \mathtt{partsum}(C_x,\ 2)\\
+          &amp;=&amp; (a_{11}b_{11}+a_{12}b_{21},\ a_{11}b_{11}+a_{12}b_{21},\
+              a_{21}b_{12}+a_{22}b_{22},\ a_{21}b_{12}+a_{22}b_{22})\\
+    C_y'  &amp;=&amp; \mathtt{partsum}(C_y,\ 2)\\
+          &amp;=&amp; (a_{11}b_{12}+a_{12}b_{22},\ a_{11}b_{12}+a_{12}b_{22},\
+              a_{21}b_{11}+a_{22}b_{21},\ a_{21}b_{11}+a_{22}b_{21})\\
+    C_x'*X&amp;=&amp; (a_{11}b_{11}+a_{12}b_{21},\quad 0,\quad 0,\quad
+              a_{21}b_{12}+a_{22}b_{22}) \ =\ C_x''\\
+    C_y'*\overline{X} &amp;=&amp; (0,\quad a_{11}b_{12}+a_{12}b_{22},
+              \quad a_{21}b_{11}+a_{22}b_{21},\quad0) \ =\ C_y''\\
+    C_x''+C_y'' &amp;=&amp; (a_{11}b_{11}+a_{12}b_{21},
+              \ a_{11}b_{12}+a_{12}b_{22},
+              \ a_{21}b_{11}+a_{22}b_{21},
+              \ a_{21}b_{12}+a_{22}b_{22})\\
+          &amp;=&amp; C'\\
+\end{array}\)</span></p>
+</div>
+<p>It seems premature to go too deeply into this representation as it seems more complex and might use more memory by default because of the longer vectors.</p>
+</section>
+<section id="vii.2-shannon-entropy" class="level2">
+<h2 class="anchored" data-anchor-id="vii.2-shannon-entropy">VII.2 Shannon Entropy</h2>
+<p>Suppose we have a discrete random variable <span class="math inline">\(X\)</span> with possible outcomes <span class="math inline">\(x_1,x_2,\dots,x_n\)</span> each with corresponding probabilities <span class="math inline">\(P(x_1), P(x_2),\dots,P(x_n)\)</span>.</p>
+<p>The <strong>Shannon entropy</strong><a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a> is defined as</p>
+<p><span class="math display">\[H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i),\]</span></p>
+<p>where <span class="math inline">\(P(x_i)\)</span> represents the probability of each outcome <span class="math inline">\(x_i\)</span>.</p>
+<p>First, commenting on the input: 1. Shannon entropy only works on a probability distribution, so all the input must be non-negative and add up to 1. 2. For sake of focus, we will assume that <em>this is already solved.</em> 3. Otherwise, this seems to be a routine case of a “normalization step” where each user input is divided by their sum, which is a combination of a <strong>sum</strong> and a <strong>division</strong> of the form <span class="math display">\[
+P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}.
+\]</span></p>
+<p>We should then end up with a vector <span class="math inline">\(x = (P(x_1), \ldots, P(x_n))\)</span>.</p>
+<p>Now, we need the logarithms of the probabilities. These can also be done in various ways; when applicable, we black-box the details, deferring to previous sections: 1. we can use a Taylor series approximation, centered necessarily away from <span class="math inline">\(0\)</span>. 2. we can have the user simply give the <span class="math inline">\(\log(x_i)\)</span> as part of their input.</p>
+<p>In any case, we should end up with a vector <span class="math inline">\(l\)</span> with each <span class="math inline">\(l_i = \log(P(x_i))\)</span>.</p>
+<p>Then it suffices to compute the element-wise product <span class="math inline">\(x * l * (-1)\)</span> to obtain a single vector, after which using a sum operation gives <span class="math display">\[H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i)\]</span> (or more precisely, a vector where every element is <span class="math inline">\(H(x)\)</span>).</p>
+<p>The main difficulties while computing entropy arise in situations where <span class="math inline">\(x_i = 0\)</span>. In this case, L’Hopitals rule dictates that the correct contribution of the <span class="math inline">\(-P(x) \log P(x) = 0 * (\infty)\)</span> should be <span class="math inline">\(0\)</span>. We have two suggestions, and it is not clear to us which one is better (it is likely to be very implementation-dependent): 1. “iron out” the eventual answer with multiplication by an <span class="math inline">\(\texttt{equal(x_i, 0)}\)</span> vector at the very end (before the summation), which would ensure all elements coming from an <span class="math inline">\(x_i\)</span> very close to <span class="math inline">\(0\)</span> actually contributes <span class="math inline">\(0\)</span>; 2. interrupt the computation right before the <span class="math inline">\(\log()\)</span> step by <strong>adding</strong> the <span class="math inline">\(\texttt{equal(x_i, 0)}\)</span> vector, which would switch the <span class="math inline">\(x_i\)</span>s close to <span class="math inline">\(0\)</span> to close to <span class="math inline">\(1\)</span> (therefore making the <span class="math inline">\(\log(x_i) \approx 0\)</span>.</p>
+<p>In production, any method would require extensive testing to prevent blowup.</p>
+</section>
+<section id="vii.3-adaptive-division" class="level2">
+<h2 class="anchored" data-anchor-id="vii.3-adaptive-division">VII.3 “Adaptive” Division</h2>
+<p>We cannot do If statements, but we can <em>encode</em> If statements with sign functions. Here’s a design that might work and require some testing, but gives an idea of how we might do “adaptive” computations unadaptively: 1. For simplicity, we assume the number to invert, <span class="math inline">\(x\)</span>, is positive and within the region <span class="math inline">\([1, 2^{16}]\)</span>. 2. We try to make a function that is essentially “the largest power of <span class="math inline">\(2\)</span> smaller than <span class="math inline">\(x\)</span>”</p>
+<p>Suppose we have an idealized sign function, then consider the following sum, where <span class="math inline">\((x &gt; k) = \mathtt{sign}{(x-k)}\)</span> is a sign indicator function (so it is <span class="math inline">\(1\)</span> if the comparision is TRUE, and <span class="math inline">\(0\)</span> otherwise): <span class="math display">\[ - \frac{1}{2^{15}} (x &gt; 2^{15}) - \frac{1}{2^{14}}(x &gt; 2^{14}) + \cdots - \frac{1}{2}(x &gt; 2) + 1.\]</span> Note: 1. if <span class="math inline">\(2 &gt; x \geq 1\)</span>, it returns <span class="math inline">\(1\)</span> since none of the comparisons are true. 2. if <span class="math inline">\(4 &gt; x \geq 2\)</span>, then it returns <span class="math inline">\(1-1/2 = 1/2\)</span>. 3. if <span class="math inline">\(8 &gt; x \geq 4\)</span>, then it returns <span class="math inline">\(1 -1/2 - 1/4 = 1/4\)</span>. 4. …the idea is that it will return <span class="math inline">\(1/2^n\)</span> if it is between <span class="math inline">\(2^{n+1}\)</span> and <span class="math inline">\(2^n\)</span>.</p>
+<p>This essentially creates a “guess” in <span class="math inline">\(\log(b)\)</span> steps (for transparency: each step is a sign call and so may be expensive), where <span class="math inline">\(b\)</span> is an upper bound of <span class="math inline">\(x\)</span>. The method needs tweaking for numbers under <span class="math inline">\(1\)</span> or negative numbers, which we omit.</p>
+</section>
+<section id="vii.4-logarithm-revisited" class="level2">
+<h2 class="anchored" data-anchor-id="vii.4-logarithm-revisited">VII.4 Logarithm (Revisited)</h2>
+<p>In Section I we showed how to get logarithms via Taylor expansion. In addition to that standard approach, we explored a distinct iterative method that seems interesting, though not immediately practical, using some niceness particular to the log function.</p>
+<p>Suppose we have <span class="math display">\[ n \leq \log_2(x) &lt; n+1, \]</span> using the inverse relationship between the logarithm and exponentiation, this can be rewritten as: <span class="math display">\[ 2^n \leq x &lt; 2^{n+1}.\]</span> If we define <span class="math inline">\(m = \frac{x}{2^n}\)</span> (so <span class="math inline">\(x = m \cdot 2^n\)</span>), we can divide both sides by <span class="math inline">\(2^n\)</span> to obtain <span class="math inline">\(1 \leq m &lt; 2\)</span>. Using <span class="math inline">\(m\)</span>, we can write <span class="math display">\[ \log_2(x) = \log_2(m \cdot 2^n). \]</span> This effectively breaks up the log into two components: a real and a fractional part, which can be treated separately. In other words, this is noticing that if <span class="math inline">\(x = m \cdot 2^n\)</span>, where <span class="math inline">\(m \in [1,2)\)</span>, then <span class="math display">\[\log_2(x) = \log_2(m \cdot 2^n) = n + \log_2(m).\]</span></p>
+<p>As a first iteration of this strategy, we can approximate only in the range <span class="math inline">\([1,2)\)</span> and add back a scaling factor later. As an example, to compute <span class="math inline">\(log_2(20)\)</span>, we can compute <span class="math inline">\(log_2(1.25)+4\)</span> instead. The <span class="math inline">\(n\)</span> part can be given or “solved for” in a method similar to the previous section VII.3 to “detect” the largest <span class="math inline">\(n\)</span> such that <span class="math inline">\(2^n &lt; x\)</span>.</p>
+<p>With the strategy just mentioned, we break the log function into an integer and fractional part. Afterwards, we can deal with the fractional part with a “fixed point iteration” method using binary representations.</p>
+<p>Suppose <span class="math inline">\(y = \log_2(m)\)</span>, and written as <span class="math inline">\(y = 0.b_1b_2b_3\cdots,\)</span> (in other words, <span class="math inline">\(y = b_1/2 + b_2/4+b_3/8 \cdots\)</span>). Note that if we square <span class="math inline">\(m\)</span>, <span class="math inline">\(y\)</span> shifts by exactly one decimal point to <span class="math display">\[2y = b_1.b_2b_3b_4\cdots.\]</span></p>
+<p>As a result, we are able to find the binary represenation, one bit at a time. For example, if <span class="math inline">\(u = m^2\)</span>, then <span class="math inline">\(u \in [1^2, 2^2) = [1,4)\)</span>. This allows for <span class="math inline">\(\log_2(u) \in [0,2)\)</span> This process helps us create our iteration: <span class="math display">\[
+|b_k| = \begin{cases}
+    0, &amp; \text{if } u_k &lt; 2 \rightarrow \log_2(u_{k-1}) &lt; 1 \\
+    1, &amp; \text{if } u_k \ge 2 \rightarrow \log_2(u_{k-1}) \ge 1
+\end{cases},
+\]</span> after which we can recover <span class="math display">\[
+\sum_{i=-m}^{k} b_i \, 2^i, \quad \text{where } b_i \in \{0,1\}.
+\]</span></p>
+<div class="success">
+<p><strong>Concrete Example</strong>: we work through some explicit initial iterations as an illustrative practice. Take <span class="math inline">\(x=0.75\)</span>. We aim to obtain an approximation of <span class="math inline">\(\log_2(0.75)\)</span>. Rewriting <span class="math inline">\(x\)</span> in the desired form <span class="math inline">\(x = m * 2^n\)</span>, we see that <span class="math inline">\(n = -1\)</span> and <span class="math inline">\(m = 1.5\)</span>.</p>
+<p>In the first iteration, squaring <span class="math inline">\(m\)</span> gives <span class="math inline">\(2.25&gt;2\)</span> hence the first bit is <span class="math inline">\(1\)</span>, and we must renormalize, dividing <span class="math inline">\(2.25\)</span> by <span class="math inline">\(2\)</span> resulting in <span class="math inline">\(1.125=u_1\)</span>. For the second iteration, squaring <span class="math inline">\(1.125\)</span> we get <span class="math inline">\(1.265625&lt;2\)</span> so our next bit is <span class="math inline">\(0\)</span> and we do not need to renormalize.</p>
+<p>If we continue iterating twice more we would obtain the binary digits <span class="math inline">\(1001\)</span>, which we interpret as the fractional part of a binary number, corresponding to the value <span class="math inline">\(0.5625\)</span>. This is our approximation for <span class="math inline">\(\log_2(m)\)</span>. We now add <span class="math inline">\(n= -1\)</span> to give an initial approximation for <span class="math inline">\(x\)</span> as <span class="math inline">\(-0.4375\)</span>. For reference, the actual value is approximately <span class="math inline">\(-0.4150\)</span>. We can get closer to the actual value of <span class="math inline">\(x\)</span> with a higher number of iterations, but recall that with more iterations, we naturally have performed more computations, so error accumulates.</p>
+</div>
+<!-- 
+# VIII. Literature Review
+
+WIP– add misc. reflections on "Quo Vadis.." paper and other literature as appropriate 
+
+During our exploration, we found a paper that we believe to be of great relevance and value here: "Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations" from Prantl et al. (2025)[^quo].  Our understanding of and reflections on this work are as follows:
+
+- uses openfhe 👏 
+- **metrics** : multiplicative dpeth , precision bits
+    - precision bits: decrypted ciphertext precision
+        - dependent on og precision & actual numbers being multiplied
+- evaluates **without bootstrapping** only degree 25 possible
+
+polynomials 🔺
+- newton interpolation with chebyshev nodes
+- chebyshev
+    -  goat accuracy
+- de bello
+  - good accuracy , close to goat
+   - good across many intervals including with gaps
+- remez
+  - doesn't always find polynomial for range
+  - good precision bits, esp on large intervals
+  - wins on tight polynomial degree budget
+- hermite
+  - not notable
+
+functions & picks
+- sqrt() - chebyshev, de bello
+- 1/x - de bello
+- log() - chebyshev 
+- log() near 0 - de bello
+- exp() - de bello, chebyshev
+
+[WIP]
+-->
+</section>
+</section>
+<section id="appendix-a.-discrete-computational-models" class="level1">
+<h1>Appendix A. Discrete Computational Models</h1>
+<p>Here’s a proof-of-concept of a different computational model where the entries represent discrete numbers instead of general complex/real numbers.</p>
+<p>In this computational model, each ciphertext vector with length <span class="math inline">\(n/2\)</span> stores <span class="math inline">\(n/(2k)\)</span> numbers, using <span class="math inline">\(k\)</span> components to store each number. The user supplies not only (or instead of, but it seems fairly cheap to have both representations) <span class="math inline">\(x\)</span>, but also the digits of <span class="math inline">\(x\)</span> (assuming integers for simplicity, maybe <span class="math inline">\(x = (x_{k-1} \cdots x_0)|_b\)</span> in base <span class="math inline">\(b\)</span>, and each <span class="math inline">\(x_i\)</span> represents an element of <span class="math inline">\(\{0, 1, \ldots, b-1\}\)</span>.</p>
+<p>We show an example of how the inequality function is simpler in this model, then discuss other uses such as the sign function and multiplication. In our github repo (https://github.com/fieldextension/discrete-methods) we show how our methods can be used to sort numbers with very little floating point error.</p>
+<section id="a-binary-approach-to-inequality-and-sorting" class="level3">
+<h3 class="anchored" data-anchor-id="a-binary-approach-to-inequality-and-sorting">A Binary Approach to Inequality and Sorting</h3>
+<p>For this example, assume <span class="math inline">\(b=2\)</span> so things are stored in binary. We will show that the inequality function can be done “exactly” as polynomials instead of approximated with a Taylor expansion.</p>
+<ol type="1">
+<li>When <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are <em>single bits</em>, the equality function <span class="math inline">\((x == y)\)</span> is an algebraic condition <span class="math display">\[(x==y) := \frac{1}{2}(xy + (1-x)(1-y)),\]</span></li>
+<li>and whether <span class="math inline">\((x &gt; y)\)</span> is also an exact condition, namely <span class="math display">\[(x &gt; y) := (x==1) * (y==0);\]</span></li>
+<li>Therefore, when <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> are <span class="math inline">\(k\)</span>-bit numbers (assuming positive), we can write <span class="math inline">\(x &gt; y\)</span> as an OR (and thus a polynomial) of the following values:
+<ul>
+<li><span class="math inline">\((x_{k -1} &gt; y_{k-1})\)</span> OR</li>
+<li>(<span class="math inline">\((x_{k-1} == y_{k-1})\)</span> AND <span class="math inline">\((x_{k-2} &gt; y_{k-2})\)</span>) OR</li>
+<li>(<span class="math inline">\((x_{k-1} == y_{k-1})\)</span> AND <span class="math inline">\((x_{k-2} == y_{k-2})\)</span> AND <span class="math inline">\((x_{k-3} &gt; y_{k-3})\)</span>) OR … This is simply <em>some</em> polynomial in the <span class="math inline">\(x_i\)</span> and <span class="math inline">\(y_i\)</span>, so it is obtainable under FHE.</li>
+</ul></li>
+</ol>
+<p>Thus, doing inequalities with high accuracy at least becomes possible when we do binary operations. The (high!) tradeoff is that adding and multiplying become difficult (due to carries). But if we are only doing comparative work, then much of the sorting / maxing related operations in Section IV becomes very viable.</p>
+</section>
+<section id="modular-operations" class="level3">
+<h3 class="anchored" data-anchor-id="modular-operations">Modular Operations</h3>
+<p>For higher bases, we are effectively doing modular arithmetic. The problem is we are storing integers. Thankfully, the fact we are using complex numbers allow us to “modularize” fairly painlessly. We give a sketch of this approach: 1. Suppose we wanted to add or multiply numbers “mod N” (for this, we are agnostic to whether the numbers are digits of a single number or just different numbers we want to add / multiply in batch; things like carrying need to be dealt with separately). Then we can perform the algebra and end up with some results in <span class="math inline">\(\mathbb{Z}\)</span>. Then, 2. Compute <span class="math inline">\(e^{2\pi i z/N}\)</span> on the vector (specifically, first multiply the vector by <span class="math inline">\(2\pi i/N\)</span>, then compute <span class="math inline">\((1 + z + z^2/2 + \cdots)\)</span> as usual) 3. Then compute <span class="math inline">\(\log()\)</span> to undo the computation, which will get us (with the correct branch) integers back in <span class="math inline">\(\{0, \ldots, N-1\}\)</span> after multiplying back by <span class="math inline">\(N/(2\pi i)\)</span>. The convergence of this will be quite good as the numbers will be far from <span class="math inline">\(0\)</span> after step <span class="math inline">\(2\)</span>.</p>
+<p>In this representation, the sign function (and inequality, etc.) can be viewed as discrete polynomials.</p>
+<div class="success">
+<p><strong>Concrete Example</strong>: suppose we wanted a function to return <span class="math inline">\(1\)</span> for all elements at least <span class="math inline">\(3 \pmod {7}\)</span> and <span class="math inline">\(0\)</span> otherwise: 1. Recall from Lagrange interpolation that if we want to send <span class="math inline">\(a\)</span> to <span class="math inline">\(1\)</span> and the other elements to <span class="math inline">\(0\)</span>, we can just use the function <span class="math inline">\(f_a(x) = (x-0)(x-1)\cdots(x-a+1)(x-a-1)\cdots (x-p+1)\)</span> (suitably scaled to obtain 1). 2. Add the functions for <span class="math inline">\(f_3 + \cdots f_6\)</span> to obtain a function that evaluates to <span class="math inline">\(1\)</span> on <span class="math inline">\(3, 4, 5, 6\)</span> but <span class="math inline">\(0\)</span> on the others. 3. (this can be done for any function on <span class="math inline">\(\mathbb{Z}/7\mathbb{Z}\)</span>)</p>
+</div>
+</section>
+<section id="roots-of-unity" class="level3">
+<h3 class="anchored" data-anchor-id="roots-of-unity">Roots of Unity</h3>
+<p>Yet another possible variation is to store the numbers as <em>roots of unity</em>. Let <span class="math inline">\(\zeta\)</span> be a primitive <span class="math inline">\(N\)</span>-th root of unity for some fixed prime <span class="math inline">\(N\)</span>. Then we represent <span class="math inline">\(a\)</span> by <span class="math inline">\(\zeta^a\)</span> for <span class="math inline">\(a \in \{0, 1, \ldots, N-1\}\)</span>. Then we can do <strong>modular addition</strong> mod <span class="math inline">\(N\)</span> via multiplication: <span class="math display">\[(\zeta^k)(\zeta^l) = \zeta^{k+l}.\]</span> However, <strong>modular multiplication</strong> becomes much more difficult.</p>
+</section>
+<section id="appendix-b-an-application-to-sorting" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-b-an-application-to-sorting">Appendix B: An Application to Sorting</h2>
+<p>We combine some of the previous tricks to do a more robust sorting, to showcase the capabilities of Appendix A.</p>
+<section id="index-to-one-hot" class="level3">
+<h3 class="anchored" data-anchor-id="index-to-one-hot">Index To One-Hot</h3>
+<p>Using roots-of-unity, we can do a one-hot conversion function (this will be used later for sorting). Specifically, given a ciphertext input for integer <span class="math inline">\(i\)</span>, stored in root-of-unity form (from this point we use <span class="math inline">\(\sqrt{-1}\)</span> to distinguish from <span class="math inline">\(i\)</span>) <span class="math display">\[
+\zeta^i = e^{2\pi i \sqrt{-1}/k},
+\]</span> where <span class="math inline">\(\zeta = e^{2\pi \sqrt{-1}/k},\)</span> we wish to create a one-hot vector <span class="math inline">\(v\)</span> which is <span class="math inline">\(1\)</span> in the <span class="math inline">\(i\)</span>-th coordinate and <span class="math inline">\(0\)</span> elsewhere. We can do this as follows:</p>
+<ol type="1">
+<li>Create a vector <span class="math inline">\(v'\)</span> whose <span class="math inline">\(j\)</span>-th coordinate is <span class="math inline">\(\zeta^{-j}\)</span>.</li>
+<li>Multiply entrywise by <span class="math inline">\(\zeta^i\)</span>: <span class="math inline">\(v'' = v' \cdot \zeta^i.\)</span></li>
+<li>Then the <span class="math inline">\(j\)</span>-th coordinate of <span class="math inline">\(v''\)</span> is <span class="math inline">\(\zeta^{i-j}\)</span>. In particular, the <span class="math inline">\(i\)</span>-th coordinate is (1), while every other coordinate is a nontrivial <span class="math inline">\(k\)</span>-th root of unity.</li>
+<li>For each entry <span class="math inline">\(w\)</span> of <span class="math inline">\(v''\)</span>, compute <span class="math display">\[1 + w + w^2 + \cdots + w^{k-1}.\]</span> This expression equals <span class="math inline">\(k\)</span> if <span class="math inline">\(w = 1\)</span> and equals <span class="math inline">\(0\)</span> if <span class="math inline">\(w\)</span> is a nontrivial <span class="math inline">\(k\)</span>-th root of unity.</li>
+<li>Therefore, after dividing by <span class="math inline">\(k\)</span>, we obtain the desired vector <span class="math inline">\(v\)</span>.</li>
+</ol>
+</section>
+<section id="comparison-and-extended-binary-numbers" class="level3">
+<h3 class="anchored" data-anchor-id="comparison-and-extended-binary-numbers">Comparison and Extended Binary Numbers</h3>
+<p>In this section, we show we can compare an input integer ciphertext <span class="math inline">\(c\)</span> with <span class="math inline">\(0\)</span>, meaning a function which outputs <span class="math inline">\(1\)</span> if <span class="math inline">\(c &gt; 0\)</span> and <span class="math inline">\(0\)</span> otherwise. (it will be clear how to do variants of this, such as with nonstrict inequalities). Our main trick is to use what we call the <strong>extended binary expansion</strong> of <span class="math inline">\(c\)</span>.</p>
+<p>Define <span class="math inline">\(S_1 := {-1,0,1}.\)</span> We say that a number <span class="math inline">\(a\)</span> is in <strong>extended binary</strong> form if it is represented as <span class="math display">\[
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+\]</span></p>
+<p>where each digit satisfies <span class="math inline">\(a_i \in S_1.\)</span></p>
+<div class="info">
+<p>**Remark (<span class="math inline">\(S_1\)</span>): The main intuition is this: we need the slightly larger digit set <span class="math inline">\(S_1\)</span> because the difference of two ordinary binary numbers has digits in <span class="math inline">\(\{-1,0,1\}\)</span>. This avoids needing to perform carrying, which is hard in CKKS.</p>
+</div>
+<p>Now: 1. Assume that we have the extended binary digits of <span class="math inline">\(c\)</span> as <span class="math inline">\(c_0, c_1, \ldots, c_{b-1},\)</span> in little-endian order, where each <span class="math inline">\(c_i \in S_1\)</span>. 2. We construct the functions “<span class="math inline">\(\geq 0\)</span>” and “<span class="math inline">\(=0\)</span>” on the finite set <span class="math inline">\(S_1\)</span>. Since <span class="math inline">\(S_1\)</span> is finite, these functions are polynomials on <span class="math inline">\(S_1\)</span>! (furthermore, with operations that are not likely to accumulate a lot of floating point error) - For example, on <span class="math inline">\(S_1\)</span>, the function <span class="math inline">\(\mathbf{1}_{x &gt; 0}\)</span> is given by <span class="math display">\[ \frac{x^2+x}{2}. \]</span> Indeed, this is <span class="math inline">\(0, 0, 1\)</span> at <span class="math inline">\(x=-1, 0, 1\)</span> respectively. - Similarly, the function <span class="math inline">\(\mathbf{1}_{x=0}\)</span> is given by <span class="math inline">\(1 - x^2.\)</span> 3. This allows us to construct a comparison function on the space of extended binary numbers. The key logic is that an extended binary number <span class="math display">\[ a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1} \]</span> is positive if and only if at least one of the following events occurs: <span class="math display">\[
+a_i = 1 \quad\text{and}\quad a_{i'} = 0 \text{ for all } i' &gt; i. \]</span> In words: the most significant nonzero digit of (a) is positive.</p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\mathbf{1}_{a&gt;0} = \bigvee_{i=0}^{b-1}
+\left(
+(\mathbf{1}({a_i=1})
+\wedge
+\bigwedge_{i' &gt; i} \mathbf{1}({a_{i'}=0})
+\right).
+\]</span></p>
+<p>The logical AND and OR operations can themselves be written as polynomials on Boolean values:</p>
+<p><span class="math display">\[
+A \wedge B = AB,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+A \vee B = 1 - (1-A)(1-B).
+\]</span></p>
+<p>Thus the comparison function can be implemented as a polynomial in the extended binary digits.</p>
+<p>Since the intermediate values are essentially Boolean or integer-valued, this construction avoids the main numerical instability of trying to compare arbitrary real CKKS values directly.</p>
+</section>
+<section id="sorting" class="level3">
+<h3 class="anchored" data-anchor-id="sorting">Sorting</h3>
+<p>Now we are ready to do sorting. Specifically, take <span class="math inline">\(k\)</span> inputs and return a sorted vector. As a corollary, this makes it easy to read off the median, maximum, minimum, and other simple summary statistics.</p>
+<p>For simplicity, we make the following assumptions.</p>
+<ol type="1">
+<li>The inputs are distinct.</li>
+<li>We have <span class="math inline">\(k = 2^s\)</span> for some integer <span class="math inline">\(s\)</span>, and <span class="math inline">\(2 \cdot 2^s &lt; S,\)</span> where <span class="math inline">\(S\)</span> is the number of slots per ciphertext.</li>
+<li>The inputs are nonnegative integers in some fixed range. For simplicity, assume <span class="math inline">\(c_j \in {0,1,\ldots,2^b-1}\)</span> for some positive integer <span class="math inline">\(b\)</span>.</li>
+</ol>
+<p>Now we give the algorithm. 1. Start with the ciphertext numbers to be sorted: <span class="math inline">\(c_1, c_2, \ldots, c_k.\)</span> 2. Create <span class="math inline">\(b\)</span> batched extended binary base-vectors <span class="math inline">\(c_0, c_1, \ldots, c_{b-1},\)</span> where <span class="math inline">\(c_{ij}\)</span> is the <span class="math inline">\(i\)</span>-th binary digit of <span class="math inline">\(c_j\)</span>, in little-endian order. Thus, for example, <span class="math display">\[
+c_{03} + 2c_{13} + 4c_{23} + \cdots = c_3.
+\]</span> 3. By the comparison trick, we can construct a polynomial comparison function on extended binary numbers of the form <span class="math display">\[
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+\]</span> where each <span class="math inline">\(a_i \in S_1 = \{-1,0,1\}\)</span>. 4. Given the <span class="math inline">\(k\)</span> ciphertexts, construct <span class="math inline">\(b\)</span> length-<span class="math inline">\(k^2\)</span> ciphertexts <span class="math inline">\(d_0, d_1, \ldots, d_{b-1}\)</span> from the base-vectors, so that the extended binary number represented at coordinate <span class="math inline">\(j = xk + y\)</span> is <span class="math inline">\(c_x - c_y.\)</span> In other words, the vectors <span class="math inline">\(d_*\)</span> represent all pairwise differences between the inputs. Since each <span class="math inline">\(c_x\)</span> and <span class="math inline">\(c_y\)</span> is represented in ordinary binary, each digit of the difference <span class="math inline">\(c_x - c_y\)</span> lies in <span class="math inline">\(S_1\)</span>. 5. Apply the comparison function in batch to all <span class="math inline">\(k^2\)</span> pairwise differences. This produces a vector <span class="math inline">\(d\)</span> such that <span class="math display">\[
+d_{xk+y} =
+\begin{cases}
+1, &amp; c_x &gt; c_y, \\
+0, &amp; \text{otherwise}.
+\end{cases}
+\]</span> 6. From this comparison matrix, compute the rank index of each <span class="math inline">\(c_j\)</span>. Namely, the index of <span class="math inline">\(c_j\)</span> is the number of inputs smaller than it: <span class="math display">\[ \operatorname{Ind}(j) =
+|\{x : c_j &gt; c_x\}|.
+\]</span> This can be obtained by summing the appropriate entries of the comparison matrix. However, instead of summing ordinary (0)-(1) comparison values, transform the comparison outputs so that a positive comparison contributes <span class="math display">\[
+\zeta = e^{2\pi \sqrt{-1}/k}
+\]</span> instead of <span class="math inline">\(1\)</span>, while a non-positive comparison contributes <span class="math inline">\(1\)</span>. Then multiply these contributions rather than adding them. This gives the index in root-of-unity form: <span class="math display">\[
+\zeta^{\operatorname{Ind}(j)} = e^{2\pi \sqrt{-1}\operatorname{Ind}(j)/k}.
+\]</span> 8. Now apply the index-to-one-hot trick to each (<span class="math inline">\(\zeta^{\operatorname{Ind}(j)}\)</span>. This gives, for each input <span class="math inline">\(c_j\)</span>, a one-hot vector <span class="math inline">\(o(j)\)</span> supported in coordinate <span class="math inline">\(\operatorname{Ind}(j)\)</span>. 9. Finally, compute <span class="math inline">\(\sum_{j=1}^k c_j o(j).\)</span> The result is the sorted vector.</p>
+<div class="info">
+<p><strong>Summary</strong>: 1. A discrete representation of numbers is useful to have as a substitute / in addition to the standard input. Can consider writing down the “digits” as integers or as the roots of unity. 2. With each choice, certain things become much easier (or at least doable) such as the sign / inequality function, but certain things become harder as well (such as addition or multiplication). 3. We give a proof-of-concept in the following repository: https://github.com/fieldextension/discrete-methods</p>
+</div>
+</section>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
 
 
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Jung Hee Cheon, Andrey Kim, Miran Kim, Yongsoo Song; <strong>Homomorphic Encryption for Arithmetic of Approximate Numbers</strong> available from https://eprint.iacr.org/2016/421.pdf<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Michael J. Flynn; <strong>Some Computer Organizations and Their Effectiveness</strong> available from https://users.cs.utah.edu/~hari/teaching/paralg/Flynn72.pdf<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p><strong>Square root algorithms</strong> available from https://en.wikipedia.org/wiki/Square_root_algorithms<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p><strong>Newton’s method</strong> available from https://en.wikipedia.org/wiki/Newton%27s_method<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Prantl et al.; <strong>Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations</strong> available from https://www.sciencedirect.com/science/article/pii/S2214212625001474#sec2<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Prantl et al.; <strong>De Bello Homomorphico: Investigation of the extensibility of the OpenFHE library with basic mathematical functions by means of common approaches using the example of the CKKS cryptosystem</strong> available from https://link.springer.com/article/10.1007/s10207-023-00781-0<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Knott et al.; <strong>CRYPTEN: Secure Multi-Party Computation Meets Machine Learning</strong> available from https://arxiv.org/pdf/2109.00984<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p><strong>Softmax function</strong> available from https://en.wikipedia.org/wiki/Softmax_function<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p><strong>Heaviside step function</strong> available from https://en.wikipedia.org/wiki/Heaviside_step_function<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p><strong>Sigmoid function</strong> available from https://en.wikipedia.org/wiki/Sigmoid_function<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p><strong>Hyperbolic functions</strong> available from https://en.wikipedia.org/wiki/Hyperbolic_functions<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>Prantl et al.; <strong>Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations</strong> available from https://www.sciencedirect.com/science/article/pii/S2214212625001474#sec2<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p><strong>Quicksort</strong> available from https://en.wikipedia.org/wiki/Quicksort<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p><strong>Bubble sort</strong> available from https://en.wikipedia.org/wiki/Bubble_sort<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>N. Habermann; <strong>Parallel neighbor-sort (or the glory of the induction principle)</strong> available from https://kilthub.cmu.edu/articles/journal_contribution/Parallel_neighbor-sort_or_the_glory_of_the_induction_principle_/6608258?file=12099395<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>K.E. Batcher; <strong>Sorting networks and their applications</strong> available from https://www.cs.kent.edu/~batcher/sort.pdf<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>K.E. Batcher; <strong>Sorting networks and their applications</strong> available from https://www.cs.kent.edu/~batcher/sort.pdf<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p><strong>Sorting network</strong> available from https://en.wikipedia.org/wiki/Sorting_network<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>Landon Hurley; <strong>Completing and studentising Spearman’s correlation in the presence of ties</strong> available from https://arxiv.org/pdf/2512.23993<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p><strong>Correlation coefficient</strong> available from https://en.wikipedia.org/wiki/Correlation_coefficient<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p><strong>Coefficient of determination</strong> available from https://en.wikipedia.org/wiki/Coefficient_of_determination<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p><strong>Linear regression</strong> available from https://en.wikipedia.org/wiki/Linear_regression<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>Seunghu Kim, Seongbong Choi, Hyung Tae Lee; <strong>Improved Matrix Inversion with Packed Ciphertexts using Fully Homomorphic Encryption</strong> available from https://eprint.iacr.org/2025/1274.pdf<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p><strong>Entropy (information theory)</strong> available from https://en.wikipedia.org/wiki/Entropy_(information_theory)<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
