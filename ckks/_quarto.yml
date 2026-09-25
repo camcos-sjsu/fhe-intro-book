@@ -1,13 +1,16 @@
 project:
-  type: website
+  type: book
 
-website:
-  title: "CAMCOS Fall 2026"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+book:
+  title: "fhe-intro-book"
+  author: "camcos-sjsu"
+  date:
+  chapters:
+    - index.qmd
+    - about.qmd
+    - references.qmd
+
+bibliography: references.bib
 
 format:
   html:
@@ -18,4 +21,3 @@ format:
     toc: true
 
 editor: visual
-
