@@ -122,18 +122,3 @@ The basic strategy is:
 :::success
 **Concrete Example**: take $z$ = (4, 2, 24, 6). We first exponentiate the vector's entries, or ideally pass to client: ($e^4$, $e^2$, $e^{24}$, $e^6$). Separately compute the sum $S = e^4 + e^2 + e^{24} + e^6$. We now normalize our vector to get ($e^4/S$, $e^2/S$, $e^{24}/S$, $e^6/S$) which rounds off to approximately (0, 0, 1, 0).
 :::
-
-# IV. Discrete Math
-
-In this section we study some "discrete" operations involving comparisons and sorting. At the basis of everything, we need **sign**, **equality**, and **inequality** functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it's essentially the same as inequality. 
-
-:::danger
-**Disclaimer**: Taylor approximations for sign run into many (unavoidable) issues, and can only be used if we have a very tight understanding of the domain of the function. We stress that what we do in the remainder of this section (and other parts of our work that rely on sign functions) is speculative because everything rests on an idealized sign function, which we do not quite have in practice. Conservatively, we should interpret our following work as an exploration of what we can unlock if we have an idealized sign function.
-:::
-
-With this disclaimer, we perform the following explorations:
-1. We try to use series approximations for sign anyway, and quantify how close the approximations are (we suspect it would be usable for very small-scale work, but not beyond that).
-2. Assuming an "idealized sign", we use a "local swap" / "bubble" as a building block for **sorting** (and as a bonus, computing **max**/min type of summary statistics). The functions we will implement are represented in the following "tech tree".
-3. We provide a speculative approach to sign / inequality type of functions with binary arithmetic in the Appendix.
-
-![Discrete.drawio](https://hackmd.io/_uploads/BJubYSw-ze.png)
