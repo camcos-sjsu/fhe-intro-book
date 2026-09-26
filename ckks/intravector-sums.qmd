@@ -1,0 +1,11 @@
+## II.1 Intravector Sums 
+
+Suppose we wanted the sums of the *entries* of a vector; we call this the **intra-vector sum** to differentiate from the "inter-vector sum" of summing vectors, which is already supplied as a basic move. A naive approach would be to repeatedly use cycle to obtain encryptions of
+$$(z_1, \ldots, z_{N/2}), (z_2, \ldots, z_{N/2}, z_1), \ldots, (z_{N/2}, z_1, \ldots, z_{N/2-1})$$ and then add them as in the inter-vector case. This puts the sum in every coordinate.
+
+However, we can make this faster by noticing the following. Suppose we cycled by $1$ and added instead, then we would be able to get:
+$$\mathtt{enc}(z_1 + z_2, z_2 + z_3, z_3 + z_4, \cdots)$$ then cycling by $2$ and adding to itself would put $z_1 + z_2 + z_3 + z_4$ in the first position, but with only 2 additions instead of $3$. Extending this method, we can sum all the numbers with $\log({N/2})$ operations.
+
+Here are a couple of general consequences of being able to sum:
+1. **dot product**: given encrypted vectors of $c_*$ and $d_*$, we can multiply to get $\mathtt{enc}(c_1d_1, c_2d_2, \ldots)$, and then sum to get the dot product.
+2. **(complex) inner product**: since we can take the conjugate of $d_*$, we can compute the complex inner product $$c_1\overline{d_1} + \cdots + c_{N/2}\overline{d_{N/2}}.$$

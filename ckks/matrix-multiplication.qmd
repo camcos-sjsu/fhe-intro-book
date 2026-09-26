@@ -1,0 +1,70 @@
+## VII.1 Dot Products and Matrix Multiplication
+
+Let us work with square matrices for simplicity. A client gives us $A, B \in \mathbb{C}^{n \times n}$ and we want to compute $C = A \cdot B$. For simplicity, we assume that the *rows* of $A$ and the *columns* of $B$ are given. If we only have rows of $B$, we can tweak them to obtain columns.
+
+Recall the dot product of two vectors $x = (x_1, \dots , x_n)$ and $y = (y_1, \dots , y_n)$ is defined as $x \cdot y = x_1y_1 + \dots + x_ny_n = \sum_{i=1}^{n} x_i y_i$. 
+
+1. Suppose we had two encoded vectors $x$ and $y$. We can obtain the vector $x*y = (x_1y_1, x_2y_2, \dots, x_ny_n)$ with element-wise multiplication. 
+2. We then perform an intravector sum to obtain a vector $$v(x,y) = \mathtt{sum}(x * y) = (d,d,\ldots, d),$$ where $d = x \cdot y$.
+3. We can then e.g. multiply it with a $1$-hot mask vector $(0, 0, \ldots, 1, 0, \ldots, 0)$ or use it in any other way we wish.
+
+This directly lets us compute the *entries* of the $n \times n$ matrix $C = A \times B$, since those are dot products:
+1. let the encoded first row of $A$ be denoted $A_1 = (a_{11}, a_{12}, \dots, a_{1n})$ and the encoded first column of $B$ as $B_1 = (b_{11}, b_{21}, \dots, b_{n1})$. 
+2. As just stated, we can get $c_{11}$, the $(1,1)$ entry of $C$, by just taking the dot product $A_1 \cdot B_1$. In general, we can get $c_{ij} = a_i \cdot b_j$, though underneath the hood we are actually getting vectors of the form $v(A_1, B_j) = (c_{ij}, c_{ij}, \ldots, c_{ij})$. 
+
+To get actual row / column vectors of $C$, we could get the entries, take some dot products by $1$-hot vectors, and add. Specifically, if we wanted the $i$-th row vector $C_i$, we would add
+$$ (1, 0, \ldots, 0) * v(A_i, B_1) + (0, 1, \ldots, 0) * v(A_i, B_2) + \cdots + (0, \ldots, 0, 1) * v(A_i, B_n). $$
+
+
+It is possible that we may want to use a different representation of the matrices. For example, let $A$ be arranged such that each row $a_i$ is stored contiguously in ciphertext $A'$:
+$$A'=(a_1,a_2,...a_n)=(a_{11},a_{12},...,a_{1n},a_{21},a_{22},...,a_{nn})$$
+
+Likewise $B$ with columns $b_j$, denoted 
+$$B' = (b_{11},b_{21},...,b_{n1},b_{12},b_{22},...,b_{nn})$$ 
+
+Using these initial $n^2$ ciphertexts as an example:
+$$A'*B' = (a_{11}b_{11},a_{12}b_{21},
+         ...,a_{1n}b_{n1},a_{21}b_{12},
+         ...,a_{n,n-1}b_{n-1,n},a_{nn}b_{nn}).$$
+
+Now, we claim that if we can extend summing to do a $k$-th "partial" intravector sum for a $mk$-vector $x$:
+$$\begin{align}\mathtt{partsum}(x,k) = & (x_1 + \cdots + x_k, \cdots, x_1 + \cdots + x_k, \\
+& x_{k+1} + \cdots + x_{2k}, \cdots, x_{k+1} + \cdots + x_{2k}, \\
+& \vdots \\
+& x_{(m-1)k+1} + \cdots + x_{mk}, \cdots, x_{(m-1)k+1} + \cdots + x_{mk})
+\end{align}$$
+         
+we would be able to use $\mathtt{partsum}(n, A'*B')$ to compute $n$ of the correct terms; for example, $(A \times B)_{1,1}$ in position $1$. If we repeat this $n$ times after cycling $A'*B'$ (by $n$ each time), we can combine them to get the final vector. As a concrete example for $n=2$:
+
+:::success
+**Concrete $2 \times 2$ Example**:
+
+$\begin{array}{rrll}
+    A'    &=& (a_{11},\ a_{12},\ a_{21},\ a_{22})\\
+    B'    &=& (b_{11},\ b_{21},\ b_{12},\ b_{22})\\
+    B''   &=& (b_{12},\ b_{22},\ b_{11},\ b_{21})\ =\ \mathtt{cycle}(B',\ n=2)\\
+    X     &=& (1,0,0,1)\\
+    \overline{X} & = & (0,1,1,0) \\
+    C_x &=& A'*B' = (a_{11}b_{11},\ a_{12}b_{21},\ a_{21}b_{12},\ 
+              a_{22}b_{22})\ \\
+    C_y &=& A'*B'' = (a_{11}b_{12},\ a_{12}b_{22},\ a_{21}b_{11},\
+              a_{22}b_{21})\ \\
+    C_x'  &=& \mathtt{partsum}(C_x,\ 2)\\
+          &=& (a_{11}b_{11}+a_{12}b_{21},\ a_{11}b_{11}+a_{12}b_{21},\
+              a_{21}b_{12}+a_{22}b_{22},\ a_{21}b_{12}+a_{22}b_{22})\\
+    C_y'  &=& \mathtt{partsum}(C_y,\ 2)\\
+          &=& (a_{11}b_{12}+a_{12}b_{22},\ a_{11}b_{12}+a_{12}b_{22},\
+              a_{21}b_{11}+a_{22}b_{21},\ a_{21}b_{11}+a_{22}b_{21})\\
+    C_x'*X&=& (a_{11}b_{11}+a_{12}b_{21},\quad 0,\quad 0,\quad 
+              a_{21}b_{12}+a_{22}b_{22}) \ =\ C_x''\\
+    C_y'*\overline{X} &=& (0,\quad a_{11}b_{12}+a_{12}b_{22},
+              \quad a_{21}b_{11}+a_{22}b_{21},\quad0) \ =\ C_y''\\
+    C_x''+C_y'' &=& (a_{11}b_{11}+a_{12}b_{21},
+              \ a_{11}b_{12}+a_{12}b_{22},
+              \ a_{21}b_{11}+a_{22}b_{21},
+              \ a_{21}b_{12}+a_{22}b_{22})\\ 
+          &=& C'\\
+\end{array}$
+:::
+
+It seems premature to go too deeply into this representation as it seems more complex and might use more memory by default because of the longer vectors.

@@ -1,0 +1,15 @@
+## II.2 Higher Moments 
+
+Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently. Define the $k$-th **(raw) moment** to be the expectation of the $k^{th}$ power of the random variable $X$ (let vector $x$ be a series of $n$ sample measurements): $$E[X^k]=\frac{1}{n}(x_1^k+x_2^k+\dots+x_n^k).$$
+
+
+First, while we can naively obtain $(x_1^k, \ldots, x_n^k)$ in $O(k)$ time by repeated multiplication, it is faster to 
+1. compute via the "fast squaring trick" $$ X \rightarrow X*X \rightarrow \cdots \rightarrow X * \cdots * X (k \text{ times}) $$ in $O(\log(k))$ operations. 
+2. Then, performing the sum operation from the previous section allows us to get the vector $(x_1^k + \cdots + x_n^k) \cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ more operations. 
+3. Finally, we can divide by $n$ (a known constant) by multiplying by the vector $(1/n) \cdot (1, 1, \cdots, 1)$.
+
+We are naturally able to compute the following variations:
+1. **central moment**: The $k^{th}$ central moment of $X$ about mean $\mu$ is $$E[(X-\mu)^k]=E[(X-E[X])^k].$$ Note: The $2^{nd}$ central moment is used to calculate the variance:
+$$\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.$$ We can expensively calculate $\sqrt{\mathtt{var}(X)} = \sigma$, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see **square roots** later)
+2. **standardized moment**: This is the same idea as the central moment but $X-\mu$ is scaled by the standard deviation $\sigma$ before exponentiation:
+$$E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].$$

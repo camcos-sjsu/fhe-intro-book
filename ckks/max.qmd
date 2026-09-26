@@ -1,0 +1,30 @@
+## IV.3 Max Function
+
+As a consequence of (any) sorting we get the max function for free, since a single $n-1$ bubble pass has allowed the largest element to "float" to the rightmost element. A reversed setup reveals the minimum value if desired. An $n$-length mask vector $(0, 0, \dots, 0, 1)$ can be used to isolate the maximum if needed. A dot product or intravector sum can then be used to collapse the resulting vector into the maximum element as a single scalar.
+
+However, if we *just* want the max function, we can do quite a bit better and get it in $O(\log(n))$ time. The idea is to separate the vector into $n/4$ bubbles, and on each turn act in a way that moves the max into the "better half" of the remaining "contenders for the max", like a tournament. This is similar to using our bubbles $(i,j)$ encoded by $c_i$ and $c_j$, but instead of using $1$-hot vectors, we will generalize $c_*$ to be $0$-$1$ vectors to do more comparisons at the same time.
+
+Let $x = (x_1, \ldots, x_{n/2})$. We iterate on $i$, starting with $i = 0$.
+1. At the start of iteration $i$, construct constant binary vectors $c_L$ and $c_R$ which have a 1 at every index $k$ that satisfies  $k = 2^{i+1} - 2 \pmod {2^{k+1}}$ for $c_L$, and $k = 2^{i+1} -1 \pmod {2^{i+1}}$ for $c_R$,
+    - On the first iteration $i=0$, we have $c_L = (1,0,1,0,\cdots)$ and $c_R = (0,1,0,1,\cdots)$.
+    - On subsequent iterations the $1$s are separated by double the distance per iteration. For example, for $i = 2$, the period will be $8$: $c_L = (1,0,0,0,0,0,0,0,1,\cdots)$.   
+    - The $c_L$ and $c_R$ will match up pairs of numbers, acting as a kind of simultaneous bubble.
+5. We now match up the bubbles by splitting the relevant entries into two vectors holding the two halves of the bubbles, and cycling the left half so it matches the right:
+    - Construct vectors $L' = x * c_L$ and $R = x * c_R$.
+    - On iteration $i$, let $L := \mathtt{cyc}_{2^{i+1} - 1}(L')$.
+    - Compute $c = L - R$. This will give a vector populated by zeros, and $L_i - R_i$ in populated index positions $i$. 
+    - In $c$, any positive values in c represent index positions where the $L$ value is larger, and vice-versa for negative values and $R$.
+9. We now create a vector with only the "winners" in their respective positions.
+    - Compute $e = L * \mathtt{sign}{(c)}$. This contains only $L$ values that were greater in their respective bubble comparisons.
+    - Similarly, computing $f = b * (0 - \mathtt{sign}{(c))}$ will return a vector of only $0$'s and $R$ values that were greater in their respective comparisons.
+    - $x' := e + f$ gives a vector with only the winners from each respective bubble. 
+13. Treating $x'$ as the new $x$, after $\log_2(n/2)$ iterations $x$ will only have the max of the original $x$, in the rightmost position.
+    - We note that after iteration $i-1$ and before iteration $i$, the new $x$ will have nonzero entries only in places (indexed starting at $0$) whose binary expansions have $i$ $0$s at the right. For example, after the first iteration only the even indices will have nonzero entries; the other "loser" entries have been eliminated.
+
+:::info
+**Remark**: an immediate "improvement" is that we do not actually need to make these different $C_L$ and $C_R$; 
+1. We can keep $c_L = (1,0,1,0,\cdots)$ and $c_R = (0,1,0,1,\cdots)$ the whole time;
+2. If we do this, then we will still get the same comparisons that lead us to the max in this algorithm, however, the other $1$'s will be doing something with the "eliminated" entries, which we can ignore.
+
+Thus, overall we can be more effcicient by doing less, though we kept our exposition since we think it does a better job of focusing on the key comparisons.
+:::

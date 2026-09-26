@@ -1,0 +1,33 @@
+<!-- 
+# VIII. Literature Review
+
+WIP– add misc. reflections on "Quo Vadis.." paper and other literature as appropriate 
+
+During our exploration, we found a paper that we believe to be of great relevance and value here: "Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations" from Prantl et al. (2025)[^quo].  Our understanding of and reflections on this work are as follows:
+
+- uses openfhe 👏 
+- **metrics** : multiplicative dpeth , precision bits
+    - precision bits: decrypted ciphertext precision
+        - dependent on og precision & actual numbers being multiplied
+- evaluates **without bootstrapping** only degree 25 possible
+
+polynomials 🔺
+- newton interpolation with chebyshev nodes
+- chebyshev
+    -  goat accuracy
+- de bello
+  - good accuracy , close to goat
+   - good across many intervals including with gaps
+- remez
+  - doesn't always find polynomial for range
+  - good precision bits, esp on large intervals
+  - wins on tight polynomial degree budget
+- hermite
+  - not notable
+
+functions & picks
+- sqrt() - chebyshev, de bello
+- 1/x - de bello
+- log() - chebyshev 
+- log() near 0 - de bello
+- exp() - de bello, chebyshev

@@ -1,0 +1,36 @@
+## VI.1 Two Coefficients
+
+Given vectors $x$ and $y$, there are $2$ closely related quantities:
+1. The **correlation coefficient**[^cc], a measure of normalized linear association, is $$ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.$$
+    Often people are instead interested in the square $r^2$, which is called the **coefficient of determination**[^cod].
+3. The **regression coefficient**[^lr], a measure of linear rate of change, is $$\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_i-\bar{x})^2}$$
+
+[^cc]: **Correlation coefficient** available from https://en.wikipedia.org/wiki/Correlation_coefficient
+[^cod]: **Coefficient of determination** available from https://en.wikipedia.org/wiki/Coefficient_of_determination
+[^lr]: **Linear regression** available from https://en.wikipedia.org/wiki/Linear_regression
+
+These can be approached with the same general strategy:
+1. compute the means $\bar{x}$ and $\bar{y}$ and subtract them off from the original vectors;
+2. compute the numerators and denominators separately;
+3. divide (which might be costly).
+
+With some more detail:
+
+Given $x$ and $y$, we can compute vectors that contains their means: $x_m=(\bar{x}, \bar{x}, \cdots)$ and $y_m(\bar{y},\bar{y}, \cdots)$. Then we can subtract to obtain 
+$\begin{align}x'&=(x_1,x_2,\dots,x_{N/2})+(\bar{x})*(-1,-1,\dots,-1) \\
+&=(x_1-\bar{x}, x_2-\bar{x},\dots,x_{N/2}-\bar{x})\end{align}$
+and similarly
+$\begin{align} y'=(y_1-\bar{y}, y_2-\bar{y},\dots,y_{N/2}-\bar{y})\end{align}$
+
+Our task for $r$ then (the work for the regression coefficient is similar) becomes computing
+$$ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\sum_{i=1}^{N/2}(y'_i)^2}} $$
+
+1. The numerator is the intra-vector sum of $(x')*(y')$, which we know how to compute.
+2. The denominator is the square 
+of the (scalar) product of two intravector sums of $(x')^2$ and $(y')^2$.
+3. Finally, we need to do a division.
+
+:::info
+
+**Remark**: as usual (for the correlation coefficient; the regression coefficient is similar), we can avoid the possibly costly division and square roots for $r$ by giving the user the numerator and the *square* of the denominator separately and have the user compute the coeffcient. If we are willing to do the division but want to save a square root, we can just give them $r^2$ instead.
+:::

@@ -1,0 +1,11 @@
+## II.3 Taylor Approximation (and Exponentiation)
+
+Beyond our base moves, many functions which are of interest to us can be approximated with **Taylor approximation**: approximate a function by the first few terms of its power series. This is fairly straightforward in CKKS, involving only a combination of basic moves: additions, powers (multiplications), and scalar divisions. 
+
+We show the Taylor approximation of the **exponential function** as an illustrative example:
+$$e^z \approx \sum_{k=0}^{N} \frac{z^k}{k!} = 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \dots + \frac{z^N}{N!}$$
+
+Our main thoughts on Taylor approximation are:
+1. In a purely mathematical setting, a higher $N$ results in higher accuracy, yet in FHE, too large of an $N$ can result in lower accuracy as noise accumulates. We desire a middle-ground $N$ that produces a close approximation while mitigating cost and noise concerns.
+2. We need to have a good sense of where our input lies for convergence assumptions. In general, there is a radius of convergence for $z$ (or $x$), which in the exponential case is infinite. But even within the radius of convergence you may in practice want the assumed domain to be even tighter for faster convergence.
+3. In several cases, it seems possible to employ "range reduction" techniques to tighten domains.  For example, here we can make $x$ smaller using $e^x = (e^{x/k})^k$ -- in other words, we approximate $e^{x/k}$ then compute the $k$-th power of the result. Even better, when applicable, we may just pass the $k$-th power computation to the client. 

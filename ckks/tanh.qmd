@@ -1,0 +1,25 @@
+### Hyperbolic Tangent
+
+Also belonging to the sigmoid family is the hyperbolic tangent function[^ht]: $$\tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}=\frac{1-e^{-2x}}{1+e^{-2x}}$$
+
+[^ht]: **Hyperbolic functions** available from https://en.wikipedia.org/wiki/Hyperbolic_functions
+
+where $e^{-2x}\approx1-2x+\frac{4x^2}{2!}-\frac{8x^3}{3!}+\cdots$ ,
+
+$$\tanh(x)\approx\frac{2x-\frac{4x^2}{2!}+\frac{8x^3}{3!}-\cdots}{2-2x+\frac{4x^2}{2!}-\frac{8x^3}{3!}+\cdots}=\frac{2x}{2}*\frac{1-\frac{2x}{2!}+\frac{4x^2}{3!}-\cdots}{1-x+\frac{2x^2}{2!}-\frac{4x^3}{3!}+\cdots}$$
+
+Using the same trick as we did with the logistic expansion, we build a geometric series:
+
+$$r = \Big(-x+\frac{2x^2}{2!}-\frac{4x^2}{3!}+\cdots\Big)$$
+
+$$\frac{1}{1+r}=\frac{1}{1-(-r)}=1-r+r^2-r^3+\cdots$$
+
+After plugging back in,
+$$\tanh(x)\approx x*\Big(1-\frac{2x}{2!}+\frac{4x^3}{3!}-\cdots\Big)*(1-r+r^2-r^3+\cdots)$$
+Computing powers of $r$, simplifying terms then finding the least common multiple for up to power $9$,
+$$\tanh(x)\approx \frac{2835x-945x^3+378x^5-153x^7+62x^9}{2835}-\cdots$$
+
+This series has a radius of convergence $\pi/2$, so it will tolerate less distance between points than the logistic (but possibly require more precomputation).
+
+![tanh_by_k_steepness](https://hackmd.io/_uploads/Skm4LV9Zfe.png)
+**Figure**: different graphs of the function $\tanh(kx)$  with steepness parameter $k$.

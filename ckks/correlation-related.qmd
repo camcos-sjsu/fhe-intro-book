@@ -1,0 +1,3 @@
+# VI. Correlation and Related Functions
+
+This section constructs the correlation and regression coefficients, then extends to simple and multiple linear regression.

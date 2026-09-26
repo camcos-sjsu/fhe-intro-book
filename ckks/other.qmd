@@ -1,0 +1,3 @@
+# VII. Other Explorations
+
+Here, we collect some miscellaneous functions and extensions of previous sections we found interest in during our explorations.

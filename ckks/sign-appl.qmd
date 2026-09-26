@@ -1,0 +1,48 @@
+### Sign Applicability
+
+Here we provide the windows in which our (naive) implementation of sign (via logistic function approximation) has an error of $10\%$ or less. Error is calculated based off of a target of $0$ or $1$. The target is set to $0$ for an input $x \lt \frac{1}{2}$ and $1$ for input $x \gt \frac{1}{2}$. The error is the absolute difference between the target and approximate values expressed as a percentage. 
+
+| `k` | Left band | Right band | Window width |
+|----:|:---------:|:----------:|:------------:|
+|  1  | [-2.543, -2.210] | [2.210, 2.543] | 0.333 |
+|  2  | [-1.272, -1.105] | [1.105, 1.272] | 0.167 |
+|  4  | [-0.636, -0.553] | [0.553, 0.636] | 0.083 |
+|  8  | [-0.318, -0.277] | [0.277, 0.318] | 0.041 |
+| 16  | [-0.159, -0.139] | [0.139, 0.159] | 0.020 |
+| 32  | [-0.079, -0.070] | [0.070, 0.079] | 0.009 |
+| 64  | [-0.040, -0.035] | [0.035, 0.040] | 0.005 |
+
+![sigmoid_accuracy_ring](https://hackmd.io/_uploads/rJfsCM9ZMg.png)
+
+
+Now we present the analogous accuracy windows for hyperbolic tangent as previously described for the logistic function. Error is calculated in the same manner. 
+
+It is worth noting that these accuracy windows are about half the size compared to those of the logistic function. This is due to the radii of convergence being $\pi/2$ and $\pi$ for hyperbolic tangent and logistic respectively. Hence, hyperbolic tangent is naturally steeper than logistic and approximates the real value faster on a similar interval.
+
+| `k` | Left band | Right band | Window width |
+|----:|:---------:|:----------:|:------------:|
+|  1  | [-1.272, -1.105] | [1.105, 1.272] | 0.167 |
+|  2  | [-0.636, -0.553] | [0.553, 0.636] | 0.083 |
+|  4  | [-0.318, -0.277] | [0.277, 0.318] | 0.041 |
+|  8  | [-0.159, -0.139] | [0.139, 0.159] | 0.020 |
+| 16  | [-0.079, -0.070] | [0.070, 0.079] | 0.009 |
+| 32  | [-0.040, -0.035] | [0.035, 0.040] | 0.005 |
+| 64  | [-0.020, -0.018] | [0.018, 0.020] | 0.002 |
+
+![tanh_accuracy_ring](https://hackmd.io/_uploads/SkjYRz9WGe.png)
+
+
+
+:::info
+**Remark**: we can see a higher $k$ compresses the interval of high accuracy towards 0. We note that given the right compression method for a dataset we could approximate a reasonable sign value for the whole dataset. Requiring a user input of known maximum and minimum value of the input (beyond $(-\infty,\infty)$ ) would support this scaling. [^prantl]
+:::
+
+Within our current experimentation we found the window of high accuracy convergence scaled in proportion to the window of convergence, roughly $15\%$ of the observed data. 
+
+### Inequality and Equality
+
+Inequality and sign functions are essentially equivalent. If we have an useful sign function, we can effectively do an "inequality" function as follows:
+$$(x > a) := \mathtt{sign}_{0, 1, a} (x),$$ which returns $1$ for each element $x_i$ of the vector $x$ if $x_i > a$ or $0$ otherwise. Of course, problems may happen very close to $a$, so one must be careful while using it in the construction of other operations.
+
+With this, we can do an "equality" function. Because we are doing floating point arithmetic, it is inadvisable to do a "true equality" check, so what we mean when we say "$x$ is equal to $a$" means that their difference is small (up to an error $\epsilon$). This can be done via
+$$(x == a) := (x > a-\epsilon) * (x < a+\epsilon),$$ which gives $1$ exactly when both conditions are met; that is, $x$ is within $\epsilon$ of $a$ and $0$ otherwise. As an example, $$(x_i == 0) := (x_i\ge-0.01)*(x_i\le0.01)$$  obtains a $0$-$1$ vector, which has $1$ in place $i$ if and only if $x_i$ is close (within $0.01$) to $0$.

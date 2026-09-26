@@ -1,0 +1,22 @@
+## V.1 Mode
+
+Obtaining the mode should be a bit easier for discrete values (it would be similar to bucketing), so we approach the continuous case, given a vector $z$ with assumed real values for simplicity.
+
+Here we compute the difference matrix for $x_i$, which results in a matrix (stored as row vectors).
+
+\begin{array}{c|ccccc}
+  & x_1 & x_2 & x_3 & \cdots & x_{N/2} \\
+\hline
+x_1 & 0 & \delta_{1,2} & \delta_{1,3} & \cdots & \delta_{1,N/2} \\
+x_2 & \delta_{2,1} & 0 & \delta_{2,3} & \cdots & \delta_{2,N/2} \\
+x_3 & \delta_{3,1} & \delta_{3,2} & 0 & \cdots & \delta_{3,N/2} \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+x_{N/2} & \delta_{N/2,1} & \delta_{N/2,2} & \delta_{N/2,3} & \cdots & 0
+\end{array}
+
+Note: Some of the non-diagonal elelents $\delta_{i,j}$ can also be $0$. For instance, we expect the most nondiagonal zeros in the row of the mode $x_i$.
+
+Now, the idea here is to check every $x_i$ and then look for the one with the most number of (approximate) zeros. This will correspond to the mode. Specifically,
+1. for every $x_i$, we can compute $$y_i := (x_i == 1)$$ on it (element-wise) to get a $0$-$1$ vector $y_i$ that has a number of $1$s equal to the terms approximately equal to $z_i$. 
+2. Now we compute $$s_i = \mathtt{sum}(y_i)$$ to get these counts (see II.1 for how to compute sums).
+3. Computing a max over this would get the mode.

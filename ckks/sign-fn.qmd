@@ -1,0 +1,12 @@
+## IV.I Sign Function
+
+In many function constructions it would be of great value to have conditional logic, however, this is not immediate or straightforward in the CKKS setup. Though, we see an opportunity to do things in a "branchless" way via algebra. As a proof-of-concept (and a very important tool), we show computational approaches for a **sign** function that gives one of two possible values. Later we will use this function to build more powerful functions. 
+
+1. We think of a "basic" sign function as a function $\mathtt{sign}(x)$ assigning a value of $0$ or $1$ depending on whether the input is respectively negative or positive. 
+    - It is useful to think of the output value $1/2$ as a "necessary" evil for when the input is extremely close to $0$ (this will basically be a necessity since our computations are inherently continuous). In practice, we will try to avoid those values as purposefully appearing in our computations.
+2. We can generalize into any Heaviside-type function[^heavi] that takes two possible values via the following: $$\mathtt{sign}_{a,b,c}(x) = a + (b-a)\mathtt{sign}(x-c),$$ which gives values $a$ for $x < c$, $b$ for $x > c$, and $(a+b)/2$ for $x = c$ (though it is advised to avoid being dependent on the "true equality" case). We can then think of the "original" $\mathtt{sign(x)}$ as $\mathtt{sign_{0,1,0}(x)}$.
+
+
+[^heavi]: **Heaviside step function** available from https://en.wikipedia.org/wiki/Heaviside_step_function
+
+To approximate this naturally discontinuous function, we present two smooth avenues in the sigmoid family:

@@ -1,0 +1,42 @@
+## VII.4 Logarithm (Revisited)
+
+In Section I we showed how to get logarithms via Taylor expansion. In addition to that standard approach, we explored a distinct iterative method that seems interesting, though not immediately practical, using some niceness particular to the log function.
+
+Suppose we have 
+$$ n \leq \log_2(x) < n+1, $$
+using the inverse relationship between the logarithm and exponentiation, this can be rewritten as: 
+$$ 2^n \leq x < 2^{n+1}.$$
+If we define $m = \frac{x}{2^n}$ (so $x = m \cdot 2^n$), we can divide both sides by $2^n$ to obtain 
+$1 \leq m < 2$. Using $m$, we can write
+$$ \log_2(x) = \log_2(m \cdot 2^n). $$
+This effectively breaks up the log into two components: a real and a fractional part, which can be treated separately. In other words, this is noticing that if $x = m \cdot 2^n$, where $m \in [1,2)$, then $$\log_2(x) = \log_2(m \cdot 2^n) = n + \log_2(m).$$
+
+As a first iteration of this strategy, we can approximate only in the range $[1,2)$ and add back a scaling factor later. As an example, to compute $log_2(20)$, we can compute $log_2(1.25)+4$ instead. The $n$ part can be given or "solved for" in a method similar to the previous section VII.3 to "detect" the largest $n$ such that $2^n < x$. 
+
+With the strategy just mentioned, we break the log function into an integer and fractional part. Afterwards, we can deal with the fractional part with a "fixed point iteration" method using binary representations.
+
+Suppose $y = \log_2(m)$, and written as $y = 0.b_1b_2b_3\cdots,$ (in other words, $y = b_1/2 + b_2/4+b_3/8 \cdots$). Note that if we square $m$, $y$ shifts by exactly one decimal point to
+$$2y = b_1.b_2b_3b_4\cdots.$$ 
+
+As a result, we are able to find the binary represenation, one bit at a time. For example, if $u = m^2$, then $u \in [1^2, 2^2) = [1,4)$. This allows for $\log_2(u) \in [0,2)$ This process helps us create our iteration: 
+$$
+|b_k| = \begin{cases}
+    0, & \text{if } u_k < 2 \rightarrow \log_2(u_{k-1}) < 1 \\
+    1, & \text{if } u_k \ge 2 \rightarrow \log_2(u_{k-1}) \ge 1
+\end{cases},
+$$
+after which we can recover 
+$$
+\sum_{i=-m}^{k} b_i \, 2^i, \quad \text{where } b_i \in \{0,1\}.
+$$
+
+:::success 
+**Concrete Example**: we work through some explicit initial iterations as an illustrative practice.  Take $x=0.75$.  We aim to obtain an approximation of $\log_2(0.75)$.  Rewriting $x$ in the desired form $x = m * 2^n$, we see that $n = -1$ and $m = 1.5$.  
+
+In the first iteration, squaring $m$ gives $2.25>2$ hence the first bit is $1$, and we must renormalize, dividing $2.25$ by $2$ resulting in $1.125=u_1$.  For the second iteration, squaring $1.125$ we get $1.265625<2$ so our next bit is $0$ and we do not need to renormalize.  
+
+If we continue iterating twice more we would obtain the binary digits $1001$, which we interpret as the fractional part of a binary number, corresponding to the value $0.5625$.  This is our approximation for $\log_2(m)$.  We now add $n= -1$ to give an initial approximation for $x$ as $-0.4375$.  For reference, the actual value is approximately $-0.4150$.  We can get closer to the actual value of $x$ with a higher number of iterations, but recall that with more iterations, we naturally have performed more computations, so error accumulates.
+:::
+
+
+[^quo]: Thomas Prantl, Lukas Horn, Simon Engel, André Bauer, Samuel Kounev;  **Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations** available from  https://www.sciencedirect.com/science/article/pii/S2214212625001474 

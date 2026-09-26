@@ -1,0 +1,163 @@
+[WIP]
+-->
+
+# Appendix A. Discrete Computational Models
+
+Here's a proof-of-concept of a different computational model where the entries represent discrete numbers instead of general complex/real numbers. 
+
+In this computational model, each ciphertext vector with length $n/2$ stores $n/(2k)$ numbers, using $k$ components to store each number.  The user supplies not only (or instead of, but it seems fairly cheap to have both representations) $x$, but also the digits of $x$ (assuming integers for simplicity, maybe $x = (x_{k-1} \cdots x_0)|_b$ in base $b$, and each $x_i$ represents an element of $\{0, 1, \ldots, b-1\}$.
+
+We show an example of how the inequality function is simpler in this model, then discuss other uses such as the sign function and multiplication. In our github repo (https://github.com/fieldextension/discrete-methods) we show how our methods can be used to sort numbers with very little floating point error.
+
+### A Binary Approach to Inequality and Sorting
+
+For this example, assume $b=2$ so things are stored in binary. We will show that the inequality function can be done "exactly" as polynomials instead of approximated with a Taylor expansion.
+
+1. When $x$ and $y$ are *single bits*, the equality function $(x == y)$ is an algebraic condition $$(x==y) := \frac{1}{2}(xy + (1-x)(1-y)),$$ 
+2. and whether $(x > y)$ is also an exact condition, namely $$(x > y) := (x==1) * (y==0);$$
+3. Therefore, when $x$ and $y$ are $k$-bit numbers (assuming positive), we can write $x > y$ as an OR (and thus a polynomial) of the following values:
+    - $(x_{k -1} > y_{k-1})$ OR
+    - ($(x_{k-1} == y_{k-1})$ AND $(x_{k-2} > y_{k-2})$) OR
+    - ($(x_{k-1} == y_{k-1})$ AND $(x_{k-2} == y_{k-2})$ AND $(x_{k-3} > y_{k-3})$) OR ...
+This is simply *some* polynomial in the $x_i$ and $y_i$, so it is obtainable under FHE. 
+
+Thus, doing inequalities with high accuracy at least becomes possible when we do binary operations. The (high!) tradeoff is that adding and multiplying become difficult (due to carries). But if we are only doing comparative work, then much of the sorting / maxing related operations in Section IV becomes very viable. 
+
+
+### Modular Operations
+
+For higher bases, we are effectively doing modular arithmetic. The problem is we are storing integers. Thankfully, the fact we are using complex numbers allow us to "modularize" fairly painlessly. We give a sketch of this approach:
+1. Suppose we wanted to add or multiply numbers "mod N" (for this, we are agnostic to whether the numbers are digits of a single number or just different numbers we want to add / multiply in batch; things like carrying need to be dealt with separately). Then we can perform the algebra and end up with some results in $\mathbb{Z}$. Then,
+2. Compute $e^{2\pi i z/N}$ on the vector (specifically, first multiply the vector by $2\pi i/N$, then compute $(1 + z + z^2/2 + \cdots)$ as usual)
+3. Then compute $\log()$ to undo the computation, which will get us (with the correct branch) integers back in $\{0, \ldots, N-1\}$ after multiplying back by $N/(2\pi i)$. The convergence of this will be quite good as the numbers will be far from $0$ after step $2$. 
+
+In this representation, the sign function (and inequality, etc.) can be viewed as discrete polynomials.
+
+:::success
+**Concrete Example**: suppose we wanted a function to return $1$ for all elements at least $3 \pmod {7}$ and $0$ otherwise:
+1. Recall from Lagrange interpolation that if we want to send $a$ to $1$ and the other elements to $0$, we can just use the function $f_a(x) = (x-0)(x-1)\cdots(x-a+1)(x-a-1)\cdots (x-p+1)$ (suitably scaled to obtain 1).
+2. Add the functions for $f_3 + \cdots f_6$ to obtain a function that evaluates to $1$ on $3, 4, 5, 6$ but $0$ on the others.
+3. (this can be done for any function on $\mathbb{Z}/7\mathbb{Z}$)
+:::
+
+### Roots of Unity 
+
+Yet another possible variation is to store the numbers as *roots of unity*. Let $\zeta$ be a primitive $N$-th root of unity for some fixed prime $N$. Then we represent $a$ by $\zeta^a$ for $a \in \{0, 1, \ldots, N-1\}$. Then we can do **modular addition** mod $N$ via multiplication: $$(\zeta^k)(\zeta^l) = \zeta^{k+l}.$$ However, **modular multiplication** becomes much more difficult. 
+
+## Appendix B: An Application to Sorting
+
+We combine some of the previous tricks to do a more robust sorting, to showcase the capabilities of Appendix A.
+
+### Index To One-Hot
+
+Using roots-of-unity, we can do a one-hot conversion function (this will be used later for sorting). Specifically, given a ciphertext input for integer $i$, stored in root-of-unity form (from this point we use $\sqrt{-1}$ to distinguish from $i$)
+$$
+\zeta^i = e^{2\pi i \sqrt{-1}/k},
+$$
+where $\zeta = e^{2\pi \sqrt{-1}/k},$ we wish to create a one-hot vector $v$ which is $1$ in the $i$-th coordinate and $0$ elsewhere. We can do this as follows:
+
+1. Create a vector $v'$ whose $j$-th coordinate is $\zeta^{-j}$.
+2. Multiply entrywise by $\zeta^i$: $v'' = v' \cdot \zeta^i.$
+3. Then the $j$-th coordinate of $v''$ is $\zeta^{i-j}$. In particular, the $i$-th coordinate is (1), while every other coordinate is a nontrivial $k$-th root of unity.
+4. For each entry $w$ of $v''$, compute $$1 + w + w^2 + \cdots + w^{k-1}.$$ This expression equals $k$ if $w = 1$ and equals $0$ if $w$ is a nontrivial $k$-th root of unity. 
+5. Therefore, after dividing by $k$, we obtain the desired vector $v$.
+
+### Comparison and Extended Binary Numbers
+
+In this section, we show we can compare an input integer ciphertext $c$ with $0$, meaning a function which outputs $1$ if $c > 0$ and $0$ otherwise. (it will be clear how to do variants of this, such as with nonstrict inequalities). Our main trick is to use what we call the **extended binary expansion** of $c$.
+
+Define $S_1 := {-1,0,1}.$ We say that a number $a$ is in **extended binary** form if it is represented as
+$$
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+$$
+
+where each digit satisfies $a_i \in S_1.$ 
+
+:::info
+**Remark ($S_1$): The main intuition is this: we need the slightly larger digit set $S_1$ because the difference of two ordinary binary numbers has digits in $\{-1,0,1\}$. This avoids needing to perform carrying, which is hard in CKKS.
+:::
+
+Now:
+1. Assume that we have the extended binary digits of $c$ as $c_0, c_1, \ldots, c_{b-1},$ in little-endian order, where each $c_i \in S_1$.
+2. We construct the functions “$\geq 0$” and “$=0$” on the finite set $S_1$. Since $S_1$ is finite, these functions are polynomials on $S_1$! (furthermore, with operations that are not likely to accumulate a lot of floating point error)
+    - For example, on $S_1$, the function $\mathbf{1}_{x > 0}$ is given by $$ \frac{x^2+x}{2}. $$ Indeed, this is $0, 0, 1$ at $x=-1, 0, 1$ respectively.
+    - Similarly, the function $\mathbf{1}_{x=0}$ is given by $1 - x^2.$
+3. This allows us to construct a comparison function on the space of extended binary numbers. The key logic is that an extended binary number $$ a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1} $$ is positive if and only if at least one of the following events occurs: $$
+a_i = 1 \quad\text{and}\quad a_{i'} = 0 \text{ for all } i' > i. $$ In words: the most significant nonzero digit of (a) is positive.
+
+Therefore,
+
+$$
+\mathbf{1}_{a>0} = \bigvee_{i=0}^{b-1}
+\left(
+(\mathbf{1}({a_i=1})
+\wedge
+\bigwedge_{i' > i} \mathbf{1}({a_{i'}=0})
+\right).
+$$
+
+The logical AND and OR operations can themselves be written as polynomials on Boolean values:
+
+$$
+A \wedge B = AB,
+$$
+
+and
+
+$$
+A \vee B = 1 - (1-A)(1-B).
+$$
+
+Thus the comparison function can be implemented as a polynomial in the extended binary digits.
+
+Since the intermediate values are essentially Boolean or integer-valued, this construction avoids the main numerical instability of trying to compare arbitrary real CKKS values directly.
+
+### Sorting
+
+Now we are ready to do sorting. Specifically, take $k$ inputs and return a sorted vector. As a corollary, this makes it easy to read off the median, maximum, minimum, and other simple summary statistics.
+
+For simplicity, we make the following assumptions.
+
+1. The inputs are distinct.
+2. We have $k = 2^s$ for some integer $s$, and $2 \cdot 2^s < S,$ where $S$ is the number of slots per ciphertext.
+3. The inputs are nonnegative integers in some fixed range. For simplicity, assume $c_j \in {0,1,\ldots,2^b-1}$ for some positive integer $b$.
+
+Now we give the algorithm.
+1. Start with the ciphertext numbers to be sorted: $c_1, c_2, \ldots, c_k.$
+2. Create $b$ batched extended binary base-vectors
+$c_0, c_1, \ldots, c_{b-1},$ where $c_{ij}$ is the $i$-th binary digit of $c_j$, in little-endian order. Thus, for example,
+$$
+c_{03} + 2c_{13} + 4c_{23} + \cdots = c_3.
+$$
+3. By the comparison trick, we can construct a polynomial comparison function on extended binary numbers of the form $$
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+$$ where each $a_i \in S_1 = \{-1,0,1\}$.
+4. Given the $k$ ciphertexts, construct $b$ length-$k^2$ ciphertexts $d_0, d_1, \ldots, d_{b-1}$ from the base-vectors, so that the extended binary number represented at coordinate $j = xk + y$ is $c_x - c_y.$ In other words, the vectors $d_*$ represent all pairwise differences between the inputs. Since each $c_x$ and $c_y$ is represented in ordinary binary, each digit of the difference $c_x - c_y$ lies in $S_1$.
+5. Apply the comparison function in batch to all $k^2$ pairwise differences. This produces a vector $d$ such that
+$$
+d_{xk+y} =
+\begin{cases}
+1, & c_x > c_y, \\
+0, & \text{otherwise}.
+\end{cases}
+$$
+6. From this comparison matrix, compute the rank index of each $c_j$. Namely, the index of $c_j$ is the number of inputs smaller than it: $$ \operatorname{Ind}(j) = 
+|\{x : c_j > c_x\}|.
+$$ This can be obtained by summing the appropriate entries of the comparison matrix. However, instead of summing ordinary (0)-(1) comparison values, transform the comparison outputs so that a positive comparison contributes
+$$
+\zeta = e^{2\pi \sqrt{-1}/k}
+$$
+instead of $1$, while a non-positive comparison contributes $1$. Then multiply these contributions rather than adding them. This gives the index in root-of-unity form:
+$$
+\zeta^{\operatorname{Ind}(j)} = e^{2\pi \sqrt{-1}\operatorname{Ind}(j)/k}.
+$$
+8. Now apply the index-to-one-hot trick to each ($\zeta^{\operatorname{Ind}(j)}$. This gives, for each input $c_j$, a one-hot vector $o(j)$ supported in coordinate $\operatorname{Ind}(j)$.
+9. Finally, compute $\sum_{j=1}^k c_j o(j).$ The result is the sorted vector.
+
+
+:::info
+**Summary**: 
+1. A discrete representation of numbers is useful to have as a substitute / in addition to the standard input. Can consider writing down the "digits" as integers or as the roots of unity.
+2. With each choice, certain things become much easier (or at least doable) such as the sign / inequality function, but certain things become harder as well (such as addition or multiplication).
+3. We give a proof-of-concept in the following repository: https://github.com/fieldextension/discrete-methods 
+:::

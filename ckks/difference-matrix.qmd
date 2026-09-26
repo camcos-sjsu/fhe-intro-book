@@ -1,0 +1,30 @@
+# V. Difference Matrix Method
+
+A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don't have. We introduce what we call the **difference matrix method** which will allow us to implement both statistics in a similar way (though still requiring tools from the Discrete Math section, especially Equality and Max).
+
+![median-mode.drawio (1)](https://hackmd.io/_uploads/rkgUFSP-ze.png)
+
+The method is as follows:
+
+Given a vector $z = (z_1, \ldots, z_{N/2})$, we construct an $(N/2) \times (N/2)$ matrix $D$ where $D_{i,j} = z_i - z_j$. We will call our matrix the **difference matrix.**
+
+:::info
+**Remark**: our method is general enough that we should be able to compute $D$ where $D_{ij} = f(z_i, z_j)$ for some function $f$. We mention this but do not use the more general method in this work.
+:::
+
+Here is how we would generate the difference matrix: 
+1. Assuming we are in the inter-vectors case, we can assume the $x_i$ are given as $u^{(i)} = (0, \ldots, 0, x_i, 0, \ldots, 0)$. 
+2. We can "broadcast" the $x_i$ into every entry by computing $$v^{(i)} := \mathtt{sum}(u^{(i)}) = (x_i, \ldots, x_i).$$
+3. Now we can separately compute:
+- $d_{i}=x-v^{(i)}=(x_1-x_i,x_2-x_i,\dots,x_{N/2}-x_i)$ for all $i$.
+- If we wanted the transpose instead, we can compute $d'_{i}=v^{(i)}-x=(x_i-x_1, x_i-x_2,\dots, x_i-x_{N/2})$.
+
+4. We can think of the matrix as the combination of these vectors, though we might also want to isolate the use of our $N/2$ "difference vectors" of the form $$d_{i} = (d_{i,1}, \ldots, d_{i,N/2}).$$
+
+:::info
+**Remark**: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following: 
+1. given an input vector $(x_1, \ldots, x_{N/2})$,
+2. define indicator vectors $c_i = (0,0,\dots,1_i,0\dots,0)$.
+3. Compute $x_i = \sum_{i=1}^{N/2}(c_i*x)$; this will isolate the $x$'s vector value at index $i$,
+4. ...and then the rest is the same as before.
+:::

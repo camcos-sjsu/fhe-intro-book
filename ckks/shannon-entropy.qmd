@@ -1,0 +1,37 @@
+## VII.2 Shannon Entropy
+
+Suppose we have a discrete random variable $X$ with possible outcomes $x_1,x_2,\dots,x_n$ each with corresponding probabilities $P(x_1), P(x_2),\dots,P(x_n)$. 
+
+The **Shannon entropy**[^sh] is defined as
+
+[^sh]: **Entropy (information theory)** available from  https://en.wikipedia.org/wiki/Entropy_(information_theory)
+
+$$H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i),$$
+
+where $P(x_i)$ represents the probability of each outcome $x_i$.
+
+First, commenting on the input:
+1. Shannon entropy only works on a probability distribution, so all the input must be non-negative and add up to 1.
+2. For sake of focus, we will assume that *this is already solved.* 
+3. Otherwise, this seems to be a routine case of a "normalization step" where each user input is divided by their sum, which is a combination of a **sum** and a **division** of the form
+$$
+P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}.
+$$
+
+We should then end up with a vector $x = (P(x_1), \ldots, P(x_n))$.
+
+Now, we need the logarithms of the probabilities. These can also be done in various ways; when applicable, we black-box the details, deferring to previous sections:
+1. we can use a Taylor series approximation, centered necessarily away from $0$.
+2. we can have the user simply give the $\log(x_i)$ as part of their input.
+
+In any case, we should end up with a vector $l$ with each $l_i = \log(P(x_i))$.
+
+Then it suffices to compute the element-wise product $x * l * (-1)$ to obtain a single vector, after which using a sum operation gives
+$$H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i)$$
+(or more precisely, a vector where every element is $H(x)$).
+
+The main difficulties while computing entropy arise in situations where $x_i = 0$. In this case, L'Hopitals rule dictates that the correct contribution of the $-P(x) \log P(x) = 0 * (\infty)$ should be $0$. We have two suggestions, and it is not clear to us which one is better (it is likely to be very implementation-dependent):
+1. "iron out" the eventual answer with multiplication by an $\texttt{equal(x_i, 0)}$ vector at the very end (before the summation), which would ensure all elements coming from an $x_i$ very close to $0$ actually contributes $0$;
+2. interrupt the computation right before the $\log()$ step by **adding** the $\texttt{equal(x_i, 0)}$ vector, which would switch the $x_i$s close to $0$ to close to $1$ (therefore making the $\log(x_i) \approx 0$.
+
+In production, any method would require extensive testing to prevent blowup.

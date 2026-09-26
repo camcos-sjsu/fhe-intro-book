@@ -1,0 +1,14 @@
+## VII.3 "Adaptive" Division
+
+We cannot do If statements, but we can *encode* If statements with sign functions. Here's a design that might work and require some testing, but gives an idea of how we might do "adaptive" computations unadaptively:
+1. For simplicity, we assume the number to invert, $x$, is positive and within the region $[1, 2^{16}]$.
+2. We try to make a function that is essentially "the largest power of $2$ smaller than $x$"
+
+Suppose we have an idealized sign function, then consider the following sum, where $(x > k) = \mathtt{sign}{(x-k)}$ is a sign indicator function (so it is $1$ if the comparision is TRUE, and $0$ otherwise):
+$$ - \frac{1}{2^{15}} (x > 2^{15}) - \frac{1}{2^{14}}(x > 2^{14}) + \cdots - \frac{1}{2}(x > 2) + 1.$$ Note:
+1. if $2 > x \geq 1$, it returns $1$ since none of the comparisons are true.
+2. if $4 > x \geq 2$, then it returns $1-1/2 = 1/2$.
+3. if $8 > x \geq 4$, then it returns $1 -1/2 - 1/4 = 1/4$.
+4. ...the idea is that it will return $1/2^n$ if it is between $2^{n+1}$ and $2^n$.
+
+This essentially creates a "guess" in $\log(b)$ steps (for transparency: each step is a sign call and so may be expensive), where $b$ is an upper bound of $x$. The method needs tweaking for numbers under $1$ or negative numbers, which we omit.

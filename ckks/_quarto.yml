@@ -9,10 +9,10 @@ book:
     - index.qmd
     - about.qmd
     - intro.qmd
-    - part: auxfn.qmd
+    - part: aux-fn.qmd
       chapters:
         - intravector-sums.qmd
-        - moments.qmd
+        - higher-moments.qmd
         - taylor-approx.qmd
         - sqrt-user-input.qmd
         - logarithm.qmd
@@ -32,20 +32,19 @@ book:
           - bubble.qmd
           - sort-improvements.qmd
       - part: max.qmd
-      - part: diff-matrix.qmd
+      - part: difference-matrix.qmd
         chapters:
           - mode.qmd
           - median.qmd
       - part: correlation-related.qmd
         chapters:
           - two-coeff.qmd
-          - linear-reg.qmd
+          - linear-regression.qmd
       - part: other.qmd
         chapters:
-          - dot-prod.qmd
-          - mat-mul.qmd
+          - matrix-multiplication.qmd
           - shannon-entropy.qmd
-          - adaptive-div.qmd
+          - adaptive-division.qmd
           - logarithm-rev.qmd
       - part: lit-review.qmd
       appendices:

@@ -1,0 +1,37 @@
+### Improvements to Sorting
+
+[^oe]: N. Habermann; **Parallel neighbor-sort (or the glory of the induction principle)** available from https://kilthub.cmu.edu/articles/journal_contribution/Parallel_neighbor-sort_or_the_glory_of_the_induction_principle_/6608258?file=12099395 
+
+We have found various ideas for improving the bubble sort algorithm. We sketch out the space of ideas and their pros and cons here; more detailed dives would make for good later explorations.
+
+First, instead of sorting one bubble at a time, like in the max case, we can perform several independent bubbles at the same time. A single bubble $\mathtt{bub_{i,j}}(x)$ only changes two coordinates, $x_i$ and $x_j$, so two bubbles can be computed in parallel as long as they do not overlap. For example,
+$$
+\mathtt{bub_{1,2}}(x)
+\quad \text{and} \quad
+\mathtt{bub_{3,4}}(x)
+$$
+are independent, since the first only uses coordinates $1,2$ and the second only uses coordinates $3,4$.
+
+If the active vector has length $N = n/2$, then one parallel layer can contain up to $n/4$ independent bubbles. This leads naturally to **odd-even sort** [^oe], which alternates between two adjacent transposition layers.
+
+Perform the odd layer:
+$$
+\mathtt{bub_{1,2}}(x),\ \mathtt{bub_{3,4}}(x),\ \mathtt{bub_{5,6}}(x),\ldots
+$$
+Perform the even layer:
+$$
+\mathtt{bub_{2,3}}(x),\ \mathtt{bub_{4,5}}(x),\ \mathtt{bub_{6,7}}(x),\ldots
+$$
+Repeat these alternating odd and even layers for $O(N)$ rounds.
+
+Each layer contains only disjoint pairs, so all bubbles inside that layer can be evaluated in parallel using vector-wide FHE operations. The total number of pairwise comparisons is still $O(N^2)$, but the  depth is only $O(N)$, which is a better approximation of cost in this setting because at each level many swaps are performed at once.
+
+
+1. To make this more effcicient we can upgrade to the **Batcher odd–even mergesort**,[^ken] which has $O(\log^2(n))$ depth.
+3. A similar type of improvement would be the very parallel **bitonic sort**.[^ken] Similar to odd-even mergesort, it has a depth of $O(\log^2(n))$, but is more parallel in struture and thus may be a better choice long-term. 
+
+[^ken]: K.E. Batcher; **Sorting networks and their applications** available from https://www.cs.kent.edu/~batcher/sort.pdf
+
+To summarize, it is very relevant to consider **sorting networks**[^sn], of which these are special cases. Sorting networks are sequences of comparisons which are preordained for each $n$ that have no logical branching, which is exactly our situation.
+
+[^sn]: **Sorting network** available from https://en.wikipedia.org/wiki/Sorting_network

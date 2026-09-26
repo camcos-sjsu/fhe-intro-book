@@ -1,0 +1,3 @@
+## IV.2 Sorting
+
+Many of the "classical" sorting algorithms (quicksort[^qs], etc.) are going to have issues in our setup due to their reliance on logical branching, dynamic memory allocation, etc. 

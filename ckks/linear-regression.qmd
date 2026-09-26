@@ -1,0 +1,31 @@
+## VI.2 Linear Regression
+
+### Simple Linear Regression
+
+Linear regression aims to find the line of best fit for a given set of data points. We assume a simple protocol where:
+1. take as client input $x=(x_1, \dots, x_n)$ and $y=(y_1, \dots, y_n)$ 
+2. output weight and intercept scalars (as vectors) $w=(w, w,\dots, w)$ and $b=(b, b,\dots, b)$ such that $y \approx wx + b$ for all $(x_i, y_i)$ with $i \in (1, n)$.
+
+These are immediate from our work:
+1. We can first compute $\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i$ and $\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i$, which we can do since they are **means**. 
+2. We can compute the weight scalar
+$$ w = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}$$ since it is a **regression coefficient**. 
+3. The result is then easily used to find $$b = \bar{y} - w \bar{x}$$using a multiplication and a subtraction.
+
+### (Sketch of) Multiple Linear Regression
+
+**Multiple linear regression** extends the prior one-dimensional context to allow for each data point to take multiple input features/ predictors. A natural protocol is:
+1. take as client input $n$ vectors $x^{(1)}, \dots, x^{(n)}$ with each $x^{(i)}=(x^{(i)}_1, \dots, x^{(i)}_m)$ and vector $y=(y_1, \dots, y_n)$. 
+2. output a weight vector $w=(w_1, \dots, w_m)$ and $m$-length scalar intercept $b = (b, b, \dots, b)$ such that $y_i \approx w \cdot x^{(i)} + b$ for all $i \in \{1, \dots, n\}$ where $w \cdot x^{(i)}$ is the **dot product**.
+
+We sketch an approach to this problem below:
+1. our desired weight vector $w$ can be computed with $$ w^T = (w_1, \dots, w_m)^T = (X^{T}X)^{-1}X^{T}y^T $$ where X is an $n \times m$ matrix constructed from the $m$ given $n$-length "$x$" vectors and $y$ is as above. 
+2. We compute $b$ with $b = \bar{y} - w^T \bar{x}$, where $\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x^{(i)}$ is the mean predictor vector and $\bar{y} = \frac{1}{n}\sum_{i=1}^{n} y_i$ is the mean response.
+
+The underlying parts, however, need more work. First, this approach requires matrix operations, of which our explorations are very preliminary (see Section VII.1). Most crucially, the central difficulty is that we would need to invert an $m \times m$ matrix; at a quick glance, we can inherently approach this similarly to division using Newton's method, as $$(I-M)^{-1} = I + M +M^2 + \cdots,$$ but there are still many moving parts under the hood. 
+
+:::info
+**Remark**: see [^inv] for some independent work on matrix inversion under FHE.
+:::
+
+[^inv]: Seunghu Kim, Seongbong Choi, Hyung Tae Lee; **Improved Matrix Inversion with Packed Ciphertexts using Fully Homomorphic Encryption** available from https://eprint.iacr.org/2025/1274.pdf 
