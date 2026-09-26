@@ -1,0 +1,16 @@
+
+## III.4 Softmax Function 
+
+A good example of a function that is directly unlocked by division is the **softmax function**[^soft], which takes a vector $x = (x_1, \ldots, l_k) \in \mathbb{R_+^k}$ and returns a probability distribution $r(x) = (p_1, \ldots, p_k) \in (0,1)^k$ as follows: $$\rho(x)_i = \frac{e^{x_i}}{\sum_j e^{x_j}}.$$
+The function is important for many applications, but especially recently in neural nets for turning vectors into probability distributions for decision making.
+
+[^soft]: **Softmax function** available from https://en.wikipedia.org/wiki/Softmax_function
+
+The basic strategy is:
+1. Make a vector $x'$ where $x'_i = e^{x_i}$ (this can be done by Taylor approximation or by asking the user to supply the exponentials);
+2. make a vector $s$ where all $s_i = \mathtt{sum}(x_i)$;
+3. lastly, divide $x'$ by $s$.
+
+:::success
+**Concrete Example**: take $z$ = (4, 2, 24, 6). We first exponentiate the vector's entries, or ideally pass to client: ($e^4$, $e^2$, $e^{24}$, $e^6$). Separately compute the sum $S = e^4 + e^2 + e^{24} + e^6$. We now normalize our vector to get ($e^4/S$, $e^2/S$, $e^{24}/S$, $e^6/S$) which rounds off to approximately (0, 0, 1, 0).
+:::

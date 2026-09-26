@@ -1,0 +1,23 @@
+## III.1 Geometric Series
+
+As usual, our initial instinct should be Taylor series: supposing $z_i$ is not far from $1$, we can expand $$\frac{1}{z} = \frac{1}{(1-(1-z))} = 1 + (1-z) + (1-z)^2 + \cdots$$ Explicitly, this means we can first compute
+$$\mathtt{enc}(z_*') := \mathtt{enc}(1 - z_*)$$ by subtracting the vector from a precomputed constant vector $\mathtt{enc}(1, \ldots, 1)$, then compute powers and add 
+$$\mathtt{enc}(1, \cdots, 1) + \mathtt{enc}(z_*') + \mathtt{enc}((z_*')^2) + \mathtt{enc}((z_*')^3) + \cdots$$
+
+The partial sum of the geometric series method has some potential issues. For one, if the value being inverted is too far ($>1$) away from $1$, then the series will not converge. We can employ some algebraic tricks to shift the convergence interval. Another issue, assuming convergence, is the cost associated with repeated multiplications within the exponential terms.
+
+For instance, suppose we require an error of no greater than $10^{-10}$ for one of these approximations, the number of partial sum terms needed for this much accuracy is shown:
+
+**Sample Series Convergences**
+
+| $z_i$  | $1/z_i$ (Target) | $r = 1−z_i$ | Iterations to $\epsilon\leq10⁻¹⁰$ |
+|:-------:|:------------:|:-------:|:-------------------:|
+| 0.1482  | 6.746761986503 | 0.8518  | 155 |
+| 0.5656  | 1.767918114060 | 0.4344  | 28  |
+| 0.5941  | 1.683233435953 | 0.4059  | 26  |
+| 0.6340  | 1.577252912141 | 0.3660  | 23  |
+| 1.3748  | 0.727355832051 | −0.3748 | 23  |
+
+Note the  correlation of $1/z_i$ with the number of iterations required.
+
+![geom_animation](https://hackmd.io/_uploads/HJ7Q2lqWfx.gif)

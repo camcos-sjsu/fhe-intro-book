@@ -1,0 +1,63 @@
+## III.2 Newton's Method
+
+We considered another approach with Newton's method[^new], which finds the roots of a function $f(x)$. In this case, we can find the decimal value of $x^*=\frac{1}{d}$ so that $f(x)=\frac{1}{x}-x^*=0.$ Think of $x^*$ as an unknown decimal that we're looking for.
+
+[^new]: **Newton's method** available from https://en.wikipedia.org/wiki/Newton%27s_method
+
+We use Newton's formula $f(x^*)\approx f(x_n)+f'(x_n)(x^*-x_n)$, and set $f(x^*)=0:$
+$$x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}$$
+
+$$x_n-\frac{f(x_n)}{f'(x_n)}=x_n-\frac{\frac{1}{x_n}-d}{\frac{-1}{x_n^2}}=x_n+x_n^2(\frac{1}{x_n}-d)=x_n+(x_n-x_n^2d)$$
+
+$$x_{n+1}=2x_n-x_n^2d$$
+
+:::info
+**Remark**: see an independently developed discussion in Prantl et al.[^prantl]
+:::
+
+[^prantl]: Prantl et al.; **Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations** available from https://www.sciencedirect.com/science/article/pii/S2214212625001474#sec2
+
+This allows us to approximate $1/x$ in a chain of $2n$ multiplications and $n$ additions. We can do a simple test of approximating $\frac{1}{48}$ with Newton's method versus a geometric series as follows:
+
+
+![convergence_digits(1)](https://hackmd.io/_uploads/BJfxYcF5Zg.png)
+
+The one catch with Newton's method is that in order to be effective, it has to initially guess reasonably close to the root. 
+
+### Guessing a Starting Point
+
+Naively, one (impossible) approach would be to make some different buckets of $n$ based on powers of $2$: 
+
+|n|$ct_{2^n}$|$ct_{2^{-n}}$|
+|:--:|:-----:|:-----:|
+|0|1|1|
+|1|2|$\frac{1}{2}$|
+|2|4|$\frac{1}{4}$|
+|$\vdots$|$\vdots$|$\vdots$|
+|33|$2^{33}$|$2^{-33}$|
+
+Note: we only go to $n=33$ since $\log_2(10^{10})\approx33$, where $10^{-10}$ is the approximate "round to zero" threshold. This would need a tweak to include negatives.
+
+What we want to do is to figure out where the divisor belongs based on where $n$ belongs, and then make our guess $x_0$ be based on the corresponding boundary bucket. Sadly, this does not work because we cannot (yet) do different executions depending on branching logic. 
+
+Unless we try some more complex methods, we will need to come up with a universal $x_0$ guess[^guess] that will work regardless of what $\frac{1}{x}$ is.
+
+[^guess]: Prantl et al.; **De Bello Homomorphico: Investigation of the extensibility of the OpenFHE library with basic mathematical functions by means of common approaches using the example of the CKKS cryptosystem** available from https://link.springer.com/article/10.1007/s10207-023-00781-0
+
+Fortunately, the basin of convergence[^basin] for Newton's method approximation of $\frac{1}{x}$ is $\big(0,\frac{2}{x}\big)$ if $x>0$ and $\big(\frac{2}{x},0\big)$ if $x<0$. 
+
+[^basin]: Knott et al.; **CRYPTEN: Secure Multi-Party Computation Meets Machine Learning** available from https://arxiv.org/pdf/2109.00984
+
+1. To guarantee convergence we can simply pick the closest number to zero that does not get eliminated by rounding, maybe $\approx 10^{-10}$ or $-(10^{-10})$, depending on the sign of $\frac{1}{x}$ (which needs to be known), every time. 
+2. If we want to account for the sign and have a Sign function, we would be able to capture it with something like $(x<0)*(x_0=-(10^{-10}))+(x>0)*(x_0=10^{-10})$. See Section IV for similar methods.
+
+![newton_animation](https://hackmd.io/_uploads/BkpSix5bzl.gif)
+
+3. If we have additional knowledge about the actual range of values, e.g. if we know that values are in $[a,b]$ then we can uuse something like the geometric mean $1/\sqrt{ab}$. (concretely, if weight is always between $50$ and $5000$ pounds, we can take an initial guess of 1/500).
+
+:::danger
+**Disclaimers**:
+
+1. The "closest number to $0$" method might cause overflow issues. This would require testing.
+2. Starting so close to zero makes a very steep derivative of $\frac{1}{x}$ at that point, leading to the second guess $x_1$ being within the error bound of $x_0$: a sort of false convergence. Even attempting a remedy with stricter difference criteria leads to 30+ iterations before true convergence, wiping out some of the initial savings, which in fact may be more expensive than the geometric series.
+:::

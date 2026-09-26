@@ -1,0 +1,7 @@
+## III.3 A Hybrid Approach
+
+The sum of the geometric series does most of its heavy lifting in the first few iterations, and then closes in slowly and expensively. Newton's method has the opposite problem: the only universal good starting point would be too far to the edge of the basin, and would waste the bulk of its moves in the beginning, making almost no progress toward sufficient convergence.
+
+Perhaps the two approaches could be combined into a hybrid. The first one or two terms of the sum of the geometric series are less expensive and put us strongly within the basin of convergence, at which point we can put Newton in the driver's seat. Our opening guess for Newton's $x_0$ would be guaranteed to be in the convergence basin and well ahead of the default universal guess.
+
+![hybrid_animation](https://hackmd.io/_uploads/S1Djilqbfe.gif)
