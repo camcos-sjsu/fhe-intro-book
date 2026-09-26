@@ -2,57 +2,6 @@
 title: "CAMCOS 2026 Fall"
 ---
 
-<!-- Quick links
-- Problem Pitch: ["Programming in FHE"](https://hackmd.io/iNaMy-caQMejO4PlCq-BPA)
-- [Hackmd Markdown syntax](https://hackmd.io/c/codimd-documentation/%2F%40codimd%2Fmarkdown-syntax)
-- [Quick LaTeX guide](https://www.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes)
-- [Last Semester's Project](https://hackmd.io/Jnr5JaxHSTiXgdmh9tQAaA)
-- [Backburner Stash](https://hackmd.io/Z4c6GwCiT2aljyWtJnmhhw)
-- [Tech Tree MD](https://hackmd.io/@BdK1iuvsSg2AB5K8X38qfg/SJS64QCqWe)
--->
-
-In this report, we explore functions that can be built under the CKKS homomorphic encryption scheme:
-1. We introduce a simplified problem setup in Section I, then examine some initial functions which can be built from these base moves in Section II. 
-2. In Section III we explore division, which is surprisingly tricky but important. 
-3. In Section IV and V we study "discrete math" concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have). 
-4. In Section VI we look at statistical applications to linear regression. 
-5. We end with some more speculative approaches to various topics in Section VII, including an iterative approach to log and some linear algebra.
-6. In the Appendix we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.
-
-
-# I. Introduction
-
-**CKKS**[^CKKS] (Jung Hee **C**heon, Andrey **K**im, Miran **K**im, and Yongsoo **S**ong) is a **fully homomorphic encryption (FHE)** scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.
-
-CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of "batching" techniques à la SIMD[^simd] (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are "packed" into a single ciphertext and computed upon simultaneously.
-
-[^simd]: Michael J. Flynn; **Some Computer Organizations and Their Effectiveness** available from https://users.cs.utah.edu/~hari/teaching/paralg/Flynn72.pdf
-
-Our simplified CKKS setup is as follows:
-
-1. Let $N$ be a power of $2$ (concrete default: $N = 2^{16}$).
-2. The users provide ciphertext $\mathsf{ct}$ with each such ciphertext encrypting $N/2$ complex numbers. In other words, $$\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2}).$$ 
-3. As a default bound on the numbers involved, suppose the complex numbers have form $z_j = x_j + iy_j$ where $x_j, y_j \in \mathbb{R}$. We can assume the $x_j$ and $y_j$ are bounded above by $10^6$ and have precision $10^{-10}$.
-
-As $\mathsf{ct}$ is just encrypting some data, we are allowed to make copies of $\mathsf{ct}$, save them, etc. Any further operations on $\mathsf{ct}$ are considered difficult by default, and we must instead "build" them from a limited set of basic "moves" given by the encryption scheme. These moves are as follows:
-- **addition**: given ciphertext $\mathsf{ct}_1 = \mathtt{enc}(r_*)$, $\mathsf{ct}_2 = \mathtt{enc}(s_*)$, (where each $r_j, s_j \in \mathbb{C}$) we can generate a ciphertext $$\mathsf{ct} = \mathtt{enc}(r_1 + s_1, r_2 + s_2, \cdots, r_{N/2} + s_{N/2}).$$
-- (element-wise) **multiplication**: given ciphertext $\mathsf{ct}_1 = \mathtt{enc}(r_*)$, $\mathsf{ct}_2 = \mathtt{enc}(s_*)$, we can generate a ciphertext $$\mathsf{ct} = \mathtt{enc}(r_1 s_1, r_2 s_2, \cdots, r_{N/2} s_{N/2}).$$
-- **complex conjugation**: given ciphertext $\mathsf{ct} = \mathtt{enc}(z_*)$, we can generate a ciphertext $$\mathsf{ct}' = \mathtt{enc}(\overline{z_1}, \ldots, \overline{z_{N/2}}).$$ Recall that $\overline{x+iy} = x-iy$ for real numbers $x$ and $y$.
-- **cycle**: given a ciphertext $\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2})$, we can, for any $k \in \{1, 2, \dots, N/2\}$, create a ciphertext $$\mathsf{ct}' = \mathtt{enc}(z_k, \ldots, z_{N/2}, z_1, \ldots, z_{k-1}).$$
-
-This is not an exhaustive list of moves and part of open research is determining what other techniques are possible in CKKS. For the scope of our doc, we will assume this is the complete list of moves. We note two practical things that we will mostly ignore for the rest of our work:
-1. We can assume these moves are fast but not negligible. Think of all of these moves as taking place on the order of milliseconds with addition being faster at microseconds. 
-2. In our scheme, numbers get worse in two ways as we compute on them: they accumulate noise (like floating point arithmetic accumulates error) and they also become potentially easier to decrypt by an adversary. 
-
-[^CKKS]: Jung Hee Cheon, Andrey Kim, Miran Kim,  Yongsoo Song; **Homomorphic Encryption
-for Arithmetic of Approximate Numbers** available from https://eprint.iacr.org/2016/421.pdf
-
-:::info
-**Remarks**: 
-1. for brevity, we will often write as shorthand $\mathtt{enc}(z_*)$ or suppress the $\mathtt{enc}$ and discuss the vectors directly.
-2. for many use cases (especially order-dependent notions like median, sign, etc.), we can assume that we are only dealing with real numbers (formally, the imaginary coordinate is 0). Since this is often clear from context, we omit disclaimers for clarity.
-:::
-
 # II. Auxiliary Functions
 
 In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions:
