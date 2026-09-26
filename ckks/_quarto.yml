@@ -8,7 +8,49 @@ book:
   chapters:
     - index.qmd
     - about.qmd
-    - references.qmd
+    - intro.qmd
+    - part: auxfn.qmd
+      chapters:
+        - intravector-sums.qmd
+        - moments.qmd
+        - taylor-approx.qmd
+        - sqrt-user-input.qmd
+        - logarithm.qmd
+    - part: division.qmd
+      - geometric-series.qmd
+      - newton-method.qmd
+      - hybrid.qmd
+      - softmax.qmd
+    - part: discrete-math.qmd
+      chapters:
+      - part: sign.qmd
+        - logistic.qmd
+        - tanh.qmd
+        - sign-appl.qmd
+      - part: sorting.qmd
+        chapters:
+          - bubble.qmd
+          - sort-improvements.qmd
+      - part: max.qmd
+      - part: diff-matrix.qmd
+        chapters:
+          - mode.qmd
+          - median.qmd
+      - part: correlation-related.qmd
+        chapters:
+          - two-coeff.qmd
+          - linear-reg.qmd
+      - part: other.qmd
+        chapters:
+          - dot-prod.qmd
+          - mat-mul.qmd
+          - shannon-entropy.qmd
+          - adaptive-div.qmd
+          - logarithm-rev.qmd
+      - part: lit-review.qmd
+      appendices:
+        - discrete-computational.qmd
+        - references.qmd
 
 bibliography: references.bib
 
