@@ -7,7 +7,6 @@ book:
   date: "September 28, 2026"
   chapters:
     - index.qmd
-    - about.qmd
     - intro.qmd
     - part: aux-fn.qmd
       chapters:
