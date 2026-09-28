@@ -4,7 +4,7 @@ project:
 book:
   title: "fhe-intro-book"
   author: "camcos-sjsu"
-  date:
+  date: "September 28, 2026"
   chapters:
     - index.qmd
     - about.qmd
@@ -19,35 +19,35 @@ book:
     - part: division.qmd
       chapters:
       - geometric-series.qmd
-      - newton-method.qmd
-      - hybrid.qmd
+      - newtons-method.qmd
+      - hybrid-approach.qmd
       - softmax.qmd
     - part: discrete-math.qmd
+    - part: sign-fn.qmd
       chapters:
-      - part: sign.qmd
         - logistic.qmd
         - tanh.qmd
         - sign-appl.qmd
-      - part: sorting.qmd
-        chapters:
-          - bubble.qmd
-          - sort-improvements.qmd
-      - part: max.qmd
-      - part: difference-matrix.qmd
-        chapters:
-          - mode.qmd
-          - median.qmd
-      - part: correlation-related.qmd
-        chapters:
-          - two-coeff.qmd
-          - linear-regression.qmd
-      - part: other.qmd
-        chapters:
-          - matrix-multiplication.qmd
-          - shannon-entropy.qmd
-          - adaptive-division.qmd
-          - logarithm-rev.qmd
-      - part: lit-review.qmd
+    - part: sorting.qmd
+      chapters:
+        - bubble.qmd
+        - sorting-better.qmd
+    - part: max.qmd
+    - part: difference-matrix.qmd
+      chapters:
+        - mode.qmd
+        - median.qmd
+    - part: correlation-related.qmd
+      chapters:
+        - two-coeff.qmd
+        - linear-regression.qmd
+    - part: other.qmd
+      chapters:
+        - matrix-multiplication.qmd
+        - shannon-entropy.qmd
+        - adaptive-division.qmd
+        - logarithm-rev.qmd
+    - part: lit-review.qmd
       appendices:
         - discrete-computational.qmd
         - references.qmd
