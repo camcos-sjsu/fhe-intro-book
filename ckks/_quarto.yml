@@ -17,6 +17,7 @@ book:
         - sqrt-user-input.qmd
         - logarithm.qmd
     - part: division.qmd
+      chapters:
       - geometric-series.qmd
       - newton-method.qmd
       - hybrid.qmd
