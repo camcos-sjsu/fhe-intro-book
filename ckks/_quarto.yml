@@ -48,9 +48,10 @@ book:
         - adaptive-division.qmd
         - logarithm-rev.qmd
     - part: lit-review.qmd
-      appendices:
-        - discrete-computational.qmd
-        - references.qmd
+
+  appendices:
+    - discrete-computational.qmd
+    - references.qmd
 
 bibliography: references.bib
 
