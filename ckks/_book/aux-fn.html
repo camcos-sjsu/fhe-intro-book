@@ -411,7 +411,7 @@ window.Quarto = {
   <ul>
   <li><a href="#some-basics" id="toc-some-basics" class="nav-link active" data-scroll-target="#some-basics">Some Basics</a>
   <ul class="collapse">
-  <li><a href="#selection-vector-a.k.a-one-hot-masking-binary-vector" id="toc-selection-vector-a.k.a-one-hot-masking-binary-vector" class="nav-link" data-scroll-target="#selection-vector-a.k.a-one-hot-masking-binary-vector">Selection Vector (a.k.a One-Hot, Masking, Binary Vector)</a></li>
+  <li><a href="#selection-vector-a.k.a.-one-hot-masking-binary-vector" id="toc-selection-vector-a.k.a.-one-hot-masking-binary-vector" class="nav-link" data-scroll-target="#selection-vector-a.k.a.-one-hot-masking-binary-vector">Selection Vector (a.k.a. One-Hot, Masking, Binary Vector)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -439,12 +439,16 @@ window.Quarto = {
 
 
 <p>In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums / higher moments - exponentiation - square root - log</p>
-<p>We will also be using these functions as examples to show <strong>techniques</strong> that would be useful in other scenarios. Specifically: 1. exponentiation shows the power of <strong>Taylor series</strong>. 2. the square root conveys the utility of <strong>giving computation back to the user post-FHE</strong>.</p>
+<p>We will also be using these functions as examples to show <strong>techniques</strong> that would be useful in other scenarios. Specifically:</p>
+<ol type="1">
+<li><p>exponentiation shows the power of <strong>Taylor series</strong>.</p></li>
+<li><p>the square root conveys the utility of <strong>giving computation back to the user post-FHE</strong>.</p></li>
+</ol>
 <section id="some-basics" class="level2">
 <h2 class="anchored" data-anchor-id="some-basics">Some Basics</h2>
-<p>We are allowed to generate encoded versions of any constant, c.&nbsp;<span class="math display">\[ct_c=enc(c, c, ...c)\]</span> This allows us to do computations with precomputed constant vectors <span class="math display">\[c*enc(z_*)=enc(c,c,...c)*enc(z_*)=enc(cz_1,cz_2,...cz_{N/2})\]</span> Naturally, this allows us to do operations on unencrypted data and apply them to our encrypted data like taking the inverse of c: <span class="math display">\[ct_{*}=enc(\frac{1}{c},\frac{1}{c},...\frac{1}{c})\]</span> This is not limited to one constant, in fact, <span class="math inline">\(ct_c\)</span> can contain N/2 different constants <span class="math display">\[ct_c=enc(c_1,c_2,\dots c_{N/2})\]</span></p>
-<section id="selection-vector-a.k.a-one-hot-masking-binary-vector" class="level3">
-<h3 class="anchored" data-anchor-id="selection-vector-a.k.a-one-hot-masking-binary-vector">Selection Vector (a.k.a One-Hot, Masking, Binary Vector)</h3>
+<p>We are allowed to generate encoded vectors of any constant, c.&nbsp;<span class="math display">\[ct_c=enc(c_1, c_2, ...c_{N/2})\]</span> Note that <span class="math inline">\(c_i\)</span> can be distinct from <span class="math inline">\(c_j\)</span> This allows us to do computations with pre-computed constant vectors <span class="math display">\[c*enc(z_*)=enc(c,c,...c)*enc(z_*)=enc(cz_1,cz_2,...cz_{N/2})\]</span> Naturally, this allows us to do operations on unencrypted data and apply them to our encrypted data like taking the inverse of c: <span class="math display">\[ct_{*}=enc(\frac{1}{c},\frac{1}{c},...\frac{1}{c})\]</span></p>
+<section id="selection-vector-a.k.a.-one-hot-masking-binary-vector" class="level3">
+<h3 class="anchored" data-anchor-id="selection-vector-a.k.a.-one-hot-masking-binary-vector">Selection Vector (a.k.a. One-Hot, Masking, Binary Vector)</h3>
 <p>Suppose we want certain elements in our ciphertext. We can encrypt a vector of ones (selected) and zeros (not selected) to decide on which elements are needed. For example, if we wanted to take only the first element of our vector <span class="math inline">\(ct=enc(z_1,z_2,\dots z_{N/2})\)</span>, all we need is one multiplication with our pre-encrypted <span class="math inline">\(ct_0=enc(1,0,0,\dots0)\)</span> to obtain <span class="math display">\[ct_*=ct_0*ct=ct_0=enc(1,0,0,\dots0)*enc(z_1,z_2,\dots z_{N/2})=enc(z_1,0,0,\dots0)\]</span></p>
 
 

@@ -34,7 +34,7 @@
     "href": "aux-fn.html",
     "title": "II. Auxiliary Functions",
     "section": "",
-    "text": "Some Basics\nIn this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums / higher moments - exponentiation - square root - log\nWe will also be using these functions as examples to show techniques that would be useful in other scenarios. Specifically: 1. exponentiation shows the power of Taylor series. 2. the square root conveys the utility of giving computation back to the user post-FHE.\nWe are allowed to generate encoded versions of any constant, c. \\[ct_c=enc(c, c, ...c)\\] This allows us to do computations with precomputed constant vectors \\[c*enc(z_*)=enc(c,c,...c)*enc(z_*)=enc(cz_1,cz_2,...cz_{N/2})\\] Naturally, this allows us to do operations on unencrypted data and apply them to our encrypted data like taking the inverse of c: \\[ct_{*}=enc(\\frac{1}{c},\\frac{1}{c},...\\frac{1}{c})\\] This is not limited to one constant, in fact, \\(ct_c\\) can contain N/2 different constants \\[ct_c=enc(c_1,c_2,\\dots c_{N/2})\\]",
+    "text": "Some Basics\nIn this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums / higher moments - exponentiation - square root - log\nWe will also be using these functions as examples to show techniques that would be useful in other scenarios. Specifically:\nWe are allowed to generate encoded vectors of any constant, c. \\[ct_c=enc(c_1, c_2, ...c_{N/2})\\] Note that \\(c_i\\) can be distinct from \\(c_j\\) This allows us to do computations with pre-computed constant vectors \\[c*enc(z_*)=enc(c,c,...c)*enc(z_*)=enc(cz_1,cz_2,...cz_{N/2})\\] Naturally, this allows us to do operations on unencrypted data and apply them to our encrypted data like taking the inverse of c: \\[ct_{*}=enc(\\frac{1}{c},\\frac{1}{c},...\\frac{1}{c})\\]",
     "crumbs": [
       "II. Auxiliary Functions"
     ]
@@ -550,7 +550,7 @@
     "href": "aux-fn.html#some-basics",
     "title": "II. Auxiliary Functions",
     "section": "",
-    "text": "Selection Vector (a.k.a One-Hot, Masking, Binary Vector)\nSuppose we want certain elements in our ciphertext. We can encrypt a vector of ones (selected) and zeros (not selected) to decide on which elements are needed. For example, if we wanted to take only the first element of our vector \\(ct=enc(z_1,z_2,\\dots z_{N/2})\\), all we need is one multiplication with our pre-encrypted \\(ct_0=enc(1,0,0,\\dots0)\\) to obtain \\[ct_*=ct_0*ct=ct_0=enc(1,0,0,\\dots0)*enc(z_1,z_2,\\dots z_{N/2})=enc(z_1,0,0,\\dots0)\\]",
+    "text": "Selection Vector (a.k.a. One-Hot, Masking, Binary Vector)\nSuppose we want certain elements in our ciphertext. We can encrypt a vector of ones (selected) and zeros (not selected) to decide on which elements are needed. For example, if we wanted to take only the first element of our vector \\(ct=enc(z_1,z_2,\\dots z_{N/2})\\), all we need is one multiplication with our pre-encrypted \\(ct_0=enc(1,0,0,\\dots0)\\) to obtain \\[ct_*=ct_0*ct=ct_0=enc(1,0,0,\\dots0)*enc(z_1,z_2,\\dots z_{N/2})=enc(z_1,0,0,\\dots0)\\]",
     "crumbs": [
       "II. Auxiliary Functions"
     ]
