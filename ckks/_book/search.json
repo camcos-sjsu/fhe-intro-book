@@ -42,12 +42,12 @@
   {
     "objectID": "intravector-sums.html",
     "href": "intravector-sums.html",
-    "title": "4  II.1 Intravector Sums",
+    "title": "3  II.1 Intravector Sums",
     "section": "",
     "text": "Suppose we wanted the sums of the entries of a vector; we call this the intra-vector sum to differentiate from the “inter-vector sum” of summing vectors, which is already supplied as a basic move. A naive approach would be to repeatedly use cycle to obtain encryptions of \\[(z_1, \\ldots, z_{N/2}), (z_2, \\ldots, z_{N/2}, z_1), \\ldots, (z_{N/2}, z_1, \\ldots, z_{N/2-1})\\] and then add them as in the inter-vector case. This puts the sum in every coordinate.\nHowever, we can make this faster by noticing the following. Suppose we cycled by \\(1\\) and added instead, then we would be able to get: \\[\\mathtt{enc}(z_1 + z_2, z_2 + z_3, z_3 + z_4, \\cdots)\\] then cycling by \\(2\\) and adding to itself would put \\(z_1 + z_2 + z_3 + z_4\\) in the first position, but with only 2 additions instead of \\(3\\). Extending this method, we can sum all the numbers with \\(\\log({N/2})\\) operations.\nHere are a couple of general consequences of being able to sum: 1. dot product: given encrypted vectors of \\(c_*\\) and \\(d_*\\), we can multiply to get \\(\\mathtt{enc}(c_1d_1, c_2d_2, \\ldots)\\), and then sum to get the dot product. 2. (complex) inner product: since we can take the conjugate of \\(d_*\\), we can compute the complex inner product \\[c_1\\overline{d_1} + \\cdots + c_{N/2}\\overline{d_{N/2}}.\\]",
     "crumbs": [
       "II. Auxiliary Functions",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>II.1 Intravector Sums</span>"
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>II.1 Intravector Sums</span>"
     ]
   },
   {
@@ -64,34 +64,34 @@
   {
     "objectID": "taylor-approx.html",
     "href": "taylor-approx.html",
-    "title": "6  II.3 Taylor Approximation (and Exponentiation)",
+    "title": "5  II.3 Taylor Approximation (and Exponentiation)",
     "section": "",
     "text": "Beyond our base moves, many functions which are of interest to us can be approximated with Taylor approximation: approximate a function by the first few terms of its power series. This is fairly straightforward in CKKS, involving only a combination of basic moves: additions, powers (multiplications), and scalar divisions.\nWe show the Taylor approximation of the exponential function as an illustrative example: \\[e^z \\approx \\sum_{k=0}^{N} \\frac{z^k}{k!} = 1 + z + \\frac{z^2}{2!} + \\frac{z^3}{3!} + \\dots + \\frac{z^N}{N!}\\]\nOur main thoughts on Taylor approximation are: 1. In a purely mathematical setting, a higher \\(N\\) results in higher accuracy, yet in FHE, too large of an \\(N\\) can result in lower accuracy as noise accumulates. We desire a middle-ground \\(N\\) that produces a close approximation while mitigating cost and noise concerns. 2. We need to have a good sense of where our input lies for convergence assumptions. In general, there is a radius of convergence for \\(z\\) (or \\(x\\)), which in the exponential case is infinite. But even within the radius of convergence you may in practice want the assumed domain to be even tighter for faster convergence. 3. In several cases, it seems possible to employ “range reduction” techniques to tighten domains. For example, here we can make \\(x\\) smaller using \\(e^x = (e^{x/k})^k\\) – in other words, we approximate \\(e^{x/k}\\) then compute the \\(k\\)-th power of the result. Even better, when applicable, we may just pass the \\(k\\)-th power computation to the client.",
     "crumbs": [
       "II. Auxiliary Functions",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>II.3 Taylor Approximation (and Exponentiation)</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>II.3 Taylor Approximation (and Exponentiation)</span>"
     ]
   },
   {
     "objectID": "sqrt-user-input.html",
     "href": "sqrt-user-input.html",
-    "title": "7  II.4 The Square Root (and User Input)",
+    "title": "6  II.4 The Square Root (and User Input)",
     "section": "",
     "text": "We can similarly take the square root by expanding a Taylor series. The square root has no Taylor series at \\(x=0\\), but can be expanded elsewhere, such as at \\(x=1\\): \\[\\sqrt{1-x} = 1 - \\frac{x}{2} - \\frac{x^2}{8} - \\frac{x^3}{16} - \\frac{5 x^4}{128} - \\frac{7 x^5}{256} + O(x^6) + \\cdots \\] which converges when \\(|x| \\leq 1\\).\nHowever, if we give the user \\(x\\), it might be easier for the user to compute \\(\\sqrt{x}\\) on the client side! Thus, frequently we might just consider not doing some computation over FHE, given business logic allows us to do so.\nTo summarize, 1. we can (and at times must) take Taylor series around points other than \\(x=0\\), 2. but frequently we may be able to skirt the problem using user output (and input). We think this is an important mindset but will mostly operate as if we do not have this possibility for the remainder of this report.",
     "crumbs": [
       "II. Auxiliary Functions",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>II.4 The Square Root (and User Input)</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>II.4 The Square Root (and User Input)</span>"
     ]
   },
   {
     "objectID": "sqrt-user-input.html#footnotes",
     "href": "sqrt-user-input.html#footnotes",
-    "title": "7  II.4 The Square Root (and User Input)",
+    "title": "6  II.4 The Square Root (and User Input)",
     "section": "",
     "text": "Square root algorithms available from https://en.wikipedia.org/wiki/Square_root_algorithms↩︎",
     "crumbs": [
       "II. Auxiliary Functions",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>II.4 The Square Root (and User Input)</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>II.4 The Square Root (and User Input)</span>"
     ]
   },
   {
