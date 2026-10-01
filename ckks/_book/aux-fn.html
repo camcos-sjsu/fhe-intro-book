@@ -76,6 +76,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -375,8 +404,17 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#some-basics" id="toc-some-basics" class="nav-link active" data-scroll-target="#some-basics">Some Basics</a>
+  <ul class="collapse">
+  <li><a href="#selection-vector-a.k.a-one-hot-masking-binary-vector" id="toc-selection-vector-a.k.a-one-hot-masking-binary-vector" class="nav-link" data-scroll-target="#selection-vector-a.k.a-one-hot-masking-binary-vector">Selection Vector (a.k.a One-Hot, Masking, Binary Vector)</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -402,8 +440,16 @@ ul.task-list li input[type="checkbox"] {
 
 <p>In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums / higher moments - exponentiation - square root - log</p>
 <p>We will also be using these functions as examples to show <strong>techniques</strong> that would be useful in other scenarios. Specifically: 1. exponentiation shows the power of <strong>Taylor series</strong>. 2. the square root conveys the utility of <strong>giving computation back to the user post-FHE</strong>.</p>
+<section id="some-basics" class="level2">
+<h2 class="anchored" data-anchor-id="some-basics">Some Basics</h2>
+<p>We are allowed to generate encoded versions of any constant, c.&nbsp;<span class="math display">\[ct_c=enc(c, c, ...c)\]</span> This allows us to do computations with precomputed constant vectors <span class="math display">\[c*enc(z_*)=enc(c,c,...c)*enc(z_*)=enc(cz_1,cz_2,...cz_{N/2})\]</span> Naturally, this allows us to do operations on unencrypted data and apply them to our encrypted data like taking the inverse of c: <span class="math display">\[ct_{*}=enc(\frac{1}{c},\frac{1}{c},...\frac{1}{c})\]</span> This is not limited to one constant, in fact, <span class="math inline">\(ct_c\)</span> can contain N/2 different constants <span class="math display">\[ct_c=enc(c_1,c_2,\dots c_{N/2})\]</span></p>
+<section id="selection-vector-a.k.a-one-hot-masking-binary-vector" class="level3">
+<h3 class="anchored" data-anchor-id="selection-vector-a.k.a-one-hot-masking-binary-vector">Selection Vector (a.k.a One-Hot, Masking, Binary Vector)</h3>
+<p>Suppose we want certain elements in our ciphertext. We can encrypt a vector of ones (selected) and zeros (not selected) to decide on which elements are needed. For example, if we wanted to take only the first element of our vector <span class="math inline">\(ct=enc(z_1,z_2,\dots z_{N/2})\)</span>, all we need is one multiplication with our pre-encrypted <span class="math inline">\(ct_0=enc(1,0,0,\dots0)\)</span> to obtain <span class="math display">\[ct_*=ct_0*ct=ct_0=enc(1,0,0,\dots0)*enc(z_1,z_2,\dots z_{N/2})=enc(z_1,0,0,\dots0)\]</span></p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
