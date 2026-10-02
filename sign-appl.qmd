@@ -33,8 +33,8 @@ It is worth noting that these accuracy windows are about half the size compared 
 
 
 
-:::info
-**Remark**: we can see a higher $k$ compresses the interval of high accuracy towards 0. We note that given the right compression method for a dataset we could approximate a reasonable sign value for the whole dataset. Requiring a user input of known maximum and minimum value of the input (beyond $(-\infty,\infty)$ ) would support this scaling. [^prantl]
+:::{.callout-tip icon=false title="**Remark**"}
+We can see a higher $k$ compresses the interval of high accuracy towards 0. We note that given the right compression method for a dataset we could approximate a reasonable sign value for the whole dataset. Requiring a user input of known maximum and minimum value of the input (beyond $(-\infty,\infty)$ ) would support this scaling. [^prantl]
 :::
 
 Within our current experimentation we found the window of high accuracy convergence scaled in proportion to the window of convergence, roughly $15\%$ of the observed data. 

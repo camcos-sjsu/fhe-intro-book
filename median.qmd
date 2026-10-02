@@ -17,8 +17,7 @@ x_{N/2} & 1 & 1 & 1 & \cdots & 0
 3. Thus, we can get a vector of the sums of the $x_i$ and then compute equality with zero: $$m := ((x_1 + x_2 + \cdots + x_{N/2}) == 0)$$ to obtain a $0$-$1$ vector that points out which *index* the median falls in. 
 4. If we are interested in the *value* of the median instead of the *index,* then we can just multiply $\mathtt{sum}(m * z)$. Note that this sum only works if exactly one element is the median: if, say, two elements are the median, then we would get twice the median if we sum.
 
-:::info
-**Remarks**:
+:::{.callout-tip icon=false title="**Remarks**"}
 1. If we want to sort for any reason, then getting the median from the sort is immediate and we would not need to add extra computation.
 2. Constructing quartiles is similar to the median. If we use the "sum sign functions" method, then getting a 75% quartile is just finding something with row sum $N/2$ instead of $0$.
 :::

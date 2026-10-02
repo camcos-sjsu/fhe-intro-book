@@ -26,18 +26,22 @@ Thus, doing inequalities with high accuracy at least becomes possible when we do
 
 ### Modular Operations
 
-For higher bases, we are effectively doing modular arithmetic. The problem is we are storing integers. Thankfully, the fact we are using complex numbers allow us to "modularize" fairly painlessly. We give a sketch of this approach:
-1. Suppose we wanted to add or multiply numbers "mod N" (for this, we are agnostic to whether the numbers are digits of a single number or just different numbers we want to add / multiply in batch; things like carrying need to be dealt with separately). Then we can perform the algebra and end up with some results in $\mathbb{Z}$. Then,
-2. Compute $e^{2\pi i z/N}$ on the vector (specifically, first multiply the vector by $2\pi i/N$, then compute $(1 + z + z^2/2 + \cdots)$ as usual)
-3. Then compute $\log()$ to undo the computation, which will get us (with the correct branch) integers back in $\{0, \ldots, N-1\}$ after multiplying back by $N/(2\pi i)$. The convergence of this will be quite good as the numbers will be far from $0$ after step $2$. 
+For higher bases, we are effectively doing modular arithmetic. The problem is we are storing integers. Thankfully, the fact we are using complex numbers allow us to "modularize" fairly painlessly. We give a sketch of this approach:  
+
+1. Suppose we wanted to add or multiply numbers "mod N" (for this, we are agnostic to whether the numbers are digits of a single number or just different numbers we want to add / multiply in batch; things like carrying need to be dealt with separately). Then we can perform the algebra and end up with some results in $\mathbb{Z}$. Then,  
+
+2. Compute $e^{2\pi i z/N}$ on the vector (specifically, first multiply the vector by $2\pi i/N$, then compute $(1 + z + z^2/2 + \cdots)$ as usual)  
+
+3. Then compute $\log()$ to undo the computation, which will get us (with the correct branch) integers back in $\{0, \ldots, N-1\}$ after multiplying back by $N/(2\pi i)$. The convergence of this will be quite good as the numbers will be far from $0$ after step $2$.  
 
 In this representation, the sign function (and inequality, etc.) can be viewed as discrete polynomials.
 
-:::success
-**Concrete Example**: suppose we wanted a function to return $1$ for all elements at least $3 \pmod {7}$ and $0$ otherwise:
-1. Recall from Lagrange interpolation that if we want to send $a$ to $1$ and the other elements to $0$, we can just use the function $f_a(x) = (x-0)(x-1)\cdots(x-a+1)(x-a-1)\cdots (x-p+1)$ (suitably scaled to obtain 1).
-2. Add the functions for $f_3 + \cdots f_6$ to obtain a function that evaluates to $1$ on $3, 4, 5, 6$ but $0$ on the others.
-3. (this can be done for any function on $\mathbb{Z}/7\mathbb{Z}$)
+:::{.callout-tip icon=false title="**Concrete Example**"}
+Suppose we wanted a function to return $1$ for all elements at least $3 \pmod {7}$ and $0$ otherwise:  
+
+1. Recall from Lagrange interpolation that if we want to send $a$ to $1$ and the other elements to $0$, we can just use the function $f_a(x) = (x-0)(x-1)\cdots(x-a+1)(x-a-1)\cdots (x-p+1)$ (suitably scaled to obtain 1).  
+2. Add the functions for $f_3 + \cdots f_6$ to obtain a function that evaluates to $1$ on $3, 4, 5, 6$ but $0$ on the others.  
+3. (this can be done for any function on $\mathbb{Z}/7\mathbb{Z}$). 
 :::
 
 ### Roots of Unity 
@@ -73,11 +77,12 @@ $$
 
 where each digit satisfies $a_i \in S_1.$ 
 
-:::info
-**Remark ($S_1$): The main intuition is this: we need the slightly larger digit set $S_1$ because the difference of two ordinary binary numbers has digits in $\{-1,0,1\}$. This avoids needing to perform carrying, which is hard in CKKS.
+:::{.callout-tip icon=false title="**Remark ($S_1$): **"}
+The main intuition is this: we need the slightly larger digit set $S_1$ because the difference of two ordinary binary numbers has digits in $\{-1,0,1\}$. This avoids needing to perform carrying, which is hard in CKKS.
 :::
 
 Now:
+
 1. Assume that we have the extended binary digits of $c$ as $c_0, c_1, \ldots, c_{b-1},$ in little-endian order, where each $c_i \in S_1$.
 2. We construct the functions “$\geq 0$” and “$=0$” on the finite set $S_1$. Since $S_1$ is finite, these functions are polynomials on $S_1$! (furthermore, with operations that are not likely to accumulate a lot of floating point error)
     - For example, on $S_1$, the function $\mathbf{1}_{x > 0}$ is given by $$ \frac{x^2+x}{2}. $$ Indeed, this is $0, 0, 1$ at $x=-1, 0, 1$ respectively.
@@ -123,6 +128,7 @@ For simplicity, we make the following assumptions.
 3. The inputs are nonnegative integers in some fixed range. For simplicity, assume $c_j \in {0,1,\ldots,2^b-1}$ for some positive integer $b$.
 
 Now we give the algorithm.
+
 1. Start with the ciphertext numbers to be sorted: $c_1, c_2, \ldots, c_k.$
 2. Create $b$ batched extended binary base-vectors
 $c_0, c_1, \ldots, c_{b-1},$ where $c_{ij}$ is the $i$-th binary digit of $c_j$, in little-endian order. Thus, for example,
@@ -151,13 +157,17 @@ instead of $1$, while a non-positive comparison contributes $1$. Then multiply t
 $$
 \zeta^{\operatorname{Ind}(j)} = e^{2\pi \sqrt{-1}\operatorname{Ind}(j)/k}.
 $$
-8. Now apply the index-to-one-hot trick to each ($\zeta^{\operatorname{Ind}(j)}$. This gives, for each input $c_j$, a one-hot vector $o(j)$ supported in coordinate $\operatorname{Ind}(j)$.
-9. Finally, compute $\sum_{j=1}^k c_j o(j).$ The result is the sorted vector.
+7. Now apply the index-to-one-hot trick to each ($\zeta^{\operatorname{Ind}(j)}$. This gives, for each input $c_j$, a one-hot vector $o(j)$ supported in coordinate $\operatorname{Ind}(j)$.
+8. Finally, compute $\sum_{j=1}^k c_j o(j).$ The result is the sorted vector.
 
 
-:::info
-**Summary**: 
-1. A discrete representation of numbers is useful to have as a substitute / in addition to the standard input. Can consider writing down the "digits" as integers or as the roots of unity.
-2. With each choice, certain things become much easier (or at least doable) such as the sign / inequality function, but certain things become harder as well (such as addition or multiplication).
+:::{.callout-tip icon=false title="**Summary**"}
+
+1. A discrete representation of numbers is useful to have as a substitute / in addition to the standard input. Can consider writing down the "digits" as integers or as the roots of unity.  
+2. With each choice, certain things become much easier (or at least doable) such as the sign / inequality function, but certain things become harder as well (such as addition or multiplication).  
 3. We give a proof-of-concept in the following repository: https://github.com/fieldextension/discrete-methods 
 :::
+
+> Box Content.  
+> Test test test this and that and this and so on.  
+> additionally and so forth and such 

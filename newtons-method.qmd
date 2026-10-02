@@ -11,8 +11,8 @@ $$x_n-\frac{f(x_n)}{f'(x_n)}=x_n-\frac{\frac{1}{x_n}-d}{\frac{-1}{x_n^2}}=x_n+x_
 
 $$x_{n+1}=2x_n-x_n^2d$$
 
-:::info
-**Remark**: see an independently developed discussion in Prantl et al.[^prantl]
+:::{.callout-tip icon=false title="**Remark**"}
+See an independently developed discussion in Prantl et al.[^prantl]
 :::
 
 [^prantl]: Prantl et al.; **Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations** available from https://www.sciencedirect.com/science/article/pii/S2214212625001474#sec2
@@ -55,8 +55,8 @@ Fortunately, the basin of convergence[^basin] for Newton's method approximation 
 
 3. If we have additional knowledge about the actual range of values, e.g. if we know that values are in $[a,b]$ then we can uuse something like the geometric mean $1/\sqrt{ab}$. (concretely, if weight is always between $50$ and $5000$ pounds, we can take an initial guess of 1/500).
 
-:::danger
-**Disclaimers**:
+:::{.callout-tip icon=false title="**Disclaimers**"}
+
 
 1. The "closest number to $0$" method might cause overflow issues. This would require testing.
 2. Starting so close to zero makes a very steep derivative of $\frac{1}{x}$ at that point, leading to the second guess $x_1$ being within the error bound of $x_0$: a sort of false convergence. Even attempting a remedy with stricter difference criteria leads to 30+ iterations before true convergence, wiping out some of the initial savings, which in fact may be more expensive than the geometric series.
