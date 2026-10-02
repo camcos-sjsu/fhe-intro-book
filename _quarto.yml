@@ -56,6 +56,7 @@ bibliography: references.bib
 
 format:
   html:
+    axe: true
     theme:
       - cosmo
       - brand
