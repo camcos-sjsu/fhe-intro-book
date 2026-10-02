@@ -31,7 +31,7 @@ book:
       chapters:
         - bubble.qmd
         - sorting-better.qmd
-    - part: max.qmd
+    - max.qmd
     - part: difference-matrix.qmd
       chapters:
         - mode.qmd
