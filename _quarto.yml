@@ -58,8 +58,8 @@ format:
   html:
     axe: true
     theme:
-      - cosmo
-      - brand
+      dark: darkly
+      light: flatly
     css: styles.css
     toc: true
 
