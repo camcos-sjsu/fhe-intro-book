@@ -10,9 +10,9 @@ $$1+e^{-x}\approx2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}
 
 $$\sigma(x)=\frac{1}{1+e^{-x}}\approx\frac{1}{2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}}$$
 
-$$\sigma(x)\approx\frac{1}{2} \cdot \frac{1}{1 - \left(-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12} + \frac{x^4}{48} - \frac{x^5}{240} + \frac{x^6}{1440} - \frac{x^7}{10080} + \frac{x^8}{80640} - \frac{x^9}{725760}\right)}$$
+$$\sigma(x)\approx\frac{1}{2} \cdot \frac{1}{1 + \left(-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12} + \frac{x^4}{48} - \frac{x^5}{240} + \frac{x^6}{1440} - \frac{x^7}{10080} + \frac{x^8}{80640} - \frac{x^9}{725760}\right)}$$
 
-Denoting the entire term inside the parentheses as $r$, i.e. $r=-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12}+\dots$ , we can then use the geometric series identity $\frac{1}{1+r}=1+r+r^2+\dots$ ; computing powers of $r$ then canceling/ simplifying, we arrive at
+Denoting the entire term inside the parentheses as $r$, i.e. $r=-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12}+\dots$ , we can then use the geometric series identity $\frac{1}{1+r}=1-r+r^2-r^3+\dots$ ; computing powers of $r$ then canceling/ simplifying, we arrive at
 
 $$\sigma(x)\approx\frac{725760+362880*x-30240*x^3+3024*x^5-306*x^7+31*x^9}{1451520}-\cdots$$
 
