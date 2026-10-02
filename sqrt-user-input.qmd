@@ -5,12 +5,14 @@ We can similarly take the square root by expanding a Taylor series. The square r
 However, if we give the user $x$, it might be easier for the user to compute $\sqrt{x}$ on the client side! Thus, frequently we might just consider *not* doing some computation over FHE, given business logic allows us to do so. 
 
 To summarize, 
+
 1. we can (and at times must) take Taylor series around points other than $x=0$, 
 2. but frequently we may be able to skirt the problem using user output (and input). We think this is an important mindset but will mostly operate as if we do not have this possibility for the remainder of this report. 
 
 
-:::info
-**Remark**: we also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See Section III (Division) for more information.
+:::{.callout-tip icon=false title="**Remark**"}
+
+we also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See Section III (Division) for more information.
 :::
 
 [^bab]: **Square root algorithms** available from https://en.wikipedia.org/wiki/Square_root_algorithms

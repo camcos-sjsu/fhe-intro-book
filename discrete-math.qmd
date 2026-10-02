@@ -2,8 +2,8 @@
 
 In this section we study some "discrete" operations involving comparisons and sorting. At the basis of everything, we need **sign**, **equality**, and **inequality** functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it's essentially the same as inequality. 
 
-:::danger
-**Disclaimer**: Taylor approximations for sign run into many (unavoidable) issues, and can only be used if we have a very tight understanding of the domain of the function. We stress that what we do in the remainder of this section (and other parts of our work that rely on sign functions) is speculative because everything rests on an idealized sign function, which we do not quite have in practice. Conservatively, we should interpret our following work as an exploration of what we can unlock if we have an idealized sign function.
+:::{.callout-tip icon=false title="**Disclaimer**"}
+Taylor approximations for sign run into many (unavoidable) issues, and can only be used if we have a very tight understanding of the domain of the function. We stress that what we do in the remainder of this section (and other parts of our work that rely on sign functions) is speculative because everything rests on an idealized sign function, which we do not quite have in practice. Conservatively, we should interpret our following work as an exploration of what we can unlock if we have an idealized sign function.
 :::
 
 With this disclaimer, we perform the following explorations:

@@ -10,6 +10,7 @@ Given vectors $x$ and $y$, there are $2$ closely related quantities:
 [^lr]: **Linear regression** available from https://en.wikipedia.org/wiki/Linear_regression
 
 These can be approached with the same general strategy:
+
 1. compute the means $\bar{x}$ and $\bar{y}$ and subtract them off from the original vectors;
 2. compute the numerators and denominators separately;
 3. divide (which might be costly).
@@ -30,7 +31,7 @@ $$ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\
 of the (scalar) product of two intravector sums of $(x')^2$ and $(y')^2$.
 3. Finally, we need to do a division.
 
-:::info
+:::{.callout-tip icon=false title="**Remark**"}
 
-**Remark**: as usual (for the correlation coefficient; the regression coefficient is similar), we can avoid the possibly costly division and square roots for $r$ by giving the user the numerator and the *square* of the denominator separately and have the user compute the coeffcient. If we are willing to do the division but want to save a square root, we can just give them $r^2$ instead.
+As usual (for the correlation coefficient; the regression coefficient is similar), we can avoid the possibly costly division and square roots for $r$ by giving the user the numerator and the *square* of the denominator separately and have the user compute the coeffcient. If we are willing to do the division but want to save a square root, we can just give them $r^2$ instead.
 :::

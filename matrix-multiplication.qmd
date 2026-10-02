@@ -8,7 +8,10 @@ Recall the dot product of two vectors $x = (x_1, \dots , x_n)$ and $y = (y_1, \d
 2.  We then perform an intravector sum to obtain a vector $$v(x,y) = \mathtt{sum}(x * y) = (d,d,\ldots, d),$$ where $d = x \cdot y$.
 3.  We can then e.g. multiply it with a $1$-hot mask vector $(0, 0, \ldots, 1, 0, \ldots, 0)$ or use it in any other way we wish.
 
-This directly lets us compute the *entries* of the $n \times n$ matrix $C = A \times B$, since those are dot products: 1. let the encoded first row of $A$ be denoted $A_1 = (a_{11}, a_{12}, \dots, a_{1n})$ and the encoded first column of $B$ as $B_1 = (b_{11}, b_{21}, \dots, b_{n1})$. 2. As just stated, we can get $c_{11}$, the $(1,1)$ entry of $C$, by just taking the dot product $A_1 \cdot B_1$. In general, we can get $c_{ij} = a_i \cdot b_j$, though underneath the hood we are actually getting vectors of the form $v(A_1, B_j) = (c_{ij}, c_{ij}, \ldots, c_{ij})$.
+This directly lets us compute the *entries* of the $n \times n$ matrix $C = A \times B$, since those are dot products: 
+
+1. let the encoded first row of $A$ be denoted $A_1 = (a_{11}, a_{12}, \dots, a_{1n})$ and the encoded first column of $B$ as $B_1 = (b_{11}, b_{21}, \dots, b_{n1})$. 
+2. As just stated, we can get $c_{11}$, the $(1,1)$ entry of $C$, by just taking the dot product $A_1 \cdot B_1$. In general, we can get $c_{ij} = a_i \cdot b_j$, though underneath the hood we are actually getting vectors of the form $v(A_1, B_j) = (c_{ij}, c_{ij}, \ldots, c_{ij})$.
 
 To get actual row / column vectors of $C$, we could get the entries, take some dot products by $1$-hot vectors, and add. Specifically, if we wanted the $i$-th row vector $C_i$, we would add $$ (1, 0, \ldots, 0) * v(A_i, B_1) + (0, 1, \ldots, 0) * v(A_i, B_2) + \cdots + (0, \ldots, 0, 1) * v(A_i, B_n). $$
 
@@ -28,8 +31,7 @@ Now, we claim that if we can extend summing to do a $k$-th "partial" intravector
 
 we would be able to use $\mathtt{partsum}(n, A'*B')$ to compute $n$ of the correct terms; for example, $(A \times B)_{1,1}$ in position $1$. If we repeat this $n$ times after cycling $A'*B'$ (by $n$ each time), we can combine them to get the final vector. As a concrete example for $n=2$:
 
-::: success
-**Concrete** $2 \times 2$ Example:
+:::{.callout-tip icon=false title="**Concrete** $2 \times 2$ Example:"}
 
 $\begin{array}{rrll}
     A'    &=& (a_{11},\ a_{12},\ a_{21},\ a_{22})\\
