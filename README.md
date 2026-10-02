@@ -4,7 +4,7 @@ Introductory book on programmable computation within a fully homomorphic enviorm
 ## Render the book
 
 Install [Quarto](https://quarto.org/) and R. The bubble-sort chapter also uses
-the R packages `ggplot2`, `dplyr`, `gganimate`, and `gifski`.
+the R packages `knitr`, `ggplot2`, `dplyr`, `gganimate`, and `gifski`.
 
 From this directory, run:
 
