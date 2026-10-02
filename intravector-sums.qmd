@@ -4,4 +4,6 @@ Suppose we wanted the sums of the *entries* of a vector; we call this the **intr
 
 However, we can make this faster by noticing the following. Suppose we cycled by $1$ and added instead, then we would be able to get: $$\mathtt{enc}(z_1 + z_2, z_2 + z_3, z_3 + z_4, \cdots)$$ then cycling by $2$ and adding to itself would put $z_1 + z_2 + z_3 + z_4$ in the first position, but with only 2 additions instead of $3$. Extending this method, we can sum all the numbers with $\log({N/2})$ operations.
 
-Here are a couple of general consequences of being able to sum: 1. **dot product**: given encrypted vectors of $c_*$ and $d_*$, we can multiply to get $\mathtt{enc}(c_1d_1, c_2d_2, \ldots)$, and then sum to get the dot product. 2. **(complex) inner product**: since we can take the conjugate of $d_*$, we can compute the complex inner product $$c_1\overline{d_1} + \cdots + c_{N/2}\overline{d_{N/2}}.$$
+Here are a couple of general consequences of being able to sum: 
+1. **dot product**: given encrypted vectors of $c_*$ and $d_*$, we can multiply to get $\mathtt{enc}(c_1d_1, c_2d_2, \ldots)$, and then sum to get the dot product. 
+2. **(complex) inner product**: since we can take the conjugate of $d_*$, we can compute the complex inner product $$c_1\overline{d_1} + \cdots + c_{N/2}\overline{d_{N/2}}.$$
