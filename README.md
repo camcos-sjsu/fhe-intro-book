@@ -1,16 +1,29 @@
 # fhe-intro-book
-Introductory book on programmable computation within a fully homomorphic enviorment
+Introductory book on programmable computation within a fully homomorphic environment.
 
-## Render the book
+## Build the book from scratch
 
-Install [Quarto](https://quarto.org/) and R. The bubble-sort chapter also uses
-the R packages `knitr`, `ggplot2`, `dplyr`, `gganimate`, and `gifski`.
+Install [Git](https://git-scm.com/downloads), [R](https://cran.r-project.org/),
+and [Quarto](https://quarto.org/docs/get-started/).
 
-From this directory, run:
+Clone this repository and enter its folder:
+
+```sh
+git clone https://github.com/camcos-sjsu/fhe-intro-book.git
+cd fhe-intro-book
+```
+
+In R or RStudio, install the packages used by the book's R example:
+
+```r
+install.packages(c("knitr", "ggplot2", "dplyr", "gganimate", "gifski"))
+```
+
+From the project folder, render the book:
 
 ```sh
 quarto render
 ```
 
-Open `_book/index.html` to view the rendered book. For a live preview while
-editing, run `quarto preview`.
+Open `_book/index.html` to view it. To preview while editing, run `quarto preview`
+from the project folder instead.
