@@ -1,0 +1,113 @@
+{
+  "index.qmd": {
+    "index.html": "16fc6415"
+  },
+  "about.qmd": {
+    "about.html": "61cbc99d"
+  },
+  "intro.qmd": {
+    "intro.html": "decb598f"
+  },
+  "aux-fn.qmd": {
+    "aux-fn.html": "69809c14"
+  },
+  "intravector-sums.qmd": {
+    "intravector-sums.html": "57781650"
+  },
+  "higher-moments.qmd": {
+    "higher-moments.html": "fcc84dcc"
+  },
+  "taylor-approx.qmd": {
+    "taylor-approx.html": "ccdb03d9"
+  },
+  "sqrt-user-input.qmd": {
+    "sqrt-user-input.html": "904880a4"
+  },
+  "logarithm.qmd": {
+    "logarithm.html": "df153dce"
+  },
+  "division.qmd": {
+    "division.html": "c253114f"
+  },
+  "geometric-series.qmd": {
+    "geometric-series.html": "abc68727"
+  },
+  "newtons-method.qmd": {
+    "newtons-method.html": "e1890e17"
+  },
+  "hybrid-approach.qmd": {
+    "hybrid-approach.html": "51d26b9f"
+  },
+  "softmax.qmd": {
+    "softmax.html": "237f1119"
+  },
+  "discrete-math.qmd": {
+    "discrete-math.html": "e3bb112f"
+  },
+  "sign-fn.qmd": {
+    "sign-fn.html": "b888d502"
+  },
+  "logistic.qmd": {
+    "logistic.html": "c64c7fac"
+  },
+  "tanh.qmd": {
+    "tanh.html": "52631122"
+  },
+  "sign-appl.qmd": {
+    "sign-appl.html": "135c4a6c"
+  },
+  "sorting.qmd": {
+    "sorting.html": "c8a76841"
+  },
+  "bubble.qmd": {
+    "bubble.html": "7d33445d"
+  },
+  "sorting-better.qmd": {
+    "sorting-better.html": "9a5e7edb"
+  },
+  "max.qmd": {
+    "max.html": "9ad1e4f2"
+  },
+  "difference-matrix.qmd": {
+    "difference-matrix.html": "f21a105b"
+  },
+  "mode.qmd": {
+    "mode.html": "c1dc553c"
+  },
+  "median.qmd": {
+    "median.html": "c8b60f58"
+  },
+  "correlation-related.qmd": {
+    "correlation-related.html": "2a59a0ef"
+  },
+  "two-coeff.qmd": {
+    "two-coeff.html": "2ef3aaad"
+  },
+  "linear-regression.qmd": {
+    "linear-regression.html": "3db46cdf"
+  },
+  "other.qmd": {
+    "other.html": "629fd22b"
+  },
+  "matrix-multiplication.qmd": {
+    "matrix-multiplication.html": "77010031"
+  },
+  "shannon-entropy.qmd": {
+    "shannon-entropy.html": "097c602f"
+  },
+  "adaptive-division.qmd": {
+    "adaptive-division.html": "e15d72f5"
+  },
+  "logarithm-rev.qmd": {
+    "logarithm-rev.html": "dc627b05"
+  },
+  "lit-review.qmd": {
+    "lit-review.html": "3ebd9bd0"
+  },
+  "discrete-computational.qmd": {
+    "discrete-computational.html": "572c92e4"
+  },
+  "references.qmd": {
+    "references.html": "9187e1f7"
+  }
+}

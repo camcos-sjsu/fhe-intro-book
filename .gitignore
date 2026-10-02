@@ -5,3 +5,5 @@
 .DS_Store
 _book
 _site
+/.quarto/
+**/*.quarto_ipynb
