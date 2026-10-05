@@ -31,7 +31,7 @@ book:
       chapters:
         - sorting/bubble.qmd
         - sorting/improvements.qmd
-        - max.qmd
+        - sorting/max.qmd
     - part: difference-matrix/intro.qmd
       chapters:
         - difference-matrix/mode.qmd
@@ -45,15 +45,15 @@ book:
         - other/matrix-multiplication.qmd
         - other/shannon-entropy.qmd
         - other/adaptive-division.qmd
-        - other/logarithm-rev.qmd
+        - other/logarithm-revisited.qmd
     - lit-review.qmd
     - part: discrete-model/intro.qmd
       chapters:
-        - discrete-model/binary-operations.qmd
+        - discrete-model/binary-approach.qmd
         - discrete-model/modular-operations.qmd
         - discrete-model/roots-of-unity.qmd
         - discrete-model/index-one-hot.qmd
-        - discrete-model/extended-binary-expansion
+        - discrete-model/extended-binary-expansion.qmd
         - discrete-model/summary.qmd
         
 
