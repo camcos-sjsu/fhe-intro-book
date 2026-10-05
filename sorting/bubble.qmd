@@ -29,6 +29,9 @@ We call one pass of this function over a vector as a "bubble," $\mathtt{bub_{i,j
 library(ggplot2)
 library(gganimate)
 library(dplyr)
+library(showtext)
+library(sysfonts)
+
 
 set.seed(203)
 # Set an initial vector with 6 bars
@@ -96,6 +99,10 @@ bubble <- function(arr) {
 # Run the history tracker
 sorting_data <- bubble(initial_vector)
 
+#add font to match quarto's font
+font_add_google("Source Sans 3", family = "source-sans", db_cache = FALSE)
+showtext_auto()
+
 # 3. Create the ggplot object
 p <- ggplot(sorting_data, aes(x = factor(Index), y = Value, fill = Status)) +
   geom_bar(stat = "identity", width = 0.7) +
@@ -107,7 +114,7 @@ p <- ggplot(sorting_data, aes(x = factor(Index), y = Value, fill = Status)) +
     y = "Value"
   ) +
   theme_minimal() +
-  theme(legend.position = "none", plot.title = element_text(size = 16, face = "bold"))
+  theme(legend.position = "none", plot.title = element_text(size = 32, face = "bold"),text = element_text(family = "source-sans"), axis.title = element_text(size = 28), plot.subtitle = element_text(size = 24), axis.text = element_text(size = 15))
 
 # 4. Animate across the 'Step' variable
 anim <- p + transition_states(Step, transition_length = 1, state_length = 2)
