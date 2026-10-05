@@ -1,0 +1,7 @@
+# Discrete Computational Models
+
+Here's a proof-of-concept of a different computational model where the entries represent discrete numbers instead of general complex/real numbers. 
+
+In this computational model, each ciphertext vector with length $n/2$ stores $n/(2k)$ numbers, using $k$ components to store each number.  The user supplies not only (or instead of, but it seems fairly cheap to have both representations) $x$, but also the digits of $x$ (assuming integers for simplicity, maybe $x = (x_{k-1} \cdots x_0)|_b$ in base $b$, and each $x_i$ represents an element of $\{0, 1, \ldots, b-1\}$.
+
+We show an example of how the inequality function is simpler in this model, then discuss other uses such as the sign function and multiplication. In our github repo (https://github.com/fieldextension/discrete-methods) we show how our methods can be used to sort numbers with very little floating point error.
