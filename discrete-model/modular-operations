@@ -1,0 +1,19 @@
+### Modular Operations
+
+For higher bases, we are effectively doing modular arithmetic. The problem is we are storing integers. Thankfully, the fact we are using complex numbers allow us to "modularize" fairly painlessly. We give a sketch of this approach:  
+
+1. Suppose we wanted to add or multiply numbers "mod N" (for this, we are agnostic to whether the numbers are digits of a single number or just different numbers we want to add / multiply in batch; things like carrying need to be dealt with separately). Then we can perform the algebra and end up with some results in $\mathbb{Z}$. Then,  
+
+2. Compute $e^{2\pi i z/N}$ on the vector (specifically, first multiply the vector by $2\pi i/N$, then compute $(1 + z + z^2/2 + \cdots)$ as usual)  
+
+3. Then compute $\log()$ to undo the computation, which will get us (with the correct branch) integers back in $\{0, \ldots, N-1\}$ after multiplying back by $N/(2\pi i)$. The convergence of this will be quite good as the numbers will be far from $0$ after step $2$.  
+
+In this representation, the sign function (and inequality, etc.) can be viewed as discrete polynomials.
+
+:::{.callout-tip icon=false title="**Concrete Example**"}
+Suppose we wanted a function to return $1$ for all elements at least $3 \pmod {7}$ and $0$ otherwise:  
+
+1. Recall from Lagrange interpolation that if we want to send $a$ to $1$ and the other elements to $0$, we can just use the function $f_a(x) = (x-0)(x-1)\cdots(x-a+1)(x-a-1)\cdots (x-p+1)$ (suitably scaled to obtain 1).  
+2. Add the functions for $f_3 + \cdots f_6$ to obtain a function that evaluates to $1$ on $3, 4, 5, 6$ but $0$ on the others.  
+3. (this can be done for any function on $\mathbb{Z}/7\mathbb{Z}$). 
+:::

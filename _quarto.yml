@@ -8,48 +8,56 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
-    - part: general/aux-fn.qmd
+    - part: general/intro.qmd
       chapters:
         - general/intravector-sums.qmd
         - general/higher-moments.qmd
         - general/taylor-approx.qmd
         - general/sqrt-user-input.qmd
         - general/logarithm.qmd
-    - part: division/division.qmd
+    - part: division/intro.qmd
       chapters:
       - division/geometric-series.qmd
       - division/newtons-method.qmd
       - division/hybrid-approach.qmd
       - division/softmax.qmd
     - discrete-math.qmd
-    - part: sign/sign-fn.qmd
+    - part: sign/intro.qmd
       chapters:
         - sign/logistic.qmd
         - sign/tanh.qmd
-        - sign/sign-appl.qmd
-    - part: sorting/sorting.qmd
+        - sign/applicability.qmd
+    - part: sorting/intro.qmd
       chapters:
         - sorting/bubble.qmd
-        - sorting/sorting-better.qmd
-    - max.qmd
-    - part: difference-matrix/difference-matrix.qmd
+        - sorting/improvements.qmd
+        - max.qmd
+    - part: difference-matrix/intro.qmd
       chapters:
         - difference-matrix/mode.qmd
         - difference-matrix/median.qmd
-    - part: correlation-related/correlation-related.qmd
+    - part: correlation-related/intro.qmd
       chapters:
         - correlation-related/two-coeff.qmd
         - correlation-related/linear-regression.qmd
-    - part: other/other.qmd
+    - part: other/intro.qmd
       chapters:
         - other/matrix-multiplication.qmd
         - other/shannon-entropy.qmd
         - other/adaptive-division.qmd
         - other/logarithm-rev.qmd
     - lit-review.qmd
+    - part: discrete-model/intro.qmd
+      chapters:
+        - discrete-model/binary-operations.qmd
+        - discrete-model/modular-operations.qmd
+        - discrete-model/roots-of-unity.qmd
+        - discrete-model/index-one-hot.qmd
+        - discrete-model/extended-binary-expansion
+        - discrete-model/summary.qmd
+        
 
   appendices:
-    - discrete-computational.qmd
     - references.qmd
 
 bibliography: references.bib

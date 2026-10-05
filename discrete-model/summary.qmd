@@ -1,0 +1,6 @@
+:::{.callout-tip icon=false title="**Summary**"}
+
+1. A discrete representation of numbers is useful to have as a substitute / in addition to the standard input. Can consider writing down the "digits" as integers or as the roots of unity.  
+2. With each choice, certain things become much easier (or at least doable) such as the sign / inequality function, but certain things become harder as well (such as addition or multiplication).  
+3. We give a proof-of-concept in the following repository: https://github.com/fieldextension/discrete-methods 
+:::
