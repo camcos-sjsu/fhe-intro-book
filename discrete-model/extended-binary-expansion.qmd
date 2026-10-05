@@ -1,0 +1,50 @@
+### Comparison and Extended Binary Numbers
+
+In this section, we show we can compare an input integer ciphertext $c$ with $0$, meaning a function which outputs $1$ if $c > 0$ and $0$ otherwise. (it will be clear how to do variants of this, such as with nonstrict inequalities). Our main trick is to use what we call the **extended binary expansion** of $c$.
+
+Define $S_1 := {-1,0,1}.$ We say that a number $a$ is in **extended binary** form if it is represented as
+$$
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+$$
+
+where each digit satisfies $a_i \in S_1.$ 
+
+:::{.callout-tip icon=false title="**Remark ($S_1$): **"}
+The main intuition is this: we need the slightly larger digit set $S_1$ because the difference of two ordinary binary numbers has digits in $\{-1,0,1\}$. This avoids needing to perform carrying, which is hard in CKKS.
+:::
+
+Now:
+
+1. Assume that we have the extended binary digits of $c$ as $c_0, c_1, \ldots, c_{b-1},$ in little-endian order, where each $c_i \in S_1$.
+2. We construct the functions “$\geq 0$” and “$=0$” on the finite set $S_1$. Since $S_1$ is finite, these functions are polynomials on $S_1$! (furthermore, with operations that are not likely to accumulate a lot of floating point error)
+    - For example, on $S_1$, the function $\mathbf{1}_{x > 0}$ is given by $$ \frac{x^2+x}{2}. $$ Indeed, this is $0, 0, 1$ at $x=-1, 0, 1$ respectively.
+    - Similarly, the function $\mathbf{1}_{x=0}$ is given by $1 - x^2.$
+3. This allows us to construct a comparison function on the space of extended binary numbers. The key logic is that an extended binary number $$ a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1} $$ is positive if and only if at least one of the following events occurs: $$
+a_i = 1 \quad\text{and}\quad a_{i'} = 0 \text{ for all } i' > i. $$ In words: the most significant nonzero digit of (a) is positive.
+
+Therefore,
+
+$$
+\mathbf{1}_{a>0} = \bigvee_{i=0}^{b-1}
+\left(
+(\mathbf{1}({a_i=1})
+\wedge
+\bigwedge_{i' > i} \mathbf{1}({a_{i'}=0})
+\right).
+$$
+
+The logical AND and OR operations can themselves be written as polynomials on Boolean values:
+
+$$
+A \wedge B = AB,
+$$
+
+and
+
+$$
+A \vee B = 1 - (1-A)(1-B).
+$$
+
+Thus the comparison function can be implemented as a polynomial in the extended binary digits.
+
+Since the intermediate values are essentially Boolean or integer-valued, this construction avoids the main numerical instability of trying to compare arbitrary real CKKS values directly.

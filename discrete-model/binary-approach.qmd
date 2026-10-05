@@ -1,0 +1,13 @@
+### A Binary Approach to Inequality and Sorting
+
+For this example, assume $b=2$ so things are stored in binary. We will show that the inequality function can be done "exactly" as polynomials instead of approximated with a Taylor expansion.
+
+1. When $x$ and $y$ are *single bits*, the equality function $(x == y)$ is an algebraic condition $$(x==y) := \frac{1}{2}(xy + (1-x)(1-y)),$$ 
+2. and whether $(x > y)$ is also an exact condition, namely $$(x > y) := (x==1) * (y==0);$$
+3. Therefore, when $x$ and $y$ are $k$-bit numbers (assuming positive), we can write $x > y$ as an OR (and thus a polynomial) of the following values:
+    - $(x_{k -1} > y_{k-1})$ OR
+    - ($(x_{k-1} == y_{k-1})$ AND $(x_{k-2} > y_{k-2})$) OR
+    - ($(x_{k-1} == y_{k-1})$ AND $(x_{k-2} == y_{k-2})$ AND $(x_{k-3} > y_{k-3})$) OR ...
+This is simply *some* polynomial in the $x_i$ and $y_i$, so it is obtainable under FHE. 
+
+Thus, doing inequalities with high accuracy at least becomes possible when we do binary operations. The (high!) tradeoff is that adding and multiplying become difficult (due to carries). But if we are only doing comparative work, then much of the sorting / maxing related operations in Section IV becomes very viable. 

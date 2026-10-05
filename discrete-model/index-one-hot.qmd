@@ -1,0 +1,13 @@
+### Index To One-Hot
+
+Using roots-of-unity, we can do a one-hot conversion function (this will be used later for sorting). Specifically, given a ciphertext input for integer $i$, stored in root-of-unity form (from this point we use $\sqrt{-1}$ to distinguish from $i$)
+$$
+\zeta^i = e^{2\pi i \sqrt{-1}/k},
+$$
+where $\zeta = e^{2\pi \sqrt{-1}/k},$ we wish to create a one-hot vector $v$ which is $1$ in the $i$-th coordinate and $0$ elsewhere. We can do this as follows:
+
+1. Create a vector $v'$ whose $j$-th coordinate is $\zeta^{-j}$.
+2. Multiply entrywise by $\zeta^i$: $v'' = v' \cdot \zeta^i.$
+3. Then the $j$-th coordinate of $v''$ is $\zeta^{i-j}$. In particular, the $i$-th coordinate is (1), while every other coordinate is a nontrivial $k$-th root of unity.
+4. For each entry $w$ of $v''$, compute $$1 + w + w^2 + \cdots + w^{k-1}.$$ This expression equals $k$ if $w = 1$ and equals $0$ if $w$ is a nontrivial $k$-th root of unity. 
+5. Therefore, after dividing by $k$, we obtain the desired vector $v$.

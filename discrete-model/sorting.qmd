@@ -1,0 +1,42 @@
+### Sorting
+
+Now we are ready to do sorting. Specifically, take $k$ inputs and return a sorted vector. As a corollary, this makes it easy to read off the median, maximum, minimum, and other simple summary statistics.
+
+For simplicity, we make the following assumptions.
+
+1. The inputs are distinct.
+2. We have $k = 2^s$ for some integer $s$, and $2 \cdot 2^s < S,$ where $S$ is the number of slots per ciphertext.
+3. The inputs are nonnegative integers in some fixed range. For simplicity, assume $c_j \in {0,1,\ldots,2^b-1}$ for some positive integer $b$.
+
+Now we give the algorithm.
+
+1. Start with the ciphertext numbers to be sorted: $c_1, c_2, \ldots, c_k.$
+2. Create $b$ batched extended binary base-vectors
+$c_0, c_1, \ldots, c_{b-1},$ where $c_{ij}$ is the $i$-th binary digit of $c_j$, in little-endian order. Thus, for example,
+$$
+c_{03} + 2c_{13} + 4c_{23} + \cdots = c_3.
+$$
+3. By the comparison trick, we can construct a polynomial comparison function on extended binary numbers of the form $$
+a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
+$$ where each $a_i \in S_1 = \{-1,0,1\}$.
+4. Given the $k$ ciphertexts, construct $b$ length-$k^2$ ciphertexts $d_0, d_1, \ldots, d_{b-1}$ from the base-vectors, so that the extended binary number represented at coordinate $j = xk + y$ is $c_x - c_y.$ In other words, the vectors $d_*$ represent all pairwise differences between the inputs. Since each $c_x$ and $c_y$ is represented in ordinary binary, each digit of the difference $c_x - c_y$ lies in $S_1$.
+5. Apply the comparison function in batch to all $k^2$ pairwise differences. This produces a vector $d$ such that
+$$
+d_{xk+y} =
+\begin{cases}
+1, & c_x > c_y, \\
+0, & \text{otherwise}.
+\end{cases}
+$$
+6. From this comparison matrix, compute the rank index of each $c_j$. Namely, the index of $c_j$ is the number of inputs smaller than it: $$ \operatorname{Ind}(j) = 
+|\{x : c_j > c_x\}|.
+$$ This can be obtained by summing the appropriate entries of the comparison matrix. However, instead of summing ordinary (0)-(1) comparison values, transform the comparison outputs so that a positive comparison contributes
+$$
+\zeta = e^{2\pi \sqrt{-1}/k}
+$$
+instead of $1$, while a non-positive comparison contributes $1$. Then multiply these contributions rather than adding them. This gives the index in root-of-unity form:
+$$
+\zeta^{\operatorname{Ind}(j)} = e^{2\pi \sqrt{-1}\operatorname{Ind}(j)/k}.
+$$
+7. Now apply the index-to-one-hot trick to each ($\zeta^{\operatorname{Ind}(j)}$. This gives, for each input $c_j$, a one-hot vector $o(j)$ supported in coordinate $\operatorname{Ind}(j)$.
+8. Finally, compute $\sum_{j=1}^k c_j o(j).$ The result is the sorted vector.

@@ -1,0 +1,130 @@
+### Roots of Unity 
+
+
+Yet another possible variation is to store the numbers as *roots of unity*. Let $\zeta$ be a primitive $N$-th root of unity for some fixed prime $N$. Then we represent $a$ by $\zeta^a$ for $a \in \{0, 1, \ldots, N-1\}$. Then we can do **modular addition** mod $N$ via multiplication:
+
+$$
+(\zeta^k)(\zeta^l) = \zeta^{k+l}.
+$$
+
+However, **modular multiplication** becomes much more difficult.
+
+One option is to interpolate a bivariate polynomial such that $P(\xi^a,\xi^b) = \xi^{ab}$. Since $n$ is finite, the Cayley table of $\mathbb{Z}/n\mathbb{Z}$ is also finite. Thus, we should be able to interpolate a polynomial which functions as a lookup method.
+
+Alternatively, we could encode a pair of elements as a single value, and then interpolate a polynomial in one variable. We can do all of this publicly beforehand, so only evaluating the polynomial needs to happen in an encrypted setting.
+
+We might consider something like
+
+$$
+t(w,z)=nw+z.
+$$
+
+This distinguishes every ordered pair of $n$th roots of unity. However, it does not use the symmetry of the table, because $t(w,z)\neq t(z,w)$ when $w\neq z$. Ideally, they would be equal so that we can use fewer interpolation points and get a lower degree.
+
+So, we want to create a function $t(w,z)$ such that $t(w,z)=t(u,v)$ if and only if
+
+$$
+(u,v)=(w,z)\quad\text{or}\quad(u,v)=(z,w).
+$$
+
+Instead, consider something with a nonlinear term:
+
+$$
+t(w,z)=w+z+c wz.
+$$
+
+This is symmetric, but we need to choose $c$ so that two different unordered pairs do not give the same value.
+
+If two pairs give the same value, then
+
+$$
+w+z+c wz=u+v+c uv,
+$$
+
+so
+
+$$
+c(wz-uv)=u+v-w-z.
+$$
+
+If $wz=uv$, then their sums must also be equal. Having the same sum and product means they are the same unordered pair.
+
+Otherwise, there is just one value of $c$ that would make these two pairs collide:
+
+$$
+c=\frac{u+v-w-z}{wz-uv}.
+$$
+
+Since there are only finitely many pairs, there are only finitely many values of $c$ to avoid. So we can choose a $c$ that works.
+
+Then, we interpolate a polynomial $q$ such that
+
+$$
+q\bigl(t(\xi^a,\xi^b)\bigr)=\xi^{ab}.
+$$
+
+Now we only need one interpolation point for each unordered pair. This gives us $n(n+1)/2$ points instead of $n^2$, and therefore a degree bound of $n(n+1)/2-1$ instead of $n^2-1$.
+
+For example, let $n=3$ and let $\xi=e^{2\pi i/3}$. Then
+
+$$
+\xi^3=1
+$$
+
+In this case, we can choose $c=1$, giving
+
+$$
+t(w,z)=w+z+wz.
+$$
+
+We only need to consider the following six unordered pairs:
+
+$$
+\begin{array}{c|c|c}
+(w,z) & t(w,z) & \text{Desired output } \xi^{ab} \\
+\hline
+(1,1)         & 3          & 1 \\
+(1,\xi)       & 1+2\xi     & 1 \\
+(1,\xi^2)     & 1+2\xi^2   & 1 \\
+(\xi,\xi)     & 2\xi+\xi^2      & \xi \\
+(\xi,\xi^2)   & \xi^2 +\xi + 1          & \xi^2 \\
+(\xi^2,\xi^2) & 2\xi^2+\xi    & \xi\\
+(\xi^2,1)     & 1+2\xi^2   & 1 \\
+(\xi^2,\xi)   & \xi^2+\xi+1  & \xi^2 \\
+(\xi^2,\xi^2)     & 2\xi^2 + \xi   & \xi \\
+\end{array}
+$$
+
+
+There are six values in the middle column which are distinct, so we can interpolate a polynomial $q$ of degree at most $5$ with these inputs and outputs.  We also notice that values which aren't distinct have corresponding flipped $w$ and $z$ values. 
+
+Explicitly, label the interpolation points
+
+$$
+(t_0,t_1,t_2,t_3,t_4,t_5)
+=
+(3,1+2\xi,1+2\xi^2,\xi-1,0,\xi^2-1).
+$$
+
+Let
+
+$$
+L_j(T)=
+\prod_{\substack{0\le k\le 5\\k\ne j}}
+\frac{T-t_k}{t_j-t_k}.
+$$
+
+Then our polynomial is
+
+$$
+q(T)=L_0(T)+L_1(T)+L_2(T)
++\xi L_3(T)+\xi^2L_4(T)+\xi L_5(T).
+$$
+
+Thus, for any $a,b\in\{0,1,2\}$,
+
+$$
+q\left(\xi^a+\xi^b+\xi^{a+b}\right)=\xi^{ab}.
+$$
+
+We can construct $q$ publicly beforehand. Given encrypted inputs $w$ and $z$, we would then evaluate $q(w+z+wz)$.
