@@ -1,3 +1,7 @@
+---
+title: "Summary"
+---
+
 :::{.callout-tip icon=false title="**Summary**"}
 
 1. A discrete representation of numbers is useful to have as a substitute / in addition to the standard input. Can consider writing down the "digits" as integers or as the roots of unity.  
