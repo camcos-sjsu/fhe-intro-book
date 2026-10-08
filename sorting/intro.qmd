@@ -1,3 +1,30 @@
 ## IV.2 Sorting
 
-Many of the "classical" sorting algorithms (quicksort[^qs], etc.) are going to have issues in our setup due to their reliance on logical branching, dynamic memory allocation, etc. 
+Sorting is a useful operation to have, as it provides us with a lot of information on an encrypted vector. With sort we are able to derive quartiles, the median, max, and other statistics at once. In an unencrypted environment, sort often uses operations that result in branches and data-dependent memory access, which is not possible in our setting. We will explore how to implement sorting in a branch-free way, and then discuss how to improve the efficiency of the resulting algorithms.
+
+### Why familiar sorting algorithms do not transfer directly
+
+Many default sorting algorithms rely on decisions that depend on the input data. For example, in a conventional merge sort, the result of comparisons determine which value is copied next and which input position is read next. With encrypted values, the program cannot directly branch on those comparison results or use them as ordinary array indices.
+
+Algorithms with a fixed sequence of operations are a more natural fit, as their schedule can be chosen in advance without learning the values being compared.
+
+A relevant concept that is highly relevant to this usecase are **sorting networks**: where a fixed sequence of comparisons and swaps is used to sort any input, regardless of the values. Sorting networks are a well-studied area of computer science, and we will use some of their ideas in our work.
+
+### Comparisons without branching
+
+Recall that we can implement a sign function $\mathtt{sign}(x)$ that returns $1$ if $x \geq 0$ and $0$ otherwise. As a proof of concept, define $s = \mathtt{sign}(x_i-x_j)$ and consider:
+
+$$
+\begin{aligned}
+y_i &= s \cdot x_j + (1-s) \cdot x_i \\
+y_j &= s \cdot x_i + (1-s) \cdot x_j.
+\end{aligned}
+$$
+
+This gives $y_i$ the smaller value between $\{x_i, x_j\}$ and $y_j$ the larger value, without branching on the comparison result.
+
+### A starting point 
+
+For a first demonstration, we use bubble sort. Its adjacent compare and swap steps are simple to implement, and each step can be written using the sign comparison. Bubble sort is not an efficient sorting algorithm, but it gives us a clear basis for exploring how comparisons and swaps can be expressed with the operations available in CKKS. 
+
+The next chapter develops that compare-and-swap operation. The following discussion of sorting improvements then asks a different question: once we have such a building block, how can we schedule many comparisons to reduce the number of sequential layers? 
