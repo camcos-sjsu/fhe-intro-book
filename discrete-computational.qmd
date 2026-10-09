@@ -32,7 +32,9 @@ For higher bases, we are effectively doing modular arithmetic. The problem is we
 
 2. Compute $e^{2\pi i z/N}$ on the vector (specifically, first multiply the vector by $2\pi i/N$, then compute $(1 + z + z^2/2 + \cdots)$ as usual)  
 
-3. Then compute $\log()$ to undo the computation, which will get us (with the correct branch) integers back in $\{0, \ldots, N-1\}$ after multiplying back by $N/(2\pi i)$. The convergence of this will be quite good as the numbers will be far from $0$ after step $2$.  
+3. Then compute $\log()$ to undo the computation, which will get us (with the correct branch) integers back in $\{0, \ldots, N-1\}$ after multiplying back by $N/(2\pi i)$. The convergence of this will be quite good as the numbers will be far from $0$ after step $2$.
+
+<!-- I am confused about the convergence on log here. Does it actually converge on x outside of (0,2)?  What about negative x? -->
 
 In this representation, the sign function (and inequality, etc.) can be viewed as discrete polynomials.
 
@@ -111,6 +113,8 @@ $$
 
 Now we only need one interpolation point for each unordered pair. This gives us $n(n+1)/2$ points instead of $n^2$, and therefore a degree bound of $n(n+1)/2-1$ instead of $n^2-1$.
 
+:::{.callout-tip icon=false title="**Concrete Example**"}
+
 For example, let $n=3$ and let $\xi=e^{2\pi i/3}$. Then
 
 $$
@@ -152,7 +156,7 @@ $$
 (3,1+2\xi,1+2\xi^2,\xi-1,0,\xi^2-1).
 $$
 
-Let
+In the way of standard lagrange interpolation, let
 
 $$
 L_j(T)=
@@ -173,6 +177,9 @@ $$
 q\left(\xi^a+\xi^b+\xi^{a+b}\right)=\xi^{ab}.
 $$
 
+:::
+
+Noteably, this interpolation method could also be used to "de-root" a root of unity by choosing to map $\xi^a$ to $a \text{ mod} n$.
 
 ## Appendix B: An Application to Sorting
 
