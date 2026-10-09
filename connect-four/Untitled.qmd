@@ -1,0 +1,75 @@
+## FHE Connect 4
+
+### Familiarizing with the Problem
+
+**Connect 4** is a popular game in which two players take turns dropping a respective game piece into a vertically suspended grid with the goal of "connecting 4" as the name may aptly suggest. A winning sequence of 4 pieces belonging to one player may appear consecutively in a row, column, or diagonal of the grid. A typical Connect 4 representation has six rows and seven columns. How could we "play Connect 4 in FHE"? Or rather, how do we check that two users have successfully completed a game?
+
+Clearly, we can think of the game grid as a $6 \times 7$ matrix. For our FHE problem at hand, let's move forward by imagining six vectors of length seven: $x_i = (x_{i,1}, \dots, x_{i,7})$ for $i=1,\dots,6$. Player 1's game pieces will now be represented as $1$s, and Player 2's as $2$s **(note: maybe we should use** $-1$s for Player 2 to take advantage of inequalities), with $0$s where no game piece was played. So, perhaps an example of a finished game could be as follows (who won?):
+
+$$\begin{aligned}
+x_6=(0, 0, 0, 0, 0, 0, 0) \\
+x_5=(1, 1, 1, 1, 2, 0, 0) \\
+x_4=(1, 2, 2, 1, 1, 0, 2) \\
+x_3=(1, 2, 1, 2, 2, 2, 1) \\
+x_2=(2, 1, 1, 2, 2, 2, 1) \\
+x_1=(2, 1, 1, 1, 2, 1, 2) \\
+\end{aligned}$$
+
+Was this a fair game? How can you tell? I believe I may have tricked some reader– were you checking for a "connect 4" without noticing that there are 17 $1$s but 15 $2$s? Player 2 experienced a skipped turn, putting them at a disadvantage! How can we make sure a game such as this one gets "rejected" in our FHE setup?
+
+So far, we've identified the following conditions we must check in order to validate a completed, fair game: - The difference between the number of $1$s and $2$s can be (only) 0 or 1: $\#(1)-\#(2)\in\{0,1\}$. For a completed game, - $\#(1)-\#(2) = 0 \implies$ Player 2 won. - $\#(1)-\#(2) = 1 \implies$ Player 1 won. - At least one of the following holds (there are possible cases in which a winning move creates more than one of these): - Horizontal win: $x_{i,j}=x_{i,j+1}=x_{i,j+2}=x_{i,j+3}≠0$ $(i=1,\ldots,6$, $j=1,\ldots,4)$ - Vertical win: $x_{i,j}=x_{i+1,j}=x_{i+2,j}=x_{i+3,j}≠0$ $(i=1,\ldots,3$, $j=1,\ldots,7)$ - Diagonal win: $x_{i,j}=x_{i+1,j+1}=x_{i+2,j+2}=x_{i+3,j+3}≠0$ $(i=1,\ldots,3$, $j=1,\ldots,4)$ or: $x_{i,j}=x_{i+1,j-1}=x_{i+2,j-2}=x_{i+3,j-3}≠0$ $(i=1,\ldots,3$, $j=4,\ldots,7)$
+
+Player 1 claims they won the following game. Did they?
+
+$$\begin{aligned}
+x_6=(0, 0, 0, 0, 0, 0, 0) \\
+x_5=(1, 0, 0, 0, 0, 0, 0) \\
+x_4=(0, 1, 2, 2, 1, 0, 0) \\
+x_3=(1, 2, 1, 1, 2, 0, 0) \\
+x_2=(1, 2, 1, 1, 2, 2, 0) \\
+x_1=(2, 2, 1, 1, 2, 2, 1) \\
+\end{aligned}$$
+
+No– observe index $x_{4,1}$. We must also account for the element of gravity in the physical game– pieces cannot "float", i.e., $x_{i,j}=0 \implies x_{k,j}=0 \forall k>i$.
+
+Some other considerations:
+
+- we would assumedly want to reject cases in which both players have $\ge 1$ "connect 4"
+- what if the players continued after a win occurred, but only one player has $\ge 1$ "connect 4"? Do we care?
+- it appears we can't actually detect whether fair turns were taken with this framework– we could have: player 1 takes 3 turns, player 2 takes 1 turn, player 1 takes 1 turn, player 2... but eventually end up with $\#(1)-\#(2)\in\{0,1\}$ anyways. Do we care?
+
+**Before getting too caught up in a rabbit hole, let's begin thinking about the actual FHE computations.**
+
+------------------------------------------------------------------------
+
+### Relevant FHE Computations
+
+Let's begin with the "win" checks.
+
+I'm thinking that I'd like my computation to output all $0$s except for $1$s where any valid "connect fours" from strictly either Player 1 or Player 2 occur. For instance, **(fill out entries)**
+
+$$
+\begin{aligned}
+x_6&=(\_,\_,\_,\_,\_,\_,\_) \\
+x_5&=(\_,\_,\_,\_,\_,\_,\_) \\
+x_4&=(\_,\_,\_,\_,\_,\_,\_) \\
+x_3&=(\_,\_,\_,\_,\_,\_,\_) \\
+x_2&=(\_,\_,\_,\_,\_,\_,\_) \\
+x_1&=(\_,\_,\_,\_,\_,\_,\_)
+\end{aligned}
+\qquad\longrightarrow\qquad
+\begin{aligned}
+x_6&=(\_,\_,\_,\_,\_,1,\_) \\
+x_5&=(\_,\_,\_,\_,1,1,\_) \\
+x_4&=(\_,\_,\_,1,\_,1,\_) \\
+x_3&=(\_,\_,1,\_,\_,1,\_) \\
+x_2&=(\_,\_,\_,\_,\_,\_,\_) \\
+x_1&=(\_,\_,\_,\_,\_,\_,\_)
+\end{aligned}
+$$
+
+Stream of consciousness coworking: check if Player 1 won, THEN check if Player 2 won– because I think we want to work with binary representation, i.e. $1$s where Player 1's game pieces are, $0$s if else. Then the opposite to check if Player 2 won. But maybe this is unnecessary. What if Player 1 has $1$s, Player 2 has $-1$s, we are looking for sums of $4$ or $-4$.
+
+We keep wanting to do things involving branching (i.e. check if $x_1 + x_2 + x_3 + x_4 = 4$, if no, move on to next block of four). It seems we could just do a bunch of repeated masking and summing– isolate the first horizontal block of four, sum, isolate the next block, sum, the next...and do this for vertical and diagonal cases as well. Use approximate equality to check for sums that equal -4 or 4.
+
+------------------------------------------------------------------------
