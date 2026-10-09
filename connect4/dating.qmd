@@ -1,0 +1,89 @@
+## FHE Dating
+
+Online dating is ever on the rise– an avenue once considered unconventional is now incredibly mainstream, with some claiming that online dating is now the leading way for couples to meet.[^1] This modern dating landscape is accompanied by a unique set of advantages and concerns, particularly with regards to the safety and security of users, both online and off. How can developers and the like maximize the positive outcomes of online dating while also optimizing for, or entirely ensuring, user safety? Fully homomorphic encryption (FHE) may be the answer.
+
+[^1]: https://web.stanford.edu/\~mrosenfe/Rosenfeld_et_al_Disintermediating_Friends.pdf
+
+Let's review a real-life example as motivation: the "Tea" dating app disaster. The app's creators had positive intentions– to protect women from some of the risks their specific demographic faces in the dating landscape. Women could anonymously share information, in particular warnings or "red flags", about men they had dated or interacted with online.
+
+A space meant to protect women turned into the opposite in 2025 when approximately 72,000 user images were compromised, roughly 13,000 of which containing personally identifying media such as selfies, driver's licenses and passports.[^2] Some photos even possessed metadata such as coordinates allowing for the tracking of users' locations. Tea had been storing these sensitive images in an unsecured Google Firebase storage bucket while simultaneously explicitly telling users that their media was deleted immediately upon verification. Soon after this initial breach, a second vulnerability was discovered leading to a leak of about 1.1 million private messages.
+
+[^2]: https://www.security.org/identity-theft/breach/tea-app/
+
+Tea faced heavy financial and legal consequences, but that is an incomparable price to the loss of safety users experienced. What if instead of blindly trusting dating platforms with their (highly) sensitive data, users could rely on an FHE-based system that guarantees to process that data while it remains encrypted? Below, let's brainstorm the design and capabilities of an "FHE dating app" by examining some specific use-cases/desires users may have, and how we may actually implement their FHE solutions.
+
+### Situation 1: Secret Dealbreakers
+
+Bob only wants to see profiles in his feed that align with his "dealbreakers" he has specified.
+
+Users often provide sensitive data for this purpose, including but not limited to: age, location range/distance, ethnicity, religion, children status, relationship type/dating intentions, substance use, political orientation, education level, etc.
+
+Let's focus on just location first. Bob only wants to match with users who are located 25 miles or less away, but without revealing his particular location (or theirs).
+
+Working directly with latitude/longitude would require spherical distance formulas with trigonometric functions, which we'd like to avoid. Instead, request user location to be provided as 3D Cartesian coordinates: if the Earth is modelled as approximately a sphere with radius $R$, a user's latitude $\phi$ and longitude $\lambda$ can be converted to $(x, y, z) = R(\cos\phi\cos\lambda, \cos{\phi}\sin{\lambda}, \sin\phi)$.
+
+Let Alice and Bob's locations be denoted $A = (x_A, y_A, z_A)$ and $B = (x_B, y_B, z_B)$ respectfully. These would be encrypted as $N/2$-length ciphertexts $$
+\mathsf{ct}_A = \mathsf{enc}(x_A, y_A, z_A, 0, \dots, 0), 
+\mathsf{ct}_B = \mathsf{enc}(x_B, y_B, z_B, 0, \dots, 0)
+$$
+
+The distance between Alice and Bob would then be $$
+D = \sqrt{(x_A-x_B)^2+(y_A-y_B)^2+(z_A-z_B)^2}
+$$ We want to determine if $D\le25$. To avoid the square root, instead we consider $D^2\le25^2=625$. We see that computing $D^2$ in FHE only involves additions, subtractions, and powers (multiplications) which we have natively. The main work is the comparison. For that, we'd want to approximate an indicator function: $$
+I(D^2) \approx
+\begin{cases}
+1, & D^2 \leq 625,\\
+0, & D^2 > 625.
+\end{cases}
+$$
+
+Let's alter this slightly. Let $s = 625-D^2$. Then, the problem reduces to determining whether the encrypted value $s$ is positive or negative: $$
+I(s)=
+\begin{cases}
+1, & s \geq 0,\\
+0, & s < 0.
+\end{cases}
+$$
+
+We can approximate the above using a polynomial approximation of a sign or step function.
+
+### Situation 2: Feeling Shy
+
+Let's say that instead of her profile being publicly broadcasted to other users, Alice only wants her profile revealed if she has sent a "like" to them first.
+
+Typically, dating app algorithms continuously "decide" which users to place in people's feeds. But now, Alice will only show up in Bob's feed if Alice has liked Bob.
+
+Consider $N/2$-length ciphertexts $$
+\mathsf{ct}_A = \mathsf{enc}(l_{A,1}, l_{A,2}, \dots, l_{A, N/2}), 
+\mathsf{ct}_B = \mathsf{enc}(0, \dots, 0, 1, 0, \dots, 0)
+$$ where $A$ encodes Alice's "likes": $$
+l_A,j=
+\begin{cases}
+1, & \text{Alice liked User j},\\
+0, & \text{otherwise}.
+\end{cases}
+$$ and $B$ encodes Bob's identity. Say Bob is the $j$-th user, and Alice has liked him. Elementwise multiplying $AB$ would in that case give $$
+\mathsf{ct}_{AB} = \mathsf{enc}(0, \dots, 0, l_{A, j}, 0, \dots, 0) = \mathsf{enc}(0, \dots, 0, 1, 0, \dots, 0);
+$$ using repeated cycles and additions we can from there easily produce $$
+\mathsf{ct}_{\Sigma AB} = \mathsf{enc}(l_{A, j}, l_{A, j}, \dots, l_{A, j}) = \mathsf{enc}(1, 1, \dots, 1).
+$$
+
+Naturally, if Alice had *not* liked Bob, the result would have been $$
+ \mathsf{enc}(0, 0, \dots, 0).
+$$
+
+Now that we possess such a vector, how does that actually translate to Alice's profile being placed in Bob's feed? This is where it appears our problem would be best approached within an environment beyond just FHE. Meaning, this has become more of an "access-control, key-management" problem at this point.
+
+### Situation 3: Offline Connections
+
+Bob had an unfavorable experience dating a coworker, and now he wants to only match with users with *no* personal connection to his life. On the other hand, Alice is feeling wary of online strangers and wants her profile only revealed to users she *does* have some personal connection with.
+
+This situation differs a bit from the prior two with regards to the input data required. Here, it would be useful to connect some external source to the dating app, such as Facebook friends or phone contacts, in order to determine personal connections. Obviously, Alice and Bob desire any information provided to be encrypted.
+
+### Related Literature
+
+- **Privacy-Preserving User Profile Matching in Social Networks (2020)**\[\^privacypreserving\] \[\^privacypreserving\]: <https://www.researchgate.net/publication/332668112_Privacy-Preserving_User_Profile_Matching_in_Social_Networks>
+
+- **Hidden Elo: Private Matchmaking through Encrypted Rating Systems (2026)**\[\^matchmaking\] \[\^matchmaking\]: <https://arxiv.org/abs/2603.26407>
+
+- **Private Verification in Multi-stakeholder Environment and its Application to Stable Matching (2024)**\[\^multistake\] \[\^multistake\]: <https://www.researchgate.net/publication/378851486_Private_Verification_in_Multi-stakeholder_Environment_and_its_Application_to_Stable_Matching>

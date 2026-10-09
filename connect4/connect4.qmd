@@ -4,6 +4,8 @@
 
 **Connect 4** is a popular game in which two players take turns dropping a respective game piece into a vertically suspended grid with the goal of "connecting 4" as the name may aptly suggest. A winning sequence of 4 pieces belonging to one player may appear consecutively in a row, column, or diagonal of the grid. A typical Connect 4 representation has six rows and seven columns. How could we "play Connect 4 in FHE"? Or rather, how do we check that two users have successfully completed a game?
 
+hey
+
 Clearly, we can think of the game grid as a $6 \times 7$ matrix. For our FHE problem at hand, let's move forward by imagining six vectors of length seven: $x_i = (x_{i,1}, \dots, x_{i,7})$ for $i=1,\dots,6$. Player 1's game pieces will now be represented as $1$s, and Player 2's as $2$s **(note: maybe we should use** $-1$s for Player 2 to take advantage of inequalities), with $0$s where no game piece was played. So, perhaps an example of a finished game could be as follows (who won?):
 
 $$\begin{aligned}
