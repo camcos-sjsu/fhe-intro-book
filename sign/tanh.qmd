@@ -10,16 +10,20 @@ $$\tanh(x)\approx\frac{2x-\frac{4x^2}{2!}+\frac{8x^3}{3!}-\cdots}{2-2x+\frac{4x^
 
 Using the same trick as we did with the logistic expansion, we build a geometric series:
 
-$$r = \Big(-x+\frac{2x^2}{2!}-\frac{4x^2}{3!}+\cdots\Big)$$
+$$r = \Big(-x+\frac{2x^2}{2!}-\frac{4x^3}{3!}+\cdots\Big)$$
 
 $$\frac{1}{1+r}=\frac{1}{1-(-r)}=1-r+r^2-r^3+\cdots$$
 
 After plugging back in,
-$$\tanh(x)\approx x*\Big(1-\frac{2x}{2!}+\frac{4x^3}{3!}-\cdots\Big)*(1-r+r^2-r^3+\cdots)$$
+$$\tanh(x)\approx x*\Big(1-\frac{2x}{2!}+\frac{4x^2}{3!}-\cdots\Big)*(1-r+r^2-r^3+\cdots)$$
 Computing powers of $r$, simplifying terms then finding the least common multiple for up to power $9$,
 $$\tanh(x)\approx \frac{2835x-945x^3+378x^5-153x^7+62x^9}{2835}-\cdots$$
 
-This series has a radius of convergence $\pi/2$, so it will tolerate less distance between points than the logistic (but possibly require more precomputation).
+This series has a radius of convergence $\pi/2$ (the nearest singularities of $\tanh$ are at $x=\pm i\pi/2$, where $e^{-2x}=-1$), so it converges only for $-\pi/2<x<\pi/2$, half the interval of the logistic series. As we show below, this is only a rescaling, not a real disadvantage.
+
+Note that $\tanh$ takes values in $(-1, 1)$, so this polynomial approximates $\mathtt{sign}_{-1,1,0}(x) = -1 + 2\,\mathtt{sign}(x)$ rather than our $0/1$ sign function. Solving for $\mathtt{sign}(x)$, we use the rescaled version
+$$\mathtt{sign}(x) \approx \frac{1+\tanh(x)}{2} \approx \frac{1}{2} + \frac{x}{2} - \frac{x^3}{6} + \frac{x^5}{15} - \frac{17x^7}{630} + \frac{31x^9}{2835}.$$
+The halving and shift can be folded into the coefficients, so this costs nothing beyond the tanh polynomial. It's also just the logistic polynomial evaluated at $2x$, since $\frac{1+\tanh(x)}{2} = \sigma(2x)$. That's where the radius of $\pi/2$ comes from: the logistic series converges for $|2x|<\pi$.
 
 ![tanh_by_k_steepness](https://hackmd.io/_uploads/Skm4LV9Zfe.png)
 **Figure**: different graphs of the function $\tanh(kx)$  with steepness parameter $k$.
