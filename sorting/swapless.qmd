@@ -1,0 +1,42 @@
+---
+title: "Swapless Sorting"
+format: html
+---
+
+An excerpt from Frederico Mazzone et al. (CITATION) discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with.
+
+Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.
+
+**LIST EXPENSIVE COMPUTATIONS WITH DEPTH AND O(N)**
+
+**DEFINE WHAT DEPTH MEANS**
+
+With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.
+
+**INTRODUCE THE FUNCTIONS WE WILL NEED**
+
+-   **CMP**
+
+-   **IND**
+
+-   **MASKR**
+
+-   **SUMR**
+
+-   **REPLR**
+
+-   **TRANSR**
+
+-   **RANK**
+
+**EXPLAIN RANKING STATISTICS HERE (ADD VISUAL)**
+
+First, we need to find the overall order statistics of each element. To find which element is in the “k-th” place, we need to 
+
+**EXPLAIN WHY RANKS MATTER**
+
+**TRANSITION TO THE SORT (ADD VISUAL)**
+
+**EXPLAIN THE PROCESS OF TIE CORRECTION**
+
+**EXPLAIN LARGER SCALE SCENARIOS (a group of people each send their own vector and want the overall spot each input they send is in the overall)**
