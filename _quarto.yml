@@ -32,6 +32,7 @@ book:
         - sorting/bubble.qmd
         - sorting/improvements.qmd
         - sorting/max.qmd
+        - sorting/swapless.qmd
     - part: difference-matrix/intro.qmd
       chapters:
         - difference-matrix/mode.qmd
