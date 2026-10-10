@@ -1,4 +1,4 @@
-## IV.3 Max Function
+## Max Function
 
 As a consequence of (any) sorting we get the max function for free, since a single $n-1$ bubble pass has allowed the largest element to "float" to the rightmost element. A reversed setup reveals the minimum value if desired. An $n$-length mask vector $(0, 0, \dots, 0, 1)$ can be used to isolate the maximum if needed. A dot product or intravector sum can then be used to collapse the resulting vector into the maximum element as a single scalar.
 
