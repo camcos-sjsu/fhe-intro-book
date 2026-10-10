@@ -1,29 +1,34 @@
 # fhe-intro-book
+
 Introductory book on programmable computation within a fully homomorphic environment.
 
 ## Render the book
 
-Install [Git](https://git-scm.com/downloads), [R](https://cran.r-project.org/),
-and [Quarto](https://quarto.org/docs/get-started/).
+Install [Git](https://git-scm.com/downloads), [R](https://cran.r-project.org/), and [Quarto](https://quarto.org/docs/get-started/).
 
 Clone this repository and enter its folder:
 
-```sh
+``` sh
 git clone https://github.com/camcos-sjsu/fhe-intro-book.git
 cd fhe-intro-book
 ```
 
 Install the following packages in R studio:
 
-```r
+``` r
 install.packages(c("knitr", "ggplot2", "dplyr", "gganimate", "gifski", "showtext", "sysfonts"))
 ```
 
 From the project folder, render the book:
 
-```sh
+``` sh
 quarto render
 ```
 
-Open `_book/index.html` to view it. To preview while editing, run `quarto preview`
-from the project folder instead.
+Open `_book/index.html` to view it. To preview while editing, run `quarto preview` from the project folder instead.
+
+To add a new section/chapter to the book:
+
+-   Make the qmd file into the correct section folder
+
+-   Add the directory of the file you just made underneath the section you want in \_quarto.yml following the same formatting
