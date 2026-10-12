@@ -41,6 +41,8 @@ The rank will allow us to determine which element should be in the i’th positi
 
 Then we can choose which element will take each position as a vertical vector outputting a matrix with a sorted vertical vector. 
 
+![](images/swapless_sort_visual.png){fig-alt="swapless_sort_Mazzone_etal" fig-align="center"}
+
 (add a visual of a simplified example or use the one in the document and cite)
 
 Order of operations for sort:
