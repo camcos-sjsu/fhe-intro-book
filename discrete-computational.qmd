@@ -185,6 +185,77 @@ Noteably, this interpolation method could also be used to "de-root" a root of un
 
 We combine some of the previous tricks to do a more robust sorting, to showcase the capabilities of Appendix A.
 
+
+### Without Binary
+
+Suppose we know that our data consists of integers in the range $[-b,b]$, and we want to create a sign function. Notice that modulo $2b+1$, a number in the range $[-b,-1]$ is equivalent to a number in the range $[b+1,2b]$. Likewise, a positive number sits in the range $[1,b]$.
+
+So, we can create a sign function by interpolating a polynomial which sends elements in the first range, $1,\ldots,b$, to $1$, elements in the second range, $b+1,\ldots,2b$, to $-1$, and $0$ to $0$.
+
+Alternatively, if our values are stored as roots of unity, let $\xi$ be the $(2b+1)$ root of unity. Then interpolate on the discrete points $\xi^0,\ldots,\xi^{2b}$, sending $\xi^1,\ldots,\xi^b$ to $1$, $\xi^{b+1},\ldots,\xi^{2b}$ to $-1$, and $\xi^0=1$ to $0$. This gives us the sign of the original integer directly from its root of unity representation.
+
+This simplified sign function gives an easier way to sort.
+For example, with bubble sort
+
+1) compute the sign of the difference of neighbors $x$ and $y$.  If $s(x-y) = 1 \text{ or } 0$, then $x \ge y$ and we do not swap them.   If $s(x-y) = -1$, then $x<y$ and e do sswap them. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+As a proof of concept, we choose bubble sort as a starting point for sorting. Bubble sort passes through a given vector, performing repeated pairwise comparisons and swaps. These operations can be written algebraically, making it a useful starting point for sorting encrypted values.
+
+Suppose our integers lie in $[-b,b]$, and we store them as roots of unity. Let $n=4b+1$ and let $\xi$ be a primitive $n$-th root of unity. We use this larger modulus because the difference between two entries lies in $[-2b,2b]$.
+
+Construct a polynomial $S$ by interpolation such that
+$$
+S(\xi^d)=
+\begin{cases}
+0, & d=0,\\
+1, & 1\le d\le 2b,\\
+-1, & 2b+1\le d\le 4b.
+\end{cases}
+$$
+This gives the sign of a difference from its root of unity representation.
+
+Given an $m$-length vector $W$, where $W_i=\xi^{a_i}$, compare neighboring entries $W_i$ and $W_{i+1}$ by computing
+$$
+s=S\left(W_iW_{i+1}^{n-1}\right).
+$$
+Since
+$$
+W_iW_{i+1}^{n-1}=\xi^{a_i-a_{i+1}},
+$$
+we get $s=1$ if $a_i>a_{i+1}$, $s=-1$ if $a_i<a_{i+1}$, and $s=0$ if they are equal.
+
+To swap the entries, let
+$$
+c=\frac{s^2+s}{2}.
+$$
+Then $c=1$ if the entries are out of order and $c=0$ otherwise. Define the updated vector $W'$ by
+$$
+W_i'=(1-c)W_i+cW_{i+1},
+$$
+$$
+W_{i+1}'=cW_i+(1-c)W_{i+1},
+$$
+leaving every other coordinate unchanged. Both expressions use the original entries. Thus, when $c=0$, nothing changes; when $c=1$, the entries swap.
+
+Perform this operation on pairs $(1,2),(2,3),\ldots,(m-1,m)$. These $m-1$ comparisons move the largest integer to the final position, still encoded as a root of unity.
+
+Repeat on the first $m-1$ entries, then the first $m-2$ entries, and so on. After $m(m-1)/2$ comparisons, the vector is sorted by the $a_i$s.
+
+
+
 ### Index To One-Hot
 
 Using roots-of-unity, we can do a one-hot conversion function (this will be used later for sorting). Specifically, given a ciphertext input for integer $i$, stored in root-of-unity form (from this point we use $\sqrt{-1}$ to distinguish from $i$)
