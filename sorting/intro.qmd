@@ -4,11 +4,11 @@ Sorting is a useful operation to have. It provides us with a lot of information 
 
 ### Why familiar sorting algorithms do not transfer directly
 
-Many default sorting algorithms rely on decisions that depend on the input data. For example, in a conventional merge sort, the result of comparisons determine which value is copied next and which input position is read next. **\<-\[Change the wording here try to remove the double commas\]** With encrypted values, the program cannot directly branch on those comparison results or use them as ordinary array indices.
+Many default sorting algorithms rely on decisions that depend on the input data. For example, the result of comparisons determine which value is copied next and which input position is read next. With encrypted values, the program cannot directly branch on those comparison results or use them as ordinary array indices.
 
 Algorithms with a fixed sequence of operations are a more natural fit. Their schedule can be chosen in advance without learning the values being compared.
 
-A relevant concept that is highly relevant to this use case are **sorting networks**: a fixed sequence of comparisons and swaps is used to sort any input, regardless of the values. Sorting networks are a well-studied area of computer science, and we will use some of their ideas in our work. **\<- \[is this necessary or is it just fluff?\]**
+A relevant concept that is highly relevant to this use case are **sorting networks**: a fixed sequence of comparisons and swaps is used to sort any input, regardless of the values. Sorting networks are a well-studied area of computer science, and we will use some of their ideas in our work.
 
 ### Comparisons without branching
 
@@ -25,6 +25,6 @@ This gives $y_i$ the smaller value between $\{x_i, x_j\}$ and $y_j$ the larger v
 
 ### A starting point (maybe we can find a better title for this)
 
-For a first demonstration, **\<-\[word choice, maybe something that highlights simplicity, basics, or something we see as a stepping stone\]** we use bubble sort. Its adjacent compare and swap steps are simple to implement, and each step can be written using the sign comparison. Bubble sort is not an efficient sorting algorithm. However, it gives us a clear basis for exploring how comparisons and swaps can be expressed with the operations available in CKKS.
+For a first demonstration, we use bubble sort. Its adjacent compare and swap steps are simple to implement, and each step can be written using the sign comparison. Bubble sort is not an efficient sorting algorithm. However, it gives us a clear basis for exploring how comparisons and swaps can be expressed with the operations available in CKKS.
 
 The next chapter develops that compare-and-swap operation. The following discussion of sorting improvements then asks a different question: once we have such a building block, how can we schedule many comparisons to reduce the number of sequential layers?
