@@ -15,25 +15,25 @@ With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting 
 
 **To understand the process of the swapless sorting, we will need the following methods**
 
--   CMP
+- CMP
 
--   IND
+- IND
 
--   MASKR
+- MASKR
 
--   SUMR
+- SUMR
 
--   REPLR
+- REPLR
 
--   TRANSR
+- TRANSR
 
--   RANK
+- RANK
 
 **EXPLAIN RANKING STATISTICS HERE (ADD VISUAL)**
 
 Before conducting the sort, we need to take care of one main assumption.
 
--   All elements in the vector are distinct, unless we consider tie corrections
+- All elements in the vector are distinct, unless we consider tie corrections
 
 First, we need to find the overall order statistics of each element. To find which element is in the “k-th” place, we need to (explain ranking method)
 
@@ -46,7 +46,7 @@ Then we can choose which element will take each position as a vertical vector ou
 Order of operations for sort:
 
 1.  Create rank matrix A and replicate the input into matrix B
-2.  Let C be the subtracttion of A with the plaintext constant matrix
+2.  Let C be the subtraction of A with the plaintext constant matrix
 3.  Find the index of the C and multiply the index with B
 4.  Sum the product of C and B and transpose to finish the sort
 
