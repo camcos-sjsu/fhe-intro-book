@@ -23,8 +23,8 @@ $$
 
 This gives $y_i$ the smaller value between $\{x_i, x_j\}$ and $y_j$ the larger value, without branching on the comparison result.
 
-### A starting point 
+### A starting point
 
-For a first demonstration, we use bubble sort. Its adjacent compare and swap steps are simple to implement, and each step can be written using the sign comparison. Bubble sort is not an efficient sorting algorithm, but it gives us a clear basis for exploring how comparisons and swaps can be expressed with the operations available in CKKS. 
+For a first demonstration, we use bubble sort. Its adjacent compare and swap steps are simple to implement, and each step can be written using the sign comparison. Bubble sort is not an efficient sorting algorithm, but it gives us a clear basis for exploring how comparisons and swaps can be expressed with the operations available in CKKS.
 
-The next chapter develops that compare-and-swap operation. The following discussion of sorting improvements then asks a different question: once we have such a building block, how can we schedule many comparisons to reduce the number of sequential layers? 
+The next chapter develops that compare-and-swap operation. The following discussion of sorting improvements then asks a different question: once we have such a building block, how can we schedule many comparisons to reduce the number of sequential layers?
