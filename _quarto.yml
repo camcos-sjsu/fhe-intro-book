@@ -55,6 +55,7 @@ book:
         - discrete-model/roots-of-unity.qmd
         - discrete-model/index-one-hot.qmd
         - discrete-model/extended-binary-expansion.qmd
+        - discrete-model/discrete-sign-and-notes-on-sorting.qmd
         - discrete-model/summary.qmd
         
 

@@ -188,7 +188,7 @@ Noteably, this interpolation method could also be used to "de-root" a root of un
 We combine some of the previous tricks to do a more robust sorting, to showcase the capabilities of Appendix A.
 
 
-### Sign function without binary expansion
+### Sign function
 
 Suppose we know that our data consists of integers in the range $[-b,b]$, and we want to create a sign function. Notice that modulo $2b+1$, a number in the range $[-b,-1]$ is equivalent to a number in the range $[b+1,2b]$. Likewise, a positive number sits in the range $[1,b]$.
 
@@ -196,9 +196,9 @@ So, if our inputs are stored as residues modulo $2b+1$, we can create a sign fun
 
 Alternatively, if our values are stored as roots of unity, let $\xi$ be a primitive $(2b+1)$-st root of unity. Then interpolate on the discrete points $\xi^0,\ldots,\xi^{2b}$, sending $\xi^1,\ldots,\xi^b$ to $1$, $\xi^{b+1},\ldots,\xi^{2b}$ to $-1$, and $\xi^0=1$ to $0$. This gives us the sign of the original integer directly from its root of unity representation.
 
-### Comparing entries
+### Comparisons
 
-We can use this lookup idea to compare entries without binary expansion. Suppose our integers lie in $[-b,b]$. Their differences lie in $[-2b,2b]$, so for comparisons we use the larger modulus $n=4b+1$ and let $\xi$ be a primitive $n$-th root of unity.
+Suppose our integers lie in $[-b,b]$. Their differences lie in $[-2b,2b]$, so for comparisons we use the larger modulus $n=4b+1$ and let $\xi$ be a primitive $n$-th root of unity.
 
 Construct a polynomial $S$ by interpolation such that
 $$
@@ -240,7 +240,7 @@ gives the same comparison result without the extra squaring step. This still use
 
 ### Bubble sort
 
-As a proof of concept, we can use bubble sort as a starting point. Bubble sort passes through a given vector, performing repeated pairwise comparisons and swaps.
+We can use bubble sort as a starting point. Bubble sort passes through a given vector, performing repeated pairwise comparisons and swaps.
 
 To sort from smallest to largest, compare neighboring entries $W_i$ and $W_{i+1}$ using
 $$
@@ -265,15 +265,15 @@ The same comparison and swap operation can also be used in odd-even and bitonic 
 
 ### Sorting by rank
 
-Alternatively, we can use the comparisons to find each entry’s final position directly. For distinct inputs, an entry’s rank is the number of inputs smaller than it:
+Alternatively,  we can use the comparisons to find each entry’s final position directly. For distinct inputs, an entry’s rank is the number of inputs smaller than it:
 $$
 r_i=\sum_{j=1}^m q_{ij},
 \qquad
 q_{ij}=C\left(W_iW_j^{n-1}\right).
 $$
-These comparisons are independent, so they can be computed in parallel.
 
-We can reduce the number of comparisons by comparing only when $i<j$. The diagonal entries are always $0$, and, assuming distinct inputs, each entry below the diagonal is $1$ minus its reflected entry:
+
+We can maybe reduce the number of comparisons by comparing only when $i<j$. The diagonal entries are always $0$, and, assuming distinct inputs, each entry below the diagonal is $1$ minus its reflected entry:
 $$
 q_{ji}=1-q_{ij}.
 $$
@@ -281,7 +281,7 @@ Then we count across rows as before. This gives $m(m-1)/2$ comparisons instead o
 
 ### Alternative idea for one-hot vectors
 
-Instead of encoding the ranks as roots of unity, we could keep them as encrypted integers.
+Instead of encoding the ranks as roots of unity, we could keep them as integers.
 
 For each possible rank $j\in\{0,\ldots,m-1\}$, let $L_j$ be the interpolated polynomial sending $j$ to $1$ and every other rank to $0$. Then
 $$
@@ -306,7 +306,7 @@ $$
 $$
 gives the encoded maximum. For an odd number of entries, the median is at rank $(m-1)/2$.
 
-These constructions are exact on the specified inputs. Comparing their cost and numerical error under approximate encrypted arithmetic would be a next step.
+
 
 ### Index To One-Hot
 
