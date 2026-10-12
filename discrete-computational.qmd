@@ -1,5 +1,7 @@
 # Discrete Computational Models
 
+TEST RECENT EDIT
+
 Here's a proof-of-concept of a different computational model where the entries represent discrete numbers instead of general complex/real numbers. 
 
 In this computational model, each ciphertext vector with length $n/2$ stores $n/(2k)$ numbers, using $k$ components to store each number.  The user supplies not only (or instead of, but it seems fairly cheap to have both representations) $x$, but also the digits of $x$ (assuming integers for simplicity, maybe $x = (x_{k-1} \cdots x_0)|_b$ in base $b$, and each $x_i$ represents an element of $\{0, 1, \ldots, b-1\}$.
