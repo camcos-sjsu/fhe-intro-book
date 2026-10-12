@@ -186,35 +186,17 @@ Noteably, this interpolation method could also be used to "de-root" a root of un
 We combine some of the previous tricks to do a more robust sorting, to showcase the capabilities of Appendix A.
 
 
-### Without Binary
+### Sign function without binary expansion
 
 Suppose we know that our data consists of integers in the range $[-b,b]$, and we want to create a sign function. Notice that modulo $2b+1$, a number in the range $[-b,-1]$ is equivalent to a number in the range $[b+1,2b]$. Likewise, a positive number sits in the range $[1,b]$.
 
-So, we can create a sign function by interpolating a polynomial which sends elements in the first range, $1,\ldots,b$, to $1$, elements in the second range, $b+1,\ldots,2b$, to $-1$, and $0$ to $0$.
+So, if our inputs are stored as residues modulo $2b+1$, we can create a sign function by interpolating a polynomial which sends $1,\ldots,b$ to $1$, $b+1,\ldots,2b$ to $-1$, and $0$ to $0$.
 
-Alternatively, if our values are stored as roots of unity, let $\xi$ be the $(2b+1)$ root of unity. Then interpolate on the discrete points $\xi^0,\ldots,\xi^{2b}$, sending $\xi^1,\ldots,\xi^b$ to $1$, $\xi^{b+1},\ldots,\xi^{2b}$ to $-1$, and $\xi^0=1$ to $0$. This gives us the sign of the original integer directly from its root of unity representation.
+Alternatively, if our values are stored as roots of unity, let $\xi$ be a primitive $(2b+1)$-st root of unity. Then interpolate on the discrete points $\xi^0,\ldots,\xi^{2b}$, sending $\xi^1,\ldots,\xi^b$ to $1$, $\xi^{b+1},\ldots,\xi^{2b}$ to $-1$, and $\xi^0=1$ to $0$. This gives us the sign of the original integer directly from its root of unity representation.
 
-This simplified sign function gives an easier way to sort.
-For example, with bubble sort
+### Comparing entries
 
-1) compute the sign of the difference of neighbors $x$ and $y$.  If $s(x-y) = 1 \text{ or } 0$, then $x \ge y$ and we do not swap them.   If $s(x-y) = -1$, then $x<y$ and e do sswap them. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-As a proof of concept, we choose bubble sort as a starting point for sorting. Bubble sort passes through a given vector, performing repeated pairwise comparisons and swaps. These operations can be written algebraically, making it a useful starting point for sorting encrypted values.
-
-Suppose our integers lie in $[-b,b]$, and we store them as roots of unity. Let $n=4b+1$ and let $\xi$ be a primitive $n$-th root of unity. We use this larger modulus because the difference between two entries lies in $[-2b,2b]$.
+We can use this lookup idea to compare entries without binary expansion. Suppose our integers lie in $[-b,b]$. Their differences lie in $[-2b,2b]$, so for comparisons we use the larger modulus $n=4b+1$ and let $\xi$ be a primitive $n$-th root of unity.
 
 Construct a polynomial $S$ by interpolation such that
 $$
@@ -225,23 +207,46 @@ S(\xi^d)=
 -1, & 2b+1\le d\le 4b.
 \end{cases}
 $$
-This gives the sign of a difference from its root of unity representation.
 
-Given an $m$-length vector $W$, where $W_i=\xi^{a_i}$, compare neighboring entries $W_i$ and $W_{i+1}$ by computing
+Given an $m$-length vector $W$, where $W_i=\xi^{a_i}$, we can compare entries $W_i$ and $W_j$ by computing
 $$
-s=S\left(W_iW_{i+1}^{n-1}\right).
+s=S\left(W_iW_j^{n-1}\right).
 $$
 Since
 $$
-W_iW_{i+1}^{n-1}=\xi^{a_i-a_{i+1}},
+W_iW_j^{n-1}=\xi^{a_i-a_j},
 $$
-we get $s=1$ if $a_i>a_{i+1}$, $s=-1$ if $a_i<a_{i+1}$, and $s=0$ if they are equal.
+we get $s=1$ if $a_i>a_j$, $s=-1$ if $a_i<a_j$, and $s=0$ if they are equal.
 
-To swap the entries, let
+If we only want to know whether $a_i>a_j$, we can compute
 $$
 c=\frac{s^2+s}{2}.
 $$
-Then $c=1$ if the entries are out of order and $c=0$ otherwise. Define the updated vector $W'$ by
+However, we can also interpolate this comparison directly. Construct a polynomial $C$ such that
+$$
+C(\xi^d)=
+\begin{cases}
+1, & 1\le d\le 2b,\\
+0, & d=0 \text{ or } 2b+1\le d\le 4b.
+\end{cases}
+$$
+Then
+$$
+c=C\left(W_iW_j^{n-1}\right)
+$$
+gives the same comparison result without the extra squaring step. This still uses only $n$ interpolation points, since the input is the encoded difference.
+
+### Bubble sort
+
+As a proof of concept, we can use bubble sort as a starting point. Bubble sort passes through a given vector, performing repeated pairwise comparisons and swaps.
+
+To sort from smallest to largest, compare neighboring entries $W_i$ and $W_{i+1}$ using
+$$
+c=C\left(W_iW_{i+1}^{n-1}\right).
+$$
+Then $c=1$ if the entries are out of order and $c=0$ otherwise.
+
+To swap the entries without branching, define
 $$
 W_i'=(1-c)W_i+cW_{i+1},
 $$
@@ -254,7 +259,52 @@ Perform this operation on pairs $(1,2),(2,3),\ldots,(m-1,m)$. These $m-1$ compar
 
 Repeat on the first $m-1$ entries, then the first $m-2$ entries, and so on. After $m(m-1)/2$ comparisons, the vector is sorted by the $a_i$s.
 
+The same comparison and swap operation can also be used in odd-even and bitonic sorting networks.
 
+### Sorting by rank
+
+Alternatively, we can use the comparisons to find each entry’s final position directly. For distinct inputs, an entry’s rank is the number of inputs smaller than it:
+$$
+r_i=\sum_{j=1}^m q_{ij},
+\qquad
+q_{ij}=C\left(W_iW_j^{n-1}\right).
+$$
+These comparisons are independent, so they can be computed in parallel.
+
+We can reduce the number of comparisons by comparing only when $i<j$. The diagonal entries are always $0$, and, assuming distinct inputs, each entry below the diagonal is $1$ minus its reflected entry:
+$$
+q_{ji}=1-q_{ij}.
+$$
+Then we count across rows as before. This gives $m(m-1)/2$ comparisons instead of $m^2$.
+
+### Alternative idea for one-hot vectors
+
+Instead of encoding the ranks as roots of unity, we could keep them as encrypted integers.
+
+For each possible rank $j\in\{0,\ldots,m-1\}$, let $L_j$ be the interpolated polynomial sending $j$ to $1$ and every other rank to $0$. Then
+$$
+[L_0(r_i),L_1(r_i),\ldots,L_{m-1}(r_i)]
+$$
+is the encrypted one-hot vector for entry $i$.
+
+To get the sorted vector, multiply each one-hot vector by its corresponding encoded entry and add:
+$$
+\sum_{i=1}^m W_i
+[L_0(r_i),L_1(r_i),\ldots,L_{m-1}(r_i)].
+$$
+The output remains encoded as roots of unity.
+
+If we only want the minimum, maximum, or median, we do not need the full one-hot vectors. We can evaluate only the polynomial for the position we need. For example,
+$$
+\sum_{i=1}^m W_iL_0(r_i)
+$$
+gives the encoded minimum, while
+$$
+\sum_{i=1}^m W_iL_{m-1}(r_i)
+$$
+gives the encoded maximum. For an odd number of entries, the median is at rank $(m-1)/2$.
+
+These constructions are exact on the specified inputs. Comparing their cost and numerical error under approximate encrypted arithmetic would be a next step.
 
 ### Index To One-Hot
 

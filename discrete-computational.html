@@ -291,9 +291,14 @@ window.Quarto = {
   <li><a href="#roots-of-unity" id="toc-roots-of-unity" class="nav-link" data-scroll-target="#roots-of-unity"><span class="header-section-number">1.0.3</span> Roots of Unity</a></li>
   <li><a href="#appendix-b-an-application-to-sorting" id="toc-appendix-b-an-application-to-sorting" class="nav-link" data-scroll-target="#appendix-b-an-application-to-sorting"><span class="header-section-number">1.1</span> Appendix B: An Application to Sorting</a>
   <ul class="collapse">
-  <li><a href="#index-to-one-hot" id="toc-index-to-one-hot" class="nav-link" data-scroll-target="#index-to-one-hot"><span class="header-section-number">1.1.1</span> Index To One-Hot</a></li>
-  <li><a href="#comparison-and-extended-binary-numbers" id="toc-comparison-and-extended-binary-numbers" class="nav-link" data-scroll-target="#comparison-and-extended-binary-numbers"><span class="header-section-number">1.1.2</span> Comparison and Extended Binary Numbers</a></li>
-  <li><a href="#sorting" id="toc-sorting" class="nav-link" data-scroll-target="#sorting"><span class="header-section-number">1.1.3</span> Sorting</a></li>
+  <li><a href="#sign-function-without-binary-expansion" id="toc-sign-function-without-binary-expansion" class="nav-link" data-scroll-target="#sign-function-without-binary-expansion"><span class="header-section-number">1.1.1</span> Sign function without binary expansion</a></li>
+  <li><a href="#comparing-entries" id="toc-comparing-entries" class="nav-link" data-scroll-target="#comparing-entries"><span class="header-section-number">1.1.2</span> Comparing entries</a></li>
+  <li><a href="#bubble-sort" id="toc-bubble-sort" class="nav-link" data-scroll-target="#bubble-sort"><span class="header-section-number">1.1.3</span> Bubble sort</a></li>
+  <li><a href="#sorting-by-rank" id="toc-sorting-by-rank" class="nav-link" data-scroll-target="#sorting-by-rank"><span class="header-section-number">1.1.4</span> Sorting by rank</a></li>
+  <li><a href="#alternative-idea-for-one-hot-vectors" id="toc-alternative-idea-for-one-hot-vectors" class="nav-link" data-scroll-target="#alternative-idea-for-one-hot-vectors"><span class="header-section-number">1.1.5</span> Alternative idea for one-hot vectors</a></li>
+  <li><a href="#index-to-one-hot" id="toc-index-to-one-hot" class="nav-link" data-scroll-target="#index-to-one-hot"><span class="header-section-number">1.1.6</span> Index To One-Hot</a></li>
+  <li><a href="#comparison-and-extended-binary-numbers" id="toc-comparison-and-extended-binary-numbers" class="nav-link" data-scroll-target="#comparison-and-extended-binary-numbers"><span class="header-section-number">1.1.7</span> Comparison and Extended Binary Numbers</a></li>
+  <li><a href="#sorting" id="toc-sorting" class="nav-link" data-scroll-target="#sorting"><span class="header-section-number">1.1.8</span> Sorting</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -462,8 +467,85 @@ q\left(\xi^a+\xi^b+\xi^{a+b}\right)=\xi^{ab}.
 <section id="appendix-b-an-application-to-sorting" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="appendix-b-an-application-to-sorting"><span class="header-section-number">1.1</span> Appendix B: An Application to Sorting</h2>
 <p>We combine some of the previous tricks to do a more robust sorting, to showcase the capabilities of Appendix A.</p>
-<section id="index-to-one-hot" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="index-to-one-hot"><span class="header-section-number">1.1.1</span> Index To One-Hot</h3>
+<section id="sign-function-without-binary-expansion" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="sign-function-without-binary-expansion"><span class="header-section-number">1.1.1</span> Sign function without binary expansion</h3>
+<p>Suppose we know that our data consists of integers in the range <span class="math inline">\([-b,b]\)</span>, and we want to create a sign function. Notice that modulo <span class="math inline">\(2b+1\)</span>, a number in the range <span class="math inline">\([-b,-1]\)</span> is equivalent to a number in the range <span class="math inline">\([b+1,2b]\)</span>. Likewise, a positive number sits in the range <span class="math inline">\([1,b]\)</span>.</p>
+<p>So, if our inputs are stored as residues modulo <span class="math inline">\(2b+1\)</span>, we can create a sign function by interpolating a polynomial which sends <span class="math inline">\(1,\ldots,b\)</span> to <span class="math inline">\(1\)</span>, <span class="math inline">\(b+1,\ldots,2b\)</span> to <span class="math inline">\(-1\)</span>, and <span class="math inline">\(0\)</span> to <span class="math inline">\(0\)</span>.</p>
+<p>Alternatively, if our values are stored as roots of unity, let <span class="math inline">\(\xi\)</span> be a primitive <span class="math inline">\((2b+1)\)</span>-st root of unity. Then interpolate on the discrete points <span class="math inline">\(\xi^0,\ldots,\xi^{2b}\)</span>, sending <span class="math inline">\(\xi^1,\ldots,\xi^b\)</span> to <span class="math inline">\(1\)</span>, <span class="math inline">\(\xi^{b+1},\ldots,\xi^{2b}\)</span> to <span class="math inline">\(-1\)</span>, and <span class="math inline">\(\xi^0=1\)</span> to <span class="math inline">\(0\)</span>. This gives us the sign of the original integer directly from its root of unity representation.</p>
+</section>
+<section id="comparing-entries" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="comparing-entries"><span class="header-section-number">1.1.2</span> Comparing entries</h3>
+<p>We can use this lookup idea to compare entries without binary expansion. Suppose our integers lie in <span class="math inline">\([-b,b]\)</span>. Their differences lie in <span class="math inline">\([-2b,2b]\)</span>, so for comparisons we use the larger modulus <span class="math inline">\(n=4b+1\)</span> and let <span class="math inline">\(\xi\)</span> be a primitive <span class="math inline">\(n\)</span>-th root of unity.</p>
+<p>Construct a polynomial <span class="math inline">\(S\)</span> by interpolation such that <span class="math display">\[
+S(\xi^d)=
+\begin{cases}
+0, &amp; d=0,\\
+1, &amp; 1\le d\le 2b,\\
+-1, &amp; 2b+1\le d\le 4b.
+\end{cases}
+\]</span></p>
+<p>Given an <span class="math inline">\(m\)</span>-length vector <span class="math inline">\(W\)</span>, where <span class="math inline">\(W_i=\xi^{a_i}\)</span>, we can compare entries <span class="math inline">\(W_i\)</span> and <span class="math inline">\(W_j\)</span> by computing <span class="math display">\[
+s=S\left(W_iW_j^{n-1}\right).
+\]</span> Since <span class="math display">\[
+W_iW_j^{n-1}=\xi^{a_i-a_j},
+\]</span> we get <span class="math inline">\(s=1\)</span> if <span class="math inline">\(a_i&gt;a_j\)</span>, <span class="math inline">\(s=-1\)</span> if <span class="math inline">\(a_i&lt;a_j\)</span>, and <span class="math inline">\(s=0\)</span> if they are equal.</p>
+<p>If we only want to know whether <span class="math inline">\(a_i&gt;a_j\)</span>, we can compute <span class="math display">\[
+c=\frac{s^2+s}{2}.
+\]</span> However, we can also interpolate this comparison directly. Construct a polynomial <span class="math inline">\(C\)</span> such that <span class="math display">\[
+C(\xi^d)=
+\begin{cases}
+1, &amp; 1\le d\le 2b,\\
+0, &amp; d=0 \text{ or } 2b+1\le d\le 4b.
+\end{cases}
+\]</span> Then <span class="math display">\[
+c=C\left(W_iW_j^{n-1}\right)
+\]</span> gives the same comparison result without the extra squaring step. This still uses only <span class="math inline">\(n\)</span> interpolation points, since the input is the encoded difference.</p>
+</section>
+<section id="bubble-sort" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="bubble-sort"><span class="header-section-number">1.1.3</span> Bubble sort</h3>
+<p>As a proof of concept, we can use bubble sort as a starting point. Bubble sort passes through a given vector, performing repeated pairwise comparisons and swaps.</p>
+<p>To sort from smallest to largest, compare neighboring entries <span class="math inline">\(W_i\)</span> and <span class="math inline">\(W_{i+1}\)</span> using <span class="math display">\[
+c=C\left(W_iW_{i+1}^{n-1}\right).
+\]</span> Then <span class="math inline">\(c=1\)</span> if the entries are out of order and <span class="math inline">\(c=0\)</span> otherwise.</p>
+<p>To swap the entries without branching, define <span class="math display">\[
+W_i'=(1-c)W_i+cW_{i+1},
+\]</span> <span class="math display">\[
+W_{i+1}'=cW_i+(1-c)W_{i+1},
+\]</span> leaving every other coordinate unchanged. Both expressions use the original entries. Thus, when <span class="math inline">\(c=0\)</span>, nothing changes; when <span class="math inline">\(c=1\)</span>, the entries swap.</p>
+<p>Perform this operation on pairs <span class="math inline">\((1,2),(2,3),\ldots,(m-1,m)\)</span>. These <span class="math inline">\(m-1\)</span> comparisons move the largest integer to the final position, still encoded as a root of unity.</p>
+<p>Repeat on the first <span class="math inline">\(m-1\)</span> entries, then the first <span class="math inline">\(m-2\)</span> entries, and so on. After <span class="math inline">\(m(m-1)/2\)</span> comparisons, the vector is sorted by the <span class="math inline">\(a_i\)</span>s.</p>
+<p>The same comparison and swap operation can also be used in odd-even and bitonic sorting networks.</p>
+</section>
+<section id="sorting-by-rank" class="level3" data-number="1.1.4">
+<h3 data-number="1.1.4" class="anchored" data-anchor-id="sorting-by-rank"><span class="header-section-number">1.1.4</span> Sorting by rank</h3>
+<p>Alternatively, we can use the comparisons to find each entry’s final position directly. For distinct inputs, an entry’s rank is the number of inputs smaller than it: <span class="math display">\[
+r_i=\sum_{j=1}^m q_{ij},
+\qquad
+q_{ij}=C\left(W_iW_j^{n-1}\right).
+\]</span> These comparisons are independent, so they can be computed in parallel.</p>
+<p>We can reduce the number of comparisons by comparing only when <span class="math inline">\(i&lt;j\)</span>. The diagonal entries are always <span class="math inline">\(0\)</span>, and, assuming distinct inputs, each entry below the diagonal is <span class="math inline">\(1\)</span> minus its reflected entry: <span class="math display">\[
+q_{ji}=1-q_{ij}.
+\]</span> Then we count across rows as before. This gives <span class="math inline">\(m(m-1)/2\)</span> comparisons instead of <span class="math inline">\(m^2\)</span>.</p>
+</section>
+<section id="alternative-idea-for-one-hot-vectors" class="level3" data-number="1.1.5">
+<h3 data-number="1.1.5" class="anchored" data-anchor-id="alternative-idea-for-one-hot-vectors"><span class="header-section-number">1.1.5</span> Alternative idea for one-hot vectors</h3>
+<p>Instead of encoding the ranks as roots of unity, we could keep them as encrypted integers.</p>
+<p>For each possible rank <span class="math inline">\(j\in\{0,\ldots,m-1\}\)</span>, let <span class="math inline">\(L_j\)</span> be the interpolated polynomial sending <span class="math inline">\(j\)</span> to <span class="math inline">\(1\)</span> and every other rank to <span class="math inline">\(0\)</span>. Then <span class="math display">\[
+[L_0(r_i),L_1(r_i),\ldots,L_{m-1}(r_i)]
+\]</span> is the encrypted one-hot vector for entry <span class="math inline">\(i\)</span>.</p>
+<p>To get the sorted vector, multiply each one-hot vector by its corresponding encoded entry and add: <span class="math display">\[
+\sum_{i=1}^m W_i
+[L_0(r_i),L_1(r_i),\ldots,L_{m-1}(r_i)].
+\]</span> The output remains encoded as roots of unity.</p>
+<p>If we only want the minimum, maximum, or median, we do not need the full one-hot vectors. We can evaluate only the polynomial for the position we need. For example, <span class="math display">\[
+\sum_{i=1}^m W_iL_0(r_i)
+\]</span> gives the encoded minimum, while <span class="math display">\[
+\sum_{i=1}^m W_iL_{m-1}(r_i)
+\]</span> gives the encoded maximum. For an odd number of entries, the median is at rank <span class="math inline">\((m-1)/2\)</span>.</p>
+<p>These constructions are exact on the specified inputs. Comparing their cost and numerical error under approximate encrypted arithmetic would be a next step.</p>
+</section>
+<section id="index-to-one-hot" class="level3" data-number="1.1.6">
+<h3 data-number="1.1.6" class="anchored" data-anchor-id="index-to-one-hot"><span class="header-section-number">1.1.6</span> Index To One-Hot</h3>
 <p>Using roots-of-unity, we can do a one-hot conversion function (this will be used later for sorting). Specifically, given a ciphertext input for integer <span class="math inline">\(i\)</span>, stored in root-of-unity form (from this point we use <span class="math inline">\(\sqrt{-1}\)</span> to distinguish from <span class="math inline">\(i\)</span>) <span class="math display">\[
 \zeta^i = e^{2\pi i \sqrt{-1}/k},
 \]</span> where <span class="math inline">\(\zeta = e^{2\pi \sqrt{-1}/k},\)</span> we wish to create a one-hot vector <span class="math inline">\(v\)</span> which is <span class="math inline">\(1\)</span> in the <span class="math inline">\(i\)</span>-th coordinate and <span class="math inline">\(0\)</span> elsewhere. We can do this as follows:</p>
@@ -475,8 +557,8 @@ q\left(\xi^a+\xi^b+\xi^{a+b}\right)=\xi^{ab}.
 <li>Therefore, after dividing by <span class="math inline">\(k\)</span>, we obtain the desired vector <span class="math inline">\(v\)</span>.</li>
 </ol>
 </section>
-<section id="comparison-and-extended-binary-numbers" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="comparison-and-extended-binary-numbers"><span class="header-section-number">1.1.2</span> Comparison and Extended Binary Numbers</h3>
+<section id="comparison-and-extended-binary-numbers" class="level3" data-number="1.1.7">
+<h3 data-number="1.1.7" class="anchored" data-anchor-id="comparison-and-extended-binary-numbers"><span class="header-section-number">1.1.7</span> Comparison and Extended Binary Numbers</h3>
 <p>In this section, we show we can compare an input integer ciphertext <span class="math inline">\(c\)</span> with <span class="math inline">\(0\)</span>, meaning a function which outputs <span class="math inline">\(1\)</span> if <span class="math inline">\(c &gt; 0\)</span> and <span class="math inline">\(0\)</span> otherwise. (it will be clear how to do variants of this, such as with nonstrict inequalities). Our main trick is to use what we call the <strong>extended binary expansion</strong> of <span class="math inline">\(c\)</span>.</p>
 <p>Define <span class="math inline">\(S_1 := {-1,0,1}.\)</span> We say that a number <span class="math inline">\(a\)</span> is in <strong>extended binary</strong> form if it is represented as <span class="math display">\[
 a = a_0 + a_1 2 + \cdots + a_{b-1}2^{b-1},
@@ -526,8 +608,8 @@ A \vee B = 1 - (1-A)(1-B).
 <p>Thus the comparison function can be implemented as a polynomial in the extended binary digits.</p>
 <p>Since the intermediate values are essentially Boolean or integer-valued, this construction avoids the main numerical instability of trying to compare arbitrary real CKKS values directly.</p>
 </section>
-<section id="sorting" class="level3" data-number="1.1.3">
-<h3 data-number="1.1.3" class="anchored" data-anchor-id="sorting"><span class="header-section-number">1.1.3</span> Sorting</h3>
+<section id="sorting" class="level3" data-number="1.1.8">
+<h3 data-number="1.1.8" class="anchored" data-anchor-id="sorting"><span class="header-section-number">1.1.8</span> Sorting</h3>
 <p>Now we are ready to do sorting. Specifically, take <span class="math inline">\(k\)</span> inputs and return a sorted vector. As a corollary, this makes it easy to read off the median, maximum, minimum, and other simple summary statistics.</p>
 <p>For simplicity, we make the following assumptions.</p>
 <ol type="1">
