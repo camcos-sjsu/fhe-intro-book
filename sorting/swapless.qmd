@@ -3,45 +3,47 @@ title: "Swapless Sorting"
 format: html
 ---
 
-An excerpt from Frederico Mazzone et al. (CITATION) discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with.
-
-Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.
-
-**LIST EXPENSIVE COMPUTATIONS WITH DEPTH AND O(N)**
-
-**DEFINE WHAT DEPTH MEANS**
+An excerpt from Frederico Mazzone et al. (CITATION) discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with. Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.
 
 With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.
 
-**To understand the process of the swapless sorting, we will need the following methods**
+**To understand the process of the swapless sorting, we will need the following methods:**
 
-- CMP
+-   CMP
 
-- IND
+-   IND
 
-- MASKR
+-   MASKR
 
-- SUMR
+-   SUMR
 
-- REPLR
+-   REPLR
 
-- TRANSR
+-   TRANSR
 
-- RANK
+-   RANK
 
-**EXPLAIN RANKING STATISTICS HERE (ADD VISUAL)**
+### Assumption
 
 Before conducting the sort, we need to take care of one main assumption.
 
-- All elements in the vector are distinct, unless we consider tie corrections
+-   All elements in the vector are distinct, unless we consider tie corrections
 
-First, we need to find the overall order statistics of each element. To find which element is in the “k-th” place, we need to (explain ranking method)
+### Rank
 
-The rank will allow us to determine which element should be in the i’th position for our sort.
+First, we need to find the overall order statistics of each element. To find which element is in the “k-th” place, we need to start with the rank function. The rank will allow us to determine which element should be in the i’th position for our sort.
+
+To determine the rank of a vector we will first need to replicate the vector of n rows into a matrix of n x n.
+
+Then, we need to compare (CMP) the replicated matrix with its transpose. To create a matrix of 0s, 1s, and 0.5s.
+
+Finally, we will sum all the rows together and add 0.5 to determine each element's position.
 
 Then we can choose which element will take each position as a vertical vector outputting a matrix with a sorted vertical vector. 
 
 ![](images/swapless_sort_visual.png){fig-alt="swapless_sort_Mazzone_etal" fig-align="center"}
+
+### Swapless Sort
 
 (add a visual of a simplified example or use the one in the document and cite)
 
