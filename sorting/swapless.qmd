@@ -7,19 +7,19 @@ An excerpt from Frederico Mazzone et al. (CITATION) discusses a solution that ap
 
 With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.
 
-**To understand the process of the swapless sorting, we will need the following methods:**
+**To understand the process of the swapless sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:**
 
--   CMP
+-   CMP (Comparison)
 
--   IND
+-   IND (Index)
 
 -   MASKR
 
 -   SUMR
 
--   REPLR
+-   REPLR (Replicate)
 
--   TRANSR
+-   TRANSR (Transform)
 
 -   RANK
 
