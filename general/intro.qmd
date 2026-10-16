@@ -10,7 +10,7 @@ We will also be using these functions as examples to show **techniques** that wo
 
 ## Some Basics
 
-We are allowed to generate encoded vectors of any constant, c. $$ct_c=enc(c_1, c_2, \dots,c_{N/2})$$ Note that $c_i$ can be distinct from $c_j$ This allows us to do computations with pre-computed constant vectors $$c*enc(z_*)=enc(c,c,\dots,c)*enc(z_*)=enc(cz_1,cz_2,\dots,cz_{N/2})$$ Naturally, this allows us to do operations on unencrypted data and apply them to our encrypted data like taking the inverse of c: $$ct_{*}=enc(\frac{1}{c},\frac{1}{c},\dots,\frac{1}{c})$$
+We are allowed to generate encoded vectors of any constant, c. $$ct_c=enc(c_1, c_2, \dots,c_{N/2})$$ Note that $c_i$ can be distinct from $c_j$ This allows us to do computations with pre-computed constant vectors $$c*enc(z_*)=enc(c,c,\dots,c)*enc(z_*)=enc(cz_1,cz_2,\dots,cz_{N/2})$$ Naturally, this allows us to do operations on unencrypted data and apply them to our encrypted data like taking the inverse of c for scalar division by a constant c: $$ct_{*}=enc(\frac{1}{c},\frac{1}{c},\dots,\frac{1}{c})$$
 
 ### Selection Vector (a.k.a. One-Hot, Masking, Binary Vector)
 
