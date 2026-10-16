@@ -7,7 +7,9 @@ An excerpt from Frederico Mazzone et al. (CITATION) discusses a solution that ap
 
 With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.
 
-**To understand the process of the swapless sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:**
+### Methods
+
+To understand the process of the swapless sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:
 
 -   CMP (Comparison)
 
@@ -54,6 +56,8 @@ Order of operations for sort:
 3.  Find the index of the C and multiply the index with B
 4.  Sum the product of C and B and transpose to finish the sort
 
-**EXPLAIN THE PROCESS OF TIE CORRECTION**
+### Ties
+
+When a given vector includes non distinct elements, we will have to perform a tie correction.
 
 **EXPLAIN LARGER SCALE SCENARIOS (a group of people each send their own vector and want the overall spot each input they send is in the overall)**
