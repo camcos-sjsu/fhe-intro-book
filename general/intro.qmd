@@ -1,4 +1,4 @@
-# II. Auxiliary Functions
+# II. General Functions
 
 In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums / higher moments - exponentiation - square root - log
 

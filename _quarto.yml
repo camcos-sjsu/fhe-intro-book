@@ -8,6 +8,7 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - setup.qmd
     - part: general/intro.qmd
       chapters:
         - general/intravector-sums.qmd
