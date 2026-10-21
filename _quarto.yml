@@ -11,12 +11,12 @@ book:
     - setup.qmd
     - part: general/intro.qmd
       chapters:
+        - general/level-precision.qmd
         - general/intravector-sums.qmd
         - general/higher-moments.qmd
         - general/taylor-approx.qmd
         - general/sqrt-user-input.qmd
         - general/logarithm.qmd
-        - general/level-precision.qmd
     - part: division/intro.qmd
       chapters:
       - division/geometric-series.qmd

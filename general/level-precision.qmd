@@ -27,4 +27,13 @@ In this table,
 
 Therefore, as we build additional functions, we must keep in mind the cost of each individual function, since each auxiliary function builds into more complex functions.
 
-In section III, you are thrown into the proverbial deep end as you will see costs skyrocket.
+:::{.callout-tip icon=false title="**Remark**"}
+
+1. In the rest of the book, for the sake of simplicity, we will be optimizing for the amount of "operations", which is proportional to the costs we have in the table.
+
+2. In section III and IV, you are thrown into the proverbial deep end as you will see costs skyrocket.
+
+:::
+
+
+
