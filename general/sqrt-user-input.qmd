@@ -1,4 +1,4 @@
-## II.4 The Square Root (and User Input)
+## The Square Root (and User Input)
 
 We can similarly take the square root by expanding a Taylor series. The square root has no Taylor series at $x=0$, but can be expanded elsewhere, such as at $x=1$: $$\sqrt{1-x} = 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16} - \frac{5 x^4}{128} - \frac{7 x^5}{256} + O(x^6) + \cdots $$ which converges when $|x| \leq 1$. 
 
@@ -6,13 +6,14 @@ However, if we give the user $x$, it might be easier for the user to compute $\s
 
 To summarize, 
 
-1. we can (and at times must) take Taylor series around points other than $x=0$, 
-2. but frequently we may be able to skirt the problem using user output (and input). We think this is an important mindset but will mostly operate as if we do not have this possibility for the remainder of this report. 
+1. We can (and at times must) take Taylor series around points other than $x=0$, 
+
+2. However we frequently may be able to skirt the problem using user output (and input). We think this is an important mindset but will mostly operate as if we do not have this possibility for the remainder of this report. 
 
 
 :::{.callout-tip icon=false title="**Remark**"}
 
-we also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See Section III (Division) for more information.
+We also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See Section III (Division) for more information.
 :::
 
 [^bab]: **Square root algorithms** available from https://en.wikipedia.org/wiki/Square_root_algorithms

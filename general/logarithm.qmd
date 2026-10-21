@@ -1,4 +1,4 @@
-## II.5 Logarithm (First Glance)
+## Logarithm (First Glance)
 
 As usual, the Taylor approximation is a good default, and immediately doable with basic moves here: additions, powers (multiplications), and scalar divisions. 
 

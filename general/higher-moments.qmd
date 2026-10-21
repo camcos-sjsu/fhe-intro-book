@@ -1,4 +1,4 @@
-## II.2 Higher Moments 
+## Higher Moments 
 
 Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.
 
