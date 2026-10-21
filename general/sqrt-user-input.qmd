@@ -8,12 +8,13 @@ To summarize,
 
 1. We can (and at times must) take Taylor series around points other than $x=0$, 
 
-2. However we frequently may be able to skirt the problem using user output (and input). We think this is an important mindset but will mostly operate as if we do not have this possibility for the remainder of this report. 
+2. However we frequently may be able to skirt the problem using user output (and input). This is an important idea going forward to reduce computational cost, but will be tabled for now. Note that this is only feasible when giving the input back to the user does not compromise security.
 
 
 :::{.callout-tip icon=false title="**Remark**"}
 
 We also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See Section III (Division) for more information.
+
 :::
 
 [^bab]: **Square root algorithms** available from https://en.wikipedia.org/wiki/Square_root_algorithms
