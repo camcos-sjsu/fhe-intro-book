@@ -1,0 +1,30 @@
+## Levels, Precision, and Time
+
+As stated in the introduction, numbers get worse in three ways as we compute on them: noise, level, and time.
+
+In this table,
+
+- **precision** refers to a way an encryption of a number "decays with time" (as all known fully homomorphic schemes do). The basic idea is that after an operation, the new reseult will have some added mathematical noise.
+
+  - For example, adding $Enc(r_*)$ and $Enc(s_*)$ to get $Enc(t_*)$, $t_i=r_i+s_i+e_i$ for some error $e_i$, so it is good to always assume our numbers are possibly off by some "noise" which accumulates as more operations are done on them.
+
+  - This shouldn't be too surprising (e.g. in Python, 0.1+0.3 is not exactly 0.3).
+
+  - As a default, we assume starting noise (lack of precision) is around $10^{-10}$.
+
+- **(encryption) level** refers to the decryptability.
+
+  - For example, assume a fresh ciphertext starts off at "level 35."
+  - Multiplying two "level 30" numbers give "level 29" numbers, and level 0 numbers should be considered decryptable by a reasonable adversary and should be avoided.
+
+- **time** is self-explanatory, but remember we are doing very parallelizable computation for the sake of applications.
+
+|     | + | x | conjugation / cycles | 
+| ------ | --------- | -------- | -------- | 
+| time | $50 \mu s$     | $4 ms$ (proportional to level)     | $4 ms$    |
+| precision | noises add     | noises stay constant     | constant $10^{-10}$ worse    |
+| level | $a,b \rightarrow min(a,b)$     | $a,b \rightarrow \min(a,b) -1$     | id     | 
+
+Therefore, as we build additional functions, we must keep in mind the cost of each individual function, since each auxiliary function builds into more complex functions.
+
+In section III, you are thrown into the proverbial deep end as you will see costs skyrocket.
