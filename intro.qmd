@@ -9,7 +9,7 @@
 -->
 ```
 
-# I. Introduction
+# Introduction
 
 **CKKS**[^intro-1] (Jung Hee **C**heon, Andrey **K**im, Miran **K**im, and Yongsoo **S**ong) is a **fully homomorphic encryption (FHE)** scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.
 
