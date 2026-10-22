@@ -1,4 +1,4 @@
-## III.3 A Hybrid Approach
+## A Hybrid Approach
 
 The sum of the geometric series does most of its heavy lifting in the first few iterations, and then closes in slowly and expensively. Newton's method has the opposite problem: the only universal good starting point would be too far to the edge of the basin, and would waste the bulk of its moves in the beginning, making almost no progress toward sufficient convergence.
 

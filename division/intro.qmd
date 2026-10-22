@@ -1,10 +1,10 @@
-# III. Division
-Since we have multiplication, it is easy to divide by *known constants*, since we can multiply by their inverse. Specifically, we can take $$\mathtt{enc}(z_*), \mathtt{enc}(\frac{1}{c_*}) \rightarrow \mathtt{enc}(\frac{z_1}{c_1}, \ldots, \frac{z_{N/2}}{c_{N/2}})$$ by precomputing constants $1/c_*$ from $c_*$. 
+# Division
 
+Since we have multiplication, it is easy to divide by *known constants*, since we can multiply by their inverse. Specifically, we can take $$\mathtt{enc}(z_*), \mathtt{enc}(\frac{1}{c_*}) \rightarrow \mathtt{enc}(\frac{z_1}{c_1}, \ldots, \frac{z_{N/2}}{c_{N/2}})$$ by precomputing constants $1/c_*$ from $c_*$.
 
 In this section, we tackle **division,** which is surprisingly tricky in our specialized context. Here, by division we mean dividing by an encrypted unknown value, such as wanting $\mathtt{enc}(\frac{1}{z_*})$ given $\mathtt{enc}(z_*)$. This is not obvious and cannot be precomputed.
 
-:::{.callout-tip icon=false title="**Remark**"}
+::: {.callout-tip icon="false" title="**Remark**"}
 Of course, this depends on context. For example, in a hypothetical scenario where we only ever divide by *user input*, we can just ask the users to supply inverses to their own numbers (that is, if every time we get an encryption of $x_i$ we also get $\mathtt{enc}(1/x_i)$), then this is not a hard problem.
 :::
 
