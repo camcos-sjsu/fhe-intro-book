@@ -1,4 +1,4 @@
-## V.1 Mode
+## Mode
 
 Obtaining the mode should be a bit easier for discrete values (it would be similar to bucketing), so we approach the continuous case, given a vector $z$ with assumed real values for simplicity.
 
@@ -16,7 +16,4 @@ x_{N/2} & \delta_{N/2,1} & \delta_{N/2,2} & \delta_{N/2,3} & \cdots & 0
 
 Note: Some of the non-diagonal elelents $\delta_{i,j}$ can also be $0$. For instance, we expect the most nondiagonal zeros in the row of the mode $x_i$.
 
-Now, the idea here is to check every $x_i$ and then look for the one with the most number of (approximate) zeros. This will correspond to the mode. Specifically,
-1. for every $x_i$, we can compute $$y_i := (x_i == 1)$$ on it (element-wise) to get a $0$-$1$ vector $y_i$ that has a number of $1$s equal to the terms approximately equal to $z_i$. 
-2. Now we compute $$s_i = \mathtt{sum}(y_i)$$ to get these counts (see II.1 for how to compute sums).
-3. Computing a max over this would get the mode.
+Now, the idea here is to check every $x_i$ and then look for the one with the most number of (approximate) zeros. This will correspond to the mode. Specifically, 1. for every $x_i$, we can compute $$y_i := (x_i == 1)$$ on it (element-wise) to get a $0$-$1$ vector $y_i$ that has a number of $1$s equal to the terms approximately equal to $z_i$. 2. Now we compute $$s_i = \mathtt{sum}(y_i)$$ to get these counts (see II.1 for how to compute sums). 3. Computing a max over this would get the mode.

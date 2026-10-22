@@ -1,4 +1,4 @@
-## IV.2 Sorting
+## Sorting
 
 Sorting is a useful operation to have. It provides us with a lot of information on an encrypted vector. With sort we are able to derive quartiles, the median, max, and other statistics at once. In an unencrypted environment, sort often uses operations that result in branches and data-dependent memory access, which is not possible in our setting. We will explore how to implement sorting in a branch-free way, and then discuss how to improve the efficiency of the resulting algorithms.
 
