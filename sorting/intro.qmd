@@ -2,7 +2,7 @@
 
 Sorting an encrypted vector can provide useful information, including its minimum, maximum, median, and quartiles. But ordinary sorting algorithms often branch on comparison results or use encrypted values as memory indices, operations that are unavailable in FHE. We instead must attempt to sort using only arithmetic operations on encrypted values, which can be done in a couple of ways.
 
-### Comparison Based Sorting
+### Comparison Based Sorting {#sec-comparison-based-sorting}
 
 The first intuitive method is to utilize sorts that compare and swap values on a schedule irrelevant of the input of the data. Sorts such as merge and quicksort are not suitable for FHE because their branching depends on the results of the comparison. In FHE, comparisons can be expressed as an arithmetic operation using a polynomial approximation of the sign funciton. 
 
@@ -17,7 +17,15 @@ y_{\max} &= s x_i + (1-s)x_j.
 \end{aligned}
 $$
 
-For $(x_i,x_j)=(7,3)$, $s\approx1$ and the outputs are approximately $(3,7)$. For $(x_i,x_j)=(3,7)$, $s\approx0$ and they remain $(3,7)$. The same operations run in both cases; no branch depends on encrypted data. The approximation is reliable only on its intended input range and away from the transition near equality.
+::: {style="text-align: center;"}
+For $(x_i,x_j)$, the outputs are computed to be $(y_{\min}, y_{\max})$.
+
+$(x_i,x_j)=(7,3)$, $s\approx1$ so the output is $(3,7)$.
+
+$(x_i,x_j)=(3,7)$, $s\approx0$ so they remain $(3,7)$.
+:::
+
+The same operations run in both cases; no branch depends on encrypted data. The approximation is reliable only on its intended input range and away from the transition near equality.
 
 Using this, we can set up comparison based swaps in a structured manner. This can be used to emulate sorts prevalent in sorting networks, which allow for a fixed schedule of comparisons regardless of the results. This includes bubble sort, odd-even, and bitonic sort, among others. 
 

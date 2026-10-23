@@ -69,6 +69,8 @@ bibliography: references.bib
 format:
   html:
     axe: true
+    grid:
+      body-width: 4000px
     theme:
       dark: darkly
       light: flatly
