@@ -198,7 +198,7 @@ Alternatively, if our values are stored as roots of unity, let $\xi$ be a primit
 
 ### Comparisons
 
-Suppose our integers lie in $[-b,b]$. Their differences lie in $[-2b,2b]$, so for comparisons we use the larger modulus $n=4b+1$ and let $\xi$ be a primitive $n$-th root of unity.
+We can use this lookup idea to compare entries without binary expansion. Suppose our integers lie in $[-b,b]$. Their differences lie in $[-2b,2b]$, so for comparisons we use the larger modulus $n=4b+1$ and let $\xi$ be a primitive $n$-th root of unity.
 
 Construct a polynomial $S$ by interpolation such that
 $$
@@ -265,15 +265,15 @@ The same comparison and swap operation can also be used in odd-even and bitonic 
 
 ### Sorting by rank
 
-Alternatively,  we can use the comparisons to find each entry’s final position directly. For distinct inputs, an entry’s rank is the number of inputs smaller than it:
+Alternatively, we can use the comparisons to find each entry’s final position directly. For distinct inputs, an entry’s rank is the number of inputs smaller than it:
 $$
 r_i=\sum_{j=1}^m q_{ij},
 \qquad
 q_{ij}=C\left(W_iW_j^{n-1}\right).
 $$
+These comparisons are independent, so they can be computed in parallel.
 
-
-We can maybe reduce the number of comparisons by comparing only when $i<j$. The diagonal entries are always $0$, and, assuming distinct inputs, each entry below the diagonal is $1$ minus its reflected entry:
+We can reduce the number of comparisons by comparing only when $i<j$. The diagonal entries are always $0$, and, assuming distinct inputs, each entry below the diagonal is $1$ minus its reflected entry:
 $$
 q_{ji}=1-q_{ij}.
 $$
@@ -281,7 +281,7 @@ Then we count across rows as before. This gives $m(m-1)/2$ comparisons instead o
 
 ### Alternative idea for one-hot vectors
 
-Instead of encoding the ranks as roots of unity, we could keep them as integers.
+Instead of encoding the ranks as roots of unity, we could keep them as encrypted integers.
 
 For each possible rank $j\in\{0,\ldots,m-1\}$, let $L_j$ be the interpolated polynomial sending $j$ to $1$ and every other rank to $0$. Then
 $$
@@ -305,7 +305,6 @@ $$
 \sum_{i=1}^m W_iL_{m-1}(r_i)
 $$
 gives the encoded maximum. For an odd number of entries, the median is at rank $(m-1)/2$.
-
 
 
 ### Index To One-Hot

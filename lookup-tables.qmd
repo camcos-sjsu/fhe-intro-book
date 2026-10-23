@@ -1,0 +1,207 @@
+---
+title: "lookup-tables"
+editor: visual
+---
+
+
+
+
+Suppose that you are working with discrete, bounded data and want to perform an operation $a*b$. Since there are finitely many possible inputs, we could calculate every possible value of $a*b$ beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.
+
+This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more. The challenge is accessing the correct entry without revealing the inputs.
+
+One approach is to interpolate a polynomial that gives the desired output at every possible input. Evaluating this polynomial on the encrypted inputs then performs the lookup. The table and polynomial coefficients can be public; the inputs and resulting output remain encrypted.
+
+
+Chung, Kim, Kim, and Lee uses this approach with inputs encoded as roots of unity. Suppose there are $n$ possible values, and let $\zeta$ be a primitive $n$-th root of unity. We represent $a$ by $\zeta^a$. For a lookup table $T$ with one input, we construct a polynomial satisfying
+$$
+f(\zeta^a)=\zeta^{T(a)}.
+$$
+There are $n$ input points, so the polynomial has at most degree $n-1$.
+
+Using the same encoding for inputs and outputs allows us to perform consecutive lookups. The output of one polynomial is already in the form expected by the next.
+
+For operations with multiple inputs, the authors use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying
+$$
+f(\zeta^a,\zeta^b)=\zeta^{ab}.
+$$
+
+
+
+Instead of combining two inputs into a single value, Chung, Kim, Kim, and Lee
+construct a polynomial in two variables. Suppose each input belongs
+to the group
+$$
+C=\{1,\zeta,\ldots,\zeta^{n-1}\},
+$$
+where $\zeta$ is a primitive $n$-th root of unity. Let $d_{ab}$ be
+the desired encoded output for the input pair $(\zeta^a,\zeta^b)$.
+We want a polynomial satisfying
+$$
+f(\zeta^a,\zeta^b)=d_{ab}
+$$
+for every possible pair of inputs.
+
+\subsection*{Example: $n=4$}
+
+Let $\zeta=e^{-2\pi i/4}=-i$. Each input belongs to
+$$
+C=\{1,\zeta,\zeta^2,\zeta^3\}.
+$$
+The lookup table has sixteen entries:
+$$
+\begin{array}{c|cccc}
+ & v=1 & v=\zeta & v=\zeta^2 & v=\zeta^3\\
+\hline
+u=1       & d_{00} & d_{01} & d_{02} & d_{03}\\
+u=\zeta   & d_{10} & d_{11} & d_{12} & d_{13}\\
+u=\zeta^2 & d_{20} & d_{21} & d_{22} & d_{23}\\
+u=\zeta^3 & d_{30} & d_{31} & d_{32} & d_{33}
+\end{array}
+$$
+
+First, hold the second input fixed at $v=\zeta^b$. We can
+interpolate a polynomial $p_b(u)$ satisfying
+$$
+p_b(\zeta^a)=d_{ab},
+\qquad a=0,1,2,3.
+$$
+There are four input points, so each $p_b$ has degree at most
+three. Doing this for every column gives four polynomials:
+$$
+p_0(u),\quad p_1(u),\quad p_2(u),\quad p_3(u).
+$$
+
+Next, we need to select the correct column using $v$. Define
+the Lagrange polynomials
+$$
+L_b(v)=
+\prod_{\substack{0\leq k\leq 3\\k\neq b}}
+\frac{v-\zeta^k}{\zeta^b-\zeta^k}.
+$$
+These satisfy
+$$
+L_b(\zeta^k)=
+\begin{cases}
+1,&k=b,\\
+0,&k\neq b.
+\end{cases}
+$$
+For example,
+$$
+L_0(v)=
+\frac{(v-\zeta)(v-\zeta^2)(v-\zeta^3)}
+{(1-\zeta)(1-\zeta^2)(1-\zeta^3)}.
+$$
+
+We can now combine the column polynomials:
+$$
+f(u,v)=
+p_0(u)L_0(v)+p_1(u)L_1(v)
++p_2(u)L_2(v)+p_3(u)L_3(v).
+$$
+When $v=\zeta^b$, all terms disappear except $p_b(u)$.
+Consequently,
+$$
+f(\zeta^a,\zeta^b)=p_b(\zeta^a)=d_{ab},
+$$
+as desired.
+
+The column polynomials themselves can be written as
+$$
+p_b(u)=\sum_{a=0}^{3}d_{ab}L_a(u).
+$$
+Substituting gives the bivariate interpolation formula
+$$
+\boxed{
+f(u,v)=\sum_{a=0}^{3}\sum_{b=0}^{3}
+d_{ab}L_a(u)L_b(v).
+}
+$$
+
+Each Lagrange polynomial has degree three, so $f$ has degree
+at most three in each variable. After expanding, it has the form
+$$
+f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
+$$
+There are sixteen coefficients, but the total degree is at most
+six, coming from the term $u^3v^3$.
+
+
+\subsection*{Comparing the two methods}
+
+For $n=4$, we can compare the number of multiplications needed
+to evaluate each polynomial. Here, we only count multiplications
+between encrypted values, leaving out additions and multiplication
+by public coefficients.
+
+For our method, calculating $t=u+v+cuv$ takes one multiplication.
+Then, calculating $t^2,\ldots,t^9$ takes eight more.
+
+For their method, calculating $u^2,u^3,v^2,v^3$ takes four
+multiplications. There are also nine mixed terms $u^iv^j$ with
+$i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
+
+However, their method allows more of these multiplications to
+happen in parallel. Our method have multiplicative depth 5. One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers:
+two to obtain powers through $u^3$ and $v^3$, and one more
+for the mixed terms.
+
+Thus,
+$$
+\begin{array}{c|cc}
+ & \text{Our method} & \text{Their method}\\
+\hline
+\text{Encrypted multiplications} & 9 & 13\\
+\text{Multiplication depth} & 5 & 3
+\end{array}
+$$
+
+Our method uses fewer multiplications, while theirs has
+less depth. 
+
+
+
+
+
+
+
+$$
+\begin{aligned}
+P(u,v)=\frac14\bigl[&
+1+v+v^2+v^3\\
+&+u(1-iv-v^2+iv^3)\\
+&+u^2(1-v+v^2-v^3)\\
+&+u^3(1+iv-v^2-iv^3)
+\bigr].
+\end{aligned}
+$$
+
+
+\subsection*{Our method}
+
+$c=2$
+$$
+t(u,v)=u+v+2uv.
+$$
+
+
+$$
+\begin{aligned}
+Q(t)=1+\frac{1}{7072000}\bigl[&
+(12507520-191360i)t\\
+&+(3844256-421408i)t^2\\
+&-(2688960+341120i)t^3\\
+&-(1056912+124384i)t^4\\
+&-(173756+8892i)t^5\\
+&-(47656+2392i)t^6\\
+&-(24280+1560i)t^7\\
+&+(4092+1144i)t^8\\
+&+(3181+117i)t^9
+\bigr].
+\end{aligned}
+$$
+
+$$
+Q\bigl(i^a+i^b+2i^{a+b}\bigr)=i^{ab}.
+$$
