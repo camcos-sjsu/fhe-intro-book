@@ -1,7 +1,3 @@
----
-title: "CAMCOS 2026 Fall"
----
-
 # Cover / Title Page {.unnumbered}
 
 **NOTE** From the Monday meeting: Perhaps we make this a homepage of sorts, with graphics and something from the team
