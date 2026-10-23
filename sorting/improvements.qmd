@@ -1,32 +1,36 @@
-### Improvements to Sorting
+### From Bubble Sort to Odd-Even Sort {#sec-odd-even}
 
-We have found various ideas for improving the bubble sort algorithm. We sketch out the space of ideas and their pros and cons here; more detailed dives would make for good later explorations.
+Bubble sort applies the comparison and swap to two elements in a vector, then uses its updated vector in the next comparison. In FHE we have a unique advantage, that being the vectorwide nature of comparisons, computations batched on an entire ciphertext are functionally of the same cost as two individual operations. Using this, we can organize the comparisons into layers of disjoint pairs, where each layer is a single vectorwide comparison and swap. This is called odd-even sort. It is a simple example of optimizations that can be made to bubble sort, and is a stepping stone to more advanced sorting networks.
 
-First, instead of sorting one bubble at a time, like in the max case, we can perform several independent bubbles at the same time. A single bubble $\mathtt{bub_{i,j}}(x)$ only changes two coordinates, $x_i$ and $x_j$, so two bubbles can be computed in parallel as long as they do not overlap. For example, $$
-\mathtt{bub_{1,2}}(x)
-\quad \text{and} \quad
-\mathtt{bub_{3,4}}(x)
-$$ are independent, since the first only uses coordinates $1,2$ and the second only uses coordinates $3,4$.
+Odd-even sort, also called odd-even transposition sort, organizes the comparisons into two alternating layers [^improvements-1]. Number the vector positions from $1$. The **odd layer** compares
 
-If the active vector has length $N = n/2$, then one parallel layer can contain up to $n/4$ independent bubbles. This leads naturally to **odd-even sort** [^improvements-1], which alternates between two adjacent transposition layers.
+$$
+(1,2),\ (3,4),\ (5,6),\ldots,
+$$
 
-[^improvements-1]: N. Habermann; **Parallel neighbor-sort (or the glory of the induction principle)** available from https://kilthub.cmu.edu/articles/journal_contribution/Parallel_neighbor-sort_or_the_glory_of_the_induction_principle\_/6608258?file=12099395
+and the **even layer** compares
 
-Perform the odd layer: $$
-\mathtt{bub_{1,2}}(x),\ \mathtt{bub_{3,4}}(x),\ \mathtt{bub_{5,6}}(x),\ldots
-$$ Perform the even layer: $$
-\mathtt{bub_{2,3}}(x),\ \mathtt{bub_{4,5}}(x),\ \mathtt{bub_{6,7}}(x),\ldots
-$$ Repeat these alternating odd and even layers for $O(N)$ rounds.
+$$
+(2,3),\ (4,5),\ (6,7),\ldots.
+$$
 
-Each layer contains only disjoint pairs, so all bubbles inside that layer can be evaluated in parallel using vector-wide FHE operations. The total number of pairwise comparisons is still $O(N^2)$, but the depth is only $O(N)$, which is a better approximation of cost in this setting because at each level many swaps are performed at once.
 
-1.  To make this more effcicient we can upgrade to the **Batcher odd–even mergesort**,[^improvements-2] which has $O(\log^2(n))$ depth.
-2.  A similar type of improvement would be the very parallel **bitonic sort**.[^improvements-3] Similar to odd-even mergesort, it has a depth of $O(\log^2(n))$, but is more parallel in struture and thus may be a better choice long-term.
+For one iteration, let the input be $x=(x_1,\ldots,x_{n/2})$, with $n/2$ even. In the odd layer, compare-and-swap the disjoint pairs $(x_1,x_2)$, $(x_3,x_4),\ldots,(x_{n/2-1},x_{n/2})$ simultaneously. Write the resulting vector as
 
-[^improvements-2]: K.E. Batcher; **Sorting networks and their applications** available from https://www.cs.kent.edu/\~batcher/sort.pdf
+$$
+x'=(a_1,b_1,a_2,b_2,\ldots,a_{n/4},b_{n/4}),
+$$
 
-[^improvements-3]: K.E. Batcher; **Sorting networks and their applications** available from https://www.cs.kent.edu/\~batcher/sort.pdf
+where $(a_k,b_k)=(\min(x_{2k-1},x_{2k}),\max(x_{2k-1},x_{2k}))$ for $k=1,\ldots,n/4$. Then the even layer compare-and-swaps $(b_1,a_2),(b_2,a_3),\ldots,(b_{n/4-1},a_{n/4})$ simultaneously, leaving the endpoints in place. This produces the next vector
 
-To summarize, it is very relevant to consider **sorting networks**[^improvements-4], of which these are special cases. Sorting networks are sequences of comparisons which are preordained for each $n$ that have no logical branching, which is exactly our situation.
+$$
+x''=(a_1,c_1,d_1,c_2,d_2,\ldots,c_{n/4-1},d_{n/4-1},b_{n/4}),
+$$
 
-[^improvements-4]: **Sorting network** available from https://en.wikipedia.org/wiki/Sorting_network
+where $(c_k,d_k)=(\min(b_k,a_{k+1}),\max(b_k,a_{k+1}))$ for $k=1,\ldots,n/4-1$. One odd layer followed by one even layer is one odd-even iteration; repeating this fixed schedule moves values toward their sorted positions.
+
+Repeat the alternating layers for $N$ phases to sort $N$ inputs. Sequentially, bubble sort performs $O(N^2)$ individual compare and swaps, but Odd-even sort instead needs only $O(N)$ **comparison layers**, due to only requiring one vector-wide comparison-polynomial evaluation per pass, regardless of how many pairs are being compared. 
+
+[^improvements-1]: N. Habermann, **Parallel neighbor-sort (or the glory of the induction principle)**, available from https://kilthub.cmu.edu/articles/journal_contribution/Parallel_neighbor-sort_or_the_glory_of_the_induction_principle\_/6608258?file=12099395
+
+For the compare-and-swap operation used in each layer, see @sec-comparison-based-sorting.
