@@ -8,20 +8,17 @@ editor: visual
 
 Suppose that you are working with discrete, bounded data and want to perform an operation $a*b$. Since there are finitely many possible inputs, we could calculate every possible value of $a*b$ beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.
 
-This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more. The challenge is accessing the correct entry without revealing the inputs.
+This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more.
 
-One approach is to interpolate a polynomial that gives the desired output at every possible input. Evaluating this polynomial on the encrypted inputs then performs the lookup. The table and polynomial coefficients can be public; the inputs and resulting output remain encrypted.
+One approach is to interpolate a polynomial that gives the desired output at every possible input. Evaluating this polynomial on the encrypted inputs then performs the lookup. The table and polynomial coefficients can be public while the inputs and resulting output remain encrypted.
 
-
-Chung, Kim, Kim, and Lee uses this approach with inputs encoded as roots of unity. Suppose there are $n$ possible values, and let $\zeta$ be a primitive $n$-th root of unity. We represent $a$ by $\zeta^a$. For a lookup table $T$ with one input, we construct a polynomial satisfying
+Chung, Kim, Kim, and Lee use this approach with inputs encoded as roots of unity. Suppose there are $n$ possible values. For a lookup table $T$ with one input, we construct a polynomial satisfying
 $$
 f(\zeta^a)=\zeta^{T(a)}.
 $$
-There are $n$ input points, so the polynomial has at most degree $n-1$.
+There are $n$ interpolation points, so the polynomial has at most degree $n-1$.
 
-Using the same encoding for inputs and outputs allows us to perform consecutive lookups. The output of one polynomial is already in the form expected by the next.
-
-For operations with multiple inputs, the authors use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying
+For operations with multiple inputs, they use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying
 $$
 f(\zeta^a,\zeta^b)=\zeta^{ab}.
 $$
@@ -178,7 +175,6 @@ P(u,v)=\frac14\bigl[&
 $$
 
 
-\subsection*{Our method}
 
 $c=2$
 $$
