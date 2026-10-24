@@ -21,6 +21,18 @@ jobs:
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.6.1'
+      
+      - name: Install R packages
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages:
+            any::knitr
+            any::ggplot2
+            any::dplyr
+            any::gganimate
+            any::gifski
+            any::showtext
+            any::sysfonts
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
