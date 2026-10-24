@@ -2,7 +2,14 @@
 
 Introductory book on programmable computation within a fully homomorphic environment.
 
-## Render the book
+## View the book on the web 
+
+The book is available to read at the following site: 
+https://camcos-sjsu.github.io/fhe-intro-book/
+
+Updates to the main branch are automatically published via the gh-pages branch on each new commit. 
+
+## Render the book locally
 
 Install [Git](https://git-scm.com/downloads), [R](https://cran.r-project.org/), and [Quarto](https://quarto.org/docs/get-started/).
 
@@ -27,7 +34,7 @@ quarto render
 
 Open `_book/index.html` to view it. To preview while editing, run `quarto preview` from the project folder instead.
 
-To add a new section/chapter to the book:
+## Adding a new chapter to the book:
 
 -   Make the qmd file into the correct section folder
 
