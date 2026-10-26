@@ -411,21 +411,21 @@ window.Quarto = {
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../discrete-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Discrete Math</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../sign/intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sign Function</span></a>
+            <a href="../sign/discrete-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Discrete Math</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../sign/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sign Function</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sign/logistic.html" class="sidebar-item-text sidebar-link">
@@ -676,7 +676,8 @@ window.Quarto = {
 
 
 <p>We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and <span class="math inline">\(N/2\)</span> is odd. 1. Create a matrix <span class="math inline">\(D\)</span> where <span class="math display">\[D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).\]</span> We can just compute the same matrix and then run the sign function over every row. This looks like:</p>
-<span class="math display">\[\begin{array}{c|ccccc}
+<p><span class="math display">\[
+\begin{array}{c|ccccc}
   &amp; x_1 &amp; x_2 &amp; x_3 &amp; \cdots &amp; x_{N/2} \\
 \hline
 x_1 &amp; 0 &amp; -1 &amp; -1 &amp; \cdots &amp; -1 \\
@@ -684,7 +685,8 @@ x_2 &amp; 1 &amp; 0 &amp; -1 &amp; \cdots &amp; -1 \\
 x_3 &amp; 1 &amp; 1 &amp; 0 &amp; \cdots &amp; -1 \\
 \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
 x_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
-\end{array}\]</span>
+\end{array}
+\]</span></p>
 <p>though unlike <span class="math inline">\(D\)</span> from earlier, <span class="math inline">\(\delta_{i,j} \in \{-1, 1\}\)</span>. We assume the diagonals are assigned <span class="math inline">\(0\)</span> here.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <ol start="2" type="1">
 <li>Now, if <span class="math inline">\(z_i\)</span> were the median, then it would have an equal number of <span class="math inline">\(-1\)</span>s and <span class="math inline">\(1\)</span>s in its row, which is equivalent with having row sum <span class="math inline">\(0\)</span> (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).</li>

@@ -382,21 +382,21 @@ ul.task-list li input[type="checkbox"] {
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../discrete-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Discrete Math</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../sign/intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sign Function</span></a>
+            <a href="../sign/discrete-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Discrete Math</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../sign/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sign Function</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sign/logistic.html" class="sidebar-item-text sidebar-link">
@@ -664,11 +664,11 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><p>CMP (Comparison)</p></li>
 <li><p>IND (Index)</p></li>
-<li><p>MASKR</p></li>
-<li><p>SUMR</p></li>
-<li><p>REPLR (Replicate)</p></li>
-<li><p>TRANSR (Transform)</p></li>
+<li><p>SUM</p></li>
+<li><p>REPL (Replicate)</p></li>
+<li><p>TRANS (Transpose)</p></li>
 <li><p>RANK</p></li>
+<li><p>EQ (Equality)</p></li>
 </ul>
 </section>
 <section id="assumption" class="level3" data-number="20.0.2">
@@ -698,6 +698,11 @@ ul.task-list li input[type="checkbox"] {
 <section id="ties" class="level3" data-number="20.0.5">
 <h3 data-number="20.0.5" class="anchored" data-anchor-id="ties"><span class="header-section-number">20.0.5</span> Ties</h3>
 <p>When a given vector includes non distinct elements, we will have to perform a tie correction.</p>
+<p>To do so, we will first create an equality matrix by comparing the replicated matrix and it’s transpose outputting 1 if the index is equal and 0 else.</p>
+<p>Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements.</p>
+<p>Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).</p>
+<p>Lastly, compute the difference between M1 and M2 to output the offset vector of values 0 and 1 with 1 being the value of the tie.</p>
+<p>For example, if we add this offset vector to the original rank method we should go from 1,2,2,4 to 1,3,2,4 or 1,2,3,4.</p>
 <p><strong>EXPLAIN LARGER SCALE SCENARIOS (a group of people each send their own vector and want the overall spot each input they send is in the overall)</strong></p>
 
 

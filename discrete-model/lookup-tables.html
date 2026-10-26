@@ -411,21 +411,21 @@ window.Quarto = {
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../discrete-math.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Discrete Math</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../sign/intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sign Function</span></a>
+            <a href="../sign/discrete-math.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Discrete Math</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../sign/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Sign Function</span></span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sign/logistic.html" class="sidebar-item-text sidebar-link">
@@ -683,7 +683,7 @@ window.Quarto = {
 </header>
 
 
-<p>Suppose that you are working with discrete, bounded data and want to perform an operation <span class="math inline">\(a*b\)</span>. Since there are finitely many possible inputs, we could calculate every possible value of <span class="math inline">\(a*b\)</span> beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.</p>
+<p>Suppose that you are working with discrete, bounded data and want to perform an operation <span class="math inline">\(f(a,b)\)</span>. Since there are finitely many possible inputs, we could calculate every possible value of <span class="math inline">\(f(a,b)\)</span> beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.</p>
 <p>This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more.</p>
 <p>One approach is to interpolate a polynomial that gives the desired output at every possible input. Evaluating this polynomial on the encrypted inputs then performs the lookup. The table and polynomial coefficients can be public while the inputs and resulting output remain encrypted.</p>
 <p>Chung, Kim, Kim, and Lee use this approach with inputs encoded as roots of unity. Suppose there are <span class="math inline">\(n\)</span> possible values. For a lookup table <span class="math inline">\(T\)</span> with one input, we construct a polynomial satisfying <span class="math display">\[
