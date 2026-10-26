@@ -27,6 +27,7 @@ jobs:
         with:
           packages:
             any::knitr
+            any::rmarkdown
             any::ggplot2
             any::dplyr
             any::gganimate
