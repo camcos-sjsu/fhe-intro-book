@@ -15,15 +15,15 @@ To understand the process of the rank-based sorting, we will need the following 
 
 - IND (Index)
 
-- MASKR
+- SUM
 
-- SUMR
+- REPL (Replicate)
 
-- REPLR (Replicate)
-
-- TRANSR (Transform)
+- TRANS (Transpose)
 
 - RANK
+
+- EQ (Equality)
 
 ### Assumption
 
@@ -53,5 +53,15 @@ Order of operations for sort:
 ### Ties
 
 When a given vector includes non distinct elements, we will have to perform a tie correction.
+
+To do so, we will first create an equality matrix by comparing the replicated matrix and it's transpose outputting 1 if the index is equal and 0 else.
+
+Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements.
+
+Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).
+
+Lastly, compute the difference between M1 and M2 to output the offset vector of values 0 and 1 with 1 being the value of the tie.
+
+For example, if we add this offset vector to the original rank method we should go from 1,2,2,4 to 1,3,2,4 or 1,2,3,4.
 
 **EXPLAIN LARGER SCALE SCENARIOS (a group of people each send their own vector and want the overall spot each input they send is in the overall)**
