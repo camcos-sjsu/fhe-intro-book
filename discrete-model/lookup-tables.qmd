@@ -13,7 +13,8 @@ Chung, Kim, Kim, and Lee use this approach with inputs encoded as roots of unity
 f(\zeta^a)=\zeta^{T(a)}.
 $$ There are $n$ interpolation points, so the polynomial has at most degree $n-1$.
 
-For operations with multiple inputs, they use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying $$
+For operations with multiple inputs, they use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying 
+$$
 f(\zeta^a,\zeta^b)=\zeta^{ab}.
 $$
 
@@ -23,11 +24,14 @@ $$ where $\zeta$ is a primitive $n$-th root of unity. Let $d_{ab}$ be the desire
 f(\zeta^a,\zeta^b)=d_{ab}
 $$ for every possible pair of inputs.
 
-\subsection*{Example: $n=4$}
+### Example: \$n=4\$
 
-Let $\zeta=e^{-2\pi i/4}=-i$. Each input belongs to $$
+Let $\zeta=e^{-2\pi i/4}=-i$. Each input belongs to 
+$$
 C=\{1,\zeta,\zeta^2,\zeta^3\}.
-$$ The lookup table has sixteen entries: $$
+$$ 
+The lookup table has sixteen entries: 
+$$
 \begin{array}{c|cccc}
  & v=1 & v=\zeta & v=\zeta^2 & v=\zeta^3\\
 \hline
@@ -38,10 +42,14 @@ u=\zeta^3 & d_{30} & d_{31} & d_{32} & d_{33}
 \end{array}
 $$
 
-First, hold the second input fixed at $v=\zeta^b$. We can interpolate a polynomial $p_b(u)$ satisfying $$
+First, hold the second input fixed at $v=\zeta^b$. We can interpolate a polynomial $p_b(u)$ satisfying
+$$
 p_b(\zeta^a)=d_{ab},
 \qquad a=0,1,2,3.
-$$ There are four input points, so each $p_b$ has degree at most three. Doing this for every column gives four polynomials: $$
+$$ 
+
+There are four input points, so each $p_b$ has degree at most three. Doing this for every column gives four polynomials. 
+$$
 p_0(u),\quad p_1(u),\quad p_2(u),\quad p_3(u).
 $$
 
@@ -49,13 +57,17 @@ Next, we need to select the correct column using $v$. Define the Lagrange polyno
 L_b(v)=
 \prod_{\substack{0\leq k\leq 3\\k\neq b}}
 \frac{v-\zeta^k}{\zeta^b-\zeta^k}.
-$$ These satisfy $$
+$$ 
+
+These satisfy
+$$
 L_b(\zeta^k)=
 \begin{cases}
 1,&k=b,\\
 0,&k\neq b.
 \end{cases}
-$$ For example, $$
+$$ For example, 
+$$
 L_0(v)=
 \frac{(v-\zeta)(v-\zeta^2)(v-\zeta^3)}
 {(1-\zeta)(1-\zeta^2)(1-\zeta^3)}.
@@ -71,7 +83,9 @@ $$ as desired.
 
 The column polynomials themselves can be written as $$
 p_b(u)=\sum_{a=0}^{3}d_{ab}L_a(u).
-$$ Substituting gives the bivariate interpolation formula $$
+$$ Substituting gives the bivariate interpolation formula 
+
+$$
 \boxed{
 f(u,v)=\sum_{a=0}^{3}\sum_{b=0}^{3}
 d_{ab}L_a(u)L_b(v).
@@ -82,7 +96,7 @@ Each Lagrange polynomial has degree three, so $f$ has degree at most three in ea
 f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
 $$ There are sixteen coefficients, but the total degree is at most six, coming from the term $u^3v^3$.
 
-\subsection*{Comparing the two methods}
+### Comparing two methods
 
 For $n=4$, we can compare the number of multiplications needed to evaluate each polynomial. Here, we only count multiplications between encrypted values, leaving out additions and multiplication by public coefficients.
 
@@ -92,7 +106,8 @@ For their method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. Ther
 
 However, their method allows more of these multiplications to happen in parallel. Our method have multiplicative depth 5. One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
 
-Thus, $$
+Thus, 
+$$
 \begin{array}{c|cc}
  & \text{Our method} & \text{Their method}\\
 \hline
@@ -102,6 +117,12 @@ Thus, $$
 $$
 
 Our method uses fewer multiplications, while theirs has less depth.
+
+### Exploiting Symmetry
+
+Consider the case of modular multiplication.  This operation is symmetric.  That is, $a*b = b*a$.  It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.
+
+Below are the two methods of polynomial interpolation on the multiplication table with $n = 4$.
 
 $$
 \begin{aligned}
@@ -114,10 +135,14 @@ P(u,v)=\frac14\bigl[&
 \end{aligned}
 $$
 
-$c=2$ $$
+$c=2$ 
+
+$$
 t(u,v)=u+v+2uv.
 $$
 
+
+Our method:
 $$
 \begin{aligned}
 Q(t)=1+\frac{1}{7072000}\bigl[&
