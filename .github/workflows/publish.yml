@@ -33,6 +33,7 @@ jobs:
             any::gifski
             any::showtext
             any::sysfonts
+            any::rmarkdown
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
