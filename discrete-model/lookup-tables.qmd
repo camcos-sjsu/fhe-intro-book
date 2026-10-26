@@ -3,7 +3,7 @@ title: "lookup-tables"
 editor: visual
 ---
 
-Suppose that you are working with discrete, bounded data and want to perform an operation $a*b$. Since there are finitely many possible inputs, we could calculate every possible value of $a*b$ beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.
+Suppose that you are working with discrete, bounded data and want to perform an operation $f(a,b)$. Since there are finitely many possible inputs, we could calculate every possible value of $f(a,b)$ beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.
 
 This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more.
 
