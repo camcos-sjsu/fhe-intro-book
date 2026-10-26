@@ -26,6 +26,7 @@ We call one pass of this function over a vector as a "bubble," $\mathtt{bub_{i,j
 #| fig-align: center
 #| fig-alt: "A gif animation of a simple bubble sort being done on 6 bar barplot"
 
+if (knitr::is_html_output()) {
 library(ggplot2)
 library(gganimate)
 library(dplyr)
@@ -123,7 +124,8 @@ anim <- p + transition_states(Step, transition_length = 1, state_length = 2)
 gif1 <- animate(anim, nframes = max(sorting_data$Step) * 2, fps = 3, renderer = gifski_renderer("sorting_visualizer.gif"))
 
 knitr::include_graphics("sorting_visualizer.gif")
-
+} else {
+}
 ```
 
 To perform the pairwise comparisons in a non-logical-branching FHE setting, we can use a polynomial-approximated sign function.\

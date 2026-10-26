@@ -1,6 +1,6 @@
 ### Sign Applicability
 
-Here we provide the windows in which our (naive) implementation of sign (via logistic function approximation) has an error of $10\%$ or less. Error is calculated based off of a target of $0$ or $1$. The target is set to $0$ for an input $x \lt \frac{1}{2}$ and $1$ for input $x \gt \frac{1}{2}$. The error is the absolute difference between the target and approximate values expressed as a percentage. 
+Here we provide the windows in which our (naive) implementation of sign (via logistic function approximation) has an error of $10\%$ or less. Error is calculated based off of a target of $0$ or $1$. The target is set to $0$ for an input $x < \frac{1}{2}$ and $1$ for input $x > \frac{1}{2}$. The error is the absolute difference between the target and approximate values expressed as a percentage.
 
 | `k` | Left band | Right band | Window width |
 |----:|:---------:|:----------:|:------------:|

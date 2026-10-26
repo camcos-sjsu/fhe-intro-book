@@ -49,7 +49,15 @@ Fortunately, the basin of convergence[^newtons-method-4] for Newton's method app
 1.  To guarantee convergence we can simply pick the closest number to zero that does not get eliminated by rounding, maybe $\approx 10^{-10}$ or $-(10^{-10})$, depending on the sign of $\frac{1}{x}$ (which needs to be known), every time.
 2.  If we want to account for the sign and have a Sign function, we would be able to capture it with something like $(x<0)*(x_0=-(10^{-10}))+(x>0)*(x_0=10^{-10})$. See Section IV for similar methods.
 
-![newton_animation](https://hackmd.io/_uploads/BkpSix5bzl.gif)
+```{r}
+#| echo: false
+#| results: asis
+
+if (knitr::is_html_output()) {
+  cat("![newton_animation](https://hackmd.io/_uploads/BkpSix5bzl.gif)")
+} else {
+}
+```
 
 3.  If we have additional knowledge about the actual range of values, e.g. if we know that values are in $[a,b]$ then we can uuse something like the geometric mean $1/\sqrt{ab}$. (concretely, if weight is always between $50$ and $5000$ pounds, we can take an initial guess of 1/500).
 
