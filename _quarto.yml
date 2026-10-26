@@ -23,9 +23,9 @@ book:
       - division/newtons-method.qmd
       - division/hybrid-approach.qmd
       - division/softmax.qmd
-    - discrete-math.qmd
-    - part: sign/intro.qmd
+    - part: sign/discrete-math.qmd
       chapters:
+        - sign/intro.qmd
         - sign/logistic.qmd
         - sign/tanh.qmd
         - sign/applicability.qmd
