@@ -48,42 +48,50 @@ p_b(\zeta^a)=d_{ab},
 \qquad a=0,1,2,3.
 $$ 
 
-There are four input points, so each $p_b$ has degree at most three. Doing this for every column gives four polynomials. 
+Each $p_b$ has degree at most three. Doing this for every column gives four polynomials. 
 $$
 p_0(u),\quad p_1(u),\quad p_2(u),\quad p_3(u).
 $$
 
-Next, we need to select the correct column using $v$. Define the Lagrange polynomials $$
+Next, we need to select the correct column using $v$. Define the Lagrange polynomials 
+$$
 L_b(v)=
 \prod_{\substack{0\leq k\leq 3\\k\neq b}}
 \frac{v-\zeta^k}{\zeta^b-\zeta^k}.
 $$ 
 
+
 These satisfy
+
 $$
 L_b(\zeta^k)=
 \begin{cases}
 1,&k=b,\\
 0,&k\neq b.
 \end{cases}
-$$ For example, 
+$$ 
+For example, 
 $$
 L_0(v)=
 \frac{(v-\zeta)(v-\zeta^2)(v-\zeta^3)}
 {(1-\zeta)(1-\zeta^2)(1-\zeta^3)}.
 $$
 
-We can now combine the column polynomials: $$
+We can now combine the column polynomials: 
+$$
 f(u,v)=
 p_0(u)L_0(v)+p_1(u)L_1(v)
 +p_2(u)L_2(v)+p_3(u)L_3(v).
-$$ When $v=\zeta^b$, all terms disappear except $p_b(u)$. Consequently, $$
+$$
+When $v=\zeta^b$, all terms go to 0 except $p_b(u)$. Thus, 
+$$
 f(\zeta^a,\zeta^b)=p_b(\zeta^a)=d_{ab},
-$$ as desired.
+$$ 
+as desired.
 
 The column polynomials themselves can be written as $$
 p_b(u)=\sum_{a=0}^{3}d_{ab}L_a(u).
-$$ Substituting gives the bivariate interpolation formula 
+$$ Substituting gives
 
 $$
 \boxed{
@@ -98,13 +106,13 @@ $$ There are sixteen coefficients, but the total degree is at most six, coming f
 
 ### Comparing two methods
 
-For $n=4$, we can compare the number of multiplications needed to evaluate each polynomial. Here, we only count multiplications between encrypted values, leaving out additions and multiplication by public coefficients.
+For $n=4$, we can compare the number of multiplications needed to evaluate each polynomial.
 
 For our method, calculating $t=u+v+cuv$ takes one multiplication. Then, calculating $t^2,\ldots,t^9$ takes eight more.
 
 For their method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. There are also nine mixed terms $u^iv^j$ with $i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
 
-However, their method allows more of these multiplications to happen in parallel. Our method have multiplicative depth 5. One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
+However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
 
 Thus, 
 $$
