@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>20&nbsp; Swapless Sorting – fhe-intro-book</title>
+<title>20&nbsp; Rank Based Sorting – fhe-intro-book</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -254,7 +254,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Swapless Sorting</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -447,7 +447,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sorting/swapless.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Swapless Sorting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></span></a>
   </div>
 </li>
       </ul>
@@ -628,7 +628,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods"><span class="header-section-number">20.0.1</span> Methods</a></li>
   <li><a href="#assumption" id="toc-assumption" class="nav-link" data-scroll-target="#assumption"><span class="header-section-number">20.0.2</span> Assumption</a></li>
   <li><a href="#rank" id="toc-rank" class="nav-link" data-scroll-target="#rank"><span class="header-section-number">20.0.3</span> Rank</a></li>
-  <li><a href="#swapless-sort" id="toc-swapless-sort" class="nav-link" data-scroll-target="#swapless-sort"><span class="header-section-number">20.0.4</span> Swapless Sort</a></li>
+  <li><a href="#rank-based-sort" id="toc-rank-based-sort" class="nav-link" data-scroll-target="#rank-based-sort"><span class="header-section-number">20.0.4</span> Rank-Based Sort</a></li>
   <li><a href="#ties" id="toc-ties" class="nav-link" data-scroll-target="#ties"><span class="header-section-number">20.0.5</span> Ties</a></li>
   </ul>
 </nav>
@@ -637,9 +637,9 @@ ul.task-list li input[type="checkbox"] {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Swapless Sorting</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Swapless Sorting</span></h1>
+<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></h1>
 </div>
 
 
@@ -660,7 +660,7 @@ ul.task-list li input[type="checkbox"] {
 <p>With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.</p>
 <section id="methods" class="level3" data-number="20.0.1">
 <h3 data-number="20.0.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">20.0.1</span> Methods</h3>
-<p>To understand the process of the swapless sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:</p>
+<p>To understand the process of the rank-based sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:</p>
 <ul>
 <li><p>CMP (Comparison)</p></li>
 <li><p>IND (Index)</p></li>
@@ -683,14 +683,9 @@ ul.task-list li input[type="checkbox"] {
 <p>First, we need to find the overall order statistics of each element. To find which element is in the “k-th” place, we need to start with the rank function. The rank will allow us to determine which element should be in the i’th position for our sort.</p>
 <p>To determine the rank of a vector we will first need to replicate the vector of n rows into a matrix of n x n.</p>
 <p>Then, we need to compare the replicated matrix with its transpose. To do so, we will take the difference between the two matrices to output a matrix of -1, 0, 1 values. Then we will incorporate our sign function to isolate the positive values to create a matrix of just 0 and 1. By summing either the columns or rows depending on the initial difference matrix, we will have a final output of the statistic rank from 0 to n-1 which we then can add 1 to each element ending with a column/row vector of statistic rank 1 to n.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/swapless_sort_visual.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="swapless_sort_Mazzone_etal"></p>
-</figure>
-</div>
 </section>
-<section id="swapless-sort" class="level3" data-number="20.0.4">
-<h3 data-number="20.0.4" class="anchored" data-anchor-id="swapless-sort"><span class="header-section-number">20.0.4</span> Swapless Sort</h3>
+<section id="rank-based-sort" class="level3" data-number="20.0.4">
+<h3 data-number="20.0.4" class="anchored" data-anchor-id="rank-based-sort"><span class="header-section-number">20.0.4</span> Rank-Based Sort</h3>
 <p>(add a visual of a simplified example or use the one in the document and cite)</p>
 <p>Order of operations for sort:</p>
 <ol type="1">
