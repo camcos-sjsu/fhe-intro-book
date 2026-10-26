@@ -11,25 +11,25 @@ With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting 
 
 To understand the process of the swapless sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:
 
--   CMP (Comparison)
+- CMP (Comparison)
 
--   IND (Index)
+- IND (Index)
 
--   MASKR
+- MASKR
 
--   SUMR
+- SUMR
 
--   REPLR (Replicate)
+- REPLR (Replicate)
 
--   TRANSR (Transform)
+- TRANSR (Transform)
 
--   RANK
+- RANK
 
 ### Assumption
 
 Before conducting the sort, we need to take care of one main assumption.
 
--   All elements in the vector are distinct, unless we consider tie corrections
+- All elements in the vector are distinct, unless we consider tie corrections
 
 ### Rank
 
@@ -37,11 +37,7 @@ First, we need to find the overall order statistics of each element. To find whi
 
 To determine the rank of a vector we will first need to replicate the vector of n rows into a matrix of n x n.
 
-Then, we need to compare (CMP) the replicated matrix with its transpose. To create a matrix of 0s, 1s, and 0.5s.
-
-Finally, we will sum all the rows together and add 0.5 to determine each element's position.
-
-Then we can choose which element will take each position as a vertical vector outputting a matrix with a sorted vertical vector. 
+Then, we need to compare the replicated matrix with its transpose. To do so, we will take the difference between the two matrices to output a matrix of -1, 0, 1 values. Then we will incorporate our sign function to isolate the positive values to create a matrix of just 0 and 1. By summing either the columns or rows depending on the initial difference matrix, we will have a final output of the statistic rank from 0 to n-1 which we then can add 1 to each element ending with a column/row vector of statistic rank 1 to n.
 
 ![](images/swapless_sort_visual.png){fig-alt="swapless_sort_Mazzone_etal" fig-align="center"}
 
