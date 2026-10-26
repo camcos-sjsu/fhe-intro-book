@@ -18,4 +18,12 @@ For instance, suppose we require an error of no greater than $10^{-10}$ for one 
 
 Note the correlation of $1/z_i$ with the number of iterations required.
 
-![geom_animation](https://hackmd.io/_uploads/HJ7Q2lqWfx.gif)
+```{r}
+#| echo: false
+#| results: asis
+
+if (knitr::is_html_output()) {
+  cat("![geom_animation](https://hackmd.io/_uploads/HJ7Q2lqWfx.gif)")
+} else {
+}
+```
