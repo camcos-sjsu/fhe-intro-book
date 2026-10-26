@@ -715,7 +715,7 @@ u=\zeta^3 &amp; d_{30} &amp; d_{31} &amp; d_{32} &amp; d_{33}
 p_b(\zeta^a)=d_{ab},
 \qquad a=0,1,2,3.
 \]</span></p>
-<p>There are four input points, so each <span class="math inline">\(p_b\)</span> has degree at most three. Doing this for every column gives four polynomials. <span class="math display">\[
+<p>Each <span class="math inline">\(p_b\)</span> has degree at most three. Doing this for every column gives four polynomials. <span class="math display">\[
 p_0(u),\quad p_1(u),\quad p_2(u),\quad p_3(u).
 \]</span></p>
 <p>Next, we need to select the correct column using <span class="math inline">\(v\)</span>. Define the Lagrange polynomials <span class="math display">\[
@@ -723,7 +723,8 @@ L_b(v)=
 \prod_{\substack{0\leq k\leq 3\\k\neq b}}
 \frac{v-\zeta^k}{\zeta^b-\zeta^k}.
 \]</span></p>
-<p>These satisfy <span class="math display">\[
+<p>These satisfy</p>
+<p><span class="math display">\[
 L_b(\zeta^k)=
 \begin{cases}
 1,&amp;k=b,\\
@@ -738,12 +739,12 @@ L_0(v)=
 f(u,v)=
 p_0(u)L_0(v)+p_1(u)L_1(v)
 +p_2(u)L_2(v)+p_3(u)L_3(v).
-\]</span> When <span class="math inline">\(v=\zeta^b\)</span>, all terms disappear except <span class="math inline">\(p_b(u)\)</span>. Consequently, <span class="math display">\[
+\]</span> When <span class="math inline">\(v=\zeta^b\)</span>, all terms go to 0 except <span class="math inline">\(p_b(u)\)</span>. Thus, <span class="math display">\[
 f(\zeta^a,\zeta^b)=p_b(\zeta^a)=d_{ab},
 \]</span> as desired.</p>
 <p>The column polynomials themselves can be written as <span class="math display">\[
 p_b(u)=\sum_{a=0}^{3}d_{ab}L_a(u).
-\]</span> Substituting gives the bivariate interpolation formula</p>
+\]</span> Substituting gives</p>
 <p><span class="math display">\[
 \boxed{
 f(u,v)=\sum_{a=0}^{3}\sum_{b=0}^{3}
@@ -756,10 +757,10 @@ f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
 </section>
 <section id="comparing-two-methods" class="level3" data-number="36.0.2">
 <h3 data-number="36.0.2" class="anchored" data-anchor-id="comparing-two-methods"><span class="header-section-number">36.0.2</span> Comparing two methods</h3>
-<p>For <span class="math inline">\(n=4\)</span>, we can compare the number of multiplications needed to evaluate each polynomial. Here, we only count multiplications between encrypted values, leaving out additions and multiplication by public coefficients.</p>
+<p>For <span class="math inline">\(n=4\)</span>, we can compare the number of multiplications needed to evaluate each polynomial.</p>
 <p>For our method, calculating <span class="math inline">\(t=u+v+cuv\)</span> takes one multiplication. Then, calculating <span class="math inline">\(t^2,\ldots,t^9\)</span> takes eight more.</p>
 <p>For their method, calculating <span class="math inline">\(u^2,u^3,v^2,v^3\)</span> takes four multiplications. There are also nine mixed terms <span class="math inline">\(u^iv^j\)</span> with <span class="math inline">\(i,j\in\{1,2,3\}\)</span>, giving thirteen multiplications altogether.</p>
-<p>However, their method allows more of these multiplications to happen in parallel. Our method have multiplicative depth 5. One layer to calculate <span class="math inline">\(t\)</span>, and four more to get all powers through <span class="math inline">\(t^9\)</span>. Their method needs only three layers: two to obtain powers through <span class="math inline">\(u^3\)</span> and <span class="math inline">\(v^3\)</span>, and one more for the mixed terms.</p>
+<p>However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate <span class="math inline">\(t\)</span>, and four more to get all powers through <span class="math inline">\(t^9\)</span>. Their method needs only three layers: two to obtain powers through <span class="math inline">\(u^3\)</span> and <span class="math inline">\(v^3\)</span>, and one more for the mixed terms.</p>
 <p>Thus, <span class="math display">\[
 \begin{array}{c|cc}
 &amp; \text{Our method} &amp; \text{Their method}\\
