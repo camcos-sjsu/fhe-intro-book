@@ -649,8 +649,16 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#example-n4" id="toc-example-n4" class="nav-link active" data-scroll-target="#example-n4"><span class="header-section-number">36.0.1</span> Example: $n=4$</a></li>
+  <li><a href="#comparing-two-methods" id="toc-comparing-two-methods" class="nav-link" data-scroll-target="#comparing-two-methods"><span class="header-section-number">36.0.2</span> Comparing two methods</a></li>
+  <li><a href="#exploiting-symmetry" id="toc-exploiting-symmetry" class="nav-link" data-scroll-target="#exploiting-symmetry"><span class="header-section-number">36.0.3</span> Exploiting Symmetry</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -689,6 +697,8 @@ C=\{1,\zeta,\ldots,\zeta^{n-1}\},
 \]</span> where <span class="math inline">\(\zeta\)</span> is a primitive <span class="math inline">\(n\)</span>-th root of unity. Let <span class="math inline">\(d_{ab}\)</span> be the desired encoded output for the input pair <span class="math inline">\((\zeta^a,\zeta^b)\)</span>. We want a polynomial satisfying <span class="math display">\[
 f(\zeta^a,\zeta^b)=d_{ab}
 \]</span> for every possible pair of inputs.</p>
+<section id="example-n4" class="level3" data-number="36.0.1">
+<h3 data-number="36.0.1" class="anchored" data-anchor-id="example-n4"><span class="header-section-number">36.0.1</span> Example: $n=4$</h3>
 <p>Let <span class="math inline">\(\zeta=e^{-2\pi i/4}=-i\)</span>. Each input belongs to <span class="math display">\[
 C=\{1,\zeta,\zeta^2,\zeta^3\}.
 \]</span> The lookup table has sixteen entries: <span class="math display">\[
@@ -704,14 +714,16 @@ u=\zeta^3 &amp; d_{30} &amp; d_{31} &amp; d_{32} &amp; d_{33}
 <p>First, hold the second input fixed at <span class="math inline">\(v=\zeta^b\)</span>. We can interpolate a polynomial <span class="math inline">\(p_b(u)\)</span> satisfying <span class="math display">\[
 p_b(\zeta^a)=d_{ab},
 \qquad a=0,1,2,3.
-\]</span> There are four input points, so each <span class="math inline">\(p_b\)</span> has degree at most three. Doing this for every column gives four polynomials: <span class="math display">\[
+\]</span></p>
+<p>There are four input points, so each <span class="math inline">\(p_b\)</span> has degree at most three. Doing this for every column gives four polynomials. <span class="math display">\[
 p_0(u),\quad p_1(u),\quad p_2(u),\quad p_3(u).
 \]</span></p>
 <p>Next, we need to select the correct column using <span class="math inline">\(v\)</span>. Define the Lagrange polynomials <span class="math display">\[
 L_b(v)=
 \prod_{\substack{0\leq k\leq 3\\k\neq b}}
 \frac{v-\zeta^k}{\zeta^b-\zeta^k}.
-\]</span> These satisfy <span class="math display">\[
+\]</span></p>
+<p>These satisfy <span class="math display">\[
 L_b(\zeta^k)=
 \begin{cases}
 1,&amp;k=b,\\
@@ -731,7 +743,8 @@ f(\zeta^a,\zeta^b)=p_b(\zeta^a)=d_{ab},
 \]</span> as desired.</p>
 <p>The column polynomials themselves can be written as <span class="math display">\[
 p_b(u)=\sum_{a=0}^{3}d_{ab}L_a(u).
-\]</span> Substituting gives the bivariate interpolation formula <span class="math display">\[
+\]</span> Substituting gives the bivariate interpolation formula</p>
+<p><span class="math display">\[
 \boxed{
 f(u,v)=\sum_{a=0}^{3}\sum_{b=0}^{3}
 d_{ab}L_a(u)L_b(v).
@@ -740,6 +753,9 @@ d_{ab}L_a(u)L_b(v).
 <p>Each Lagrange polynomial has degree three, so <span class="math inline">\(f\)</span> has degree at most three in each variable. After expanding, it has the form <span class="math display">\[
 f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
 \]</span> There are sixteen coefficients, but the total degree is at most six, coming from the term <span class="math inline">\(u^3v^3\)</span>.</p>
+</section>
+<section id="comparing-two-methods" class="level3" data-number="36.0.2">
+<h3 data-number="36.0.2" class="anchored" data-anchor-id="comparing-two-methods"><span class="header-section-number">36.0.2</span> Comparing two methods</h3>
 <p>For <span class="math inline">\(n=4\)</span>, we can compare the number of multiplications needed to evaluate each polynomial. Here, we only count multiplications between encrypted values, leaving out additions and multiplication by public coefficients.</p>
 <p>For our method, calculating <span class="math inline">\(t=u+v+cuv\)</span> takes one multiplication. Then, calculating <span class="math inline">\(t^2,\ldots,t^9\)</span> takes eight more.</p>
 <p>For their method, calculating <span class="math inline">\(u^2,u^3,v^2,v^3\)</span> takes four multiplications. There are also nine mixed terms <span class="math inline">\(u^iv^j\)</span> with <span class="math inline">\(i,j\in\{1,2,3\}\)</span>, giving thirteen multiplications altogether.</p>
@@ -753,6 +769,11 @@ f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
 \end{array}
 \]</span></p>
 <p>Our method uses fewer multiplications, while theirs has less depth.</p>
+</section>
+<section id="exploiting-symmetry" class="level3" data-number="36.0.3">
+<h3 data-number="36.0.3" class="anchored" data-anchor-id="exploiting-symmetry"><span class="header-section-number">36.0.3</span> Exploiting Symmetry</h3>
+<p>Consider the case of modular multiplication. This operation is symmetric. That is, <span class="math inline">\(a*b = b*a\)</span>. It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.</p>
+<p>Below are the two methods of polynomial interpolation on the multiplication table with <span class="math inline">\(n = 4\)</span>.</p>
 <p><span class="math display">\[
 \begin{aligned}
 P(u,v)=\frac14\bigl[&amp;
@@ -763,10 +784,11 @@ P(u,v)=\frac14\bigl[&amp;
 \bigr].
 \end{aligned}
 \]</span></p>
-<p><span class="math inline">\(c=2\)</span> <span class="math display">\[
+<p><span class="math inline">\(c=2\)</span></p>
+<p><span class="math display">\[
 t(u,v)=u+v+2uv.
 \]</span></p>
-<p><span class="math display">\[
+<p>Our method: <span class="math display">\[
 \begin{aligned}
 Q(t)=1+\frac{1}{7072000}\bigl[&amp;
 (12507520-191360i)t\\
@@ -786,6 +808,7 @@ Q\bigl(i^a+i^b+2i^{a+b}\bigr)=i^{ab}.
 \]</span></p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
