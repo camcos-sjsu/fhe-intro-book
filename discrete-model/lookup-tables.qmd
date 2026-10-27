@@ -3,7 +3,9 @@ title: "lookup-tables"
 editor: visual
 ---
 
-Suppose that you are working with discrete, bounded data and want to perform an operation $a*b$. Since there are finitely many possible inputs, we could calculate every possible value of $a*b$ beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.
+Suppose that you want to perform an operation $f(a,b)$. Recall that $a,b \in \{0,...,n-1\}$ and that $a,b$ are stored as roots of unity $\zeta^a, \zeta^b$. The desired output may be a value in either root of unity form or as a regular encoded value.  
+
+Since there are finitely many possible inputs, we could calculate every possible value of $f(a,b)$ beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.
 
 This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more.
 
@@ -13,7 +15,8 @@ Chung, Kim, Kim, and Lee use this approach with inputs encoded as roots of unity
 f(\zeta^a)=\zeta^{T(a)}.
 $$ There are $n$ interpolation points, so the polynomial has at most degree $n-1$.
 
-For operations with multiple inputs, they use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying $$
+For operations with multiple inputs, they use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying 
+$$
 f(\zeta^a,\zeta^b)=\zeta^{ab}.
 $$
 
@@ -23,11 +26,14 @@ $$ where $\zeta$ is a primitive $n$-th root of unity. Let $d_{ab}$ be the desire
 f(\zeta^a,\zeta^b)=d_{ab}
 $$ for every possible pair of inputs.
 
-\subsection*{Example: $n=4$}
+### Example: \$n=4\$
 
-Let $\zeta=e^{-2\pi i/4}=-i$. Each input belongs to $$
+Let $\zeta=e^{-2\pi i/4}=-i$. Each input belongs to 
+$$
 C=\{1,\zeta,\zeta^2,\zeta^3\}.
-$$ The lookup table has sixteen entries: $$
+$$ 
+The lookup table has sixteen entries: 
+$$
 \begin{array}{c|cccc}
  & v=1 & v=\zeta & v=\zeta^2 & v=\zeta^3\\
 \hline
@@ -38,40 +44,58 @@ u=\zeta^3 & d_{30} & d_{31} & d_{32} & d_{33}
 \end{array}
 $$
 
-First, hold the second input fixed at $v=\zeta^b$. We can interpolate a polynomial $p_b(u)$ satisfying $$
+First, hold the second input fixed at $v=\zeta^b$. We can interpolate a polynomial $p_b(u)$ satisfying
+$$
 p_b(\zeta^a)=d_{ab},
 \qquad a=0,1,2,3.
-$$ There are four input points, so each $p_b$ has degree at most three. Doing this for every column gives four polynomials: $$
+$$ 
+
+Each $p_b$ has degree at most three. Doing this for every column gives four polynomials. 
+$$
 p_0(u),\quad p_1(u),\quad p_2(u),\quad p_3(u).
 $$
 
-Next, we need to select the correct column using $v$. Define the Lagrange polynomials $$
+Next, we need to select the correct column using $v$. Define the Lagrange polynomials 
+$$
 L_b(v)=
 \prod_{\substack{0\leq k\leq 3\\k\neq b}}
 \frac{v-\zeta^k}{\zeta^b-\zeta^k}.
-$$ These satisfy $$
+$$ 
+
+
+These satisfy
+
+$$
 L_b(\zeta^k)=
 \begin{cases}
 1,&k=b,\\
 0,&k\neq b.
 \end{cases}
-$$ For example, $$
+$$ 
+For example, 
+$$
 L_0(v)=
 \frac{(v-\zeta)(v-\zeta^2)(v-\zeta^3)}
 {(1-\zeta)(1-\zeta^2)(1-\zeta^3)}.
 $$
 
-We can now combine the column polynomials: $$
+We can now combine the column polynomials: 
+$$
 f(u,v)=
 p_0(u)L_0(v)+p_1(u)L_1(v)
 +p_2(u)L_2(v)+p_3(u)L_3(v).
-$$ When $v=\zeta^b$, all terms disappear except $p_b(u)$. Consequently, $$
+$$
+When $v=\zeta^b$, all terms go to 0 except $p_b(u)$. Thus, 
+$$
 f(\zeta^a,\zeta^b)=p_b(\zeta^a)=d_{ab},
-$$ as desired.
+$$ 
+as desired.
 
 The column polynomials themselves can be written as $$
 p_b(u)=\sum_{a=0}^{3}d_{ab}L_a(u).
-$$ Substituting gives the bivariate interpolation formula $$
+$$ Substituting gives
+
+$$
 \boxed{
 f(u,v)=\sum_{a=0}^{3}\sum_{b=0}^{3}
 d_{ab}L_a(u)L_b(v).
@@ -82,17 +106,136 @@ Each Lagrange polynomial has degree three, so $f$ has degree at most three in ea
 f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
 $$ There are sixteen coefficients, but the total degree is at most six, coming from the term $u^3v^3$.
 
-\subsection*{Comparing the two methods}
+Alternatively, we could encode a pair of elements as a single value, and then interpolate a polynomial in one variable. We can do all of this publicly beforehand, so only evaluating the polynomial needs to happen in an encrypted setting.
 
-For $n=4$, we can compare the number of multiplications needed to evaluate each polynomial. Here, we only count multiplications between encrypted values, leaving out additions and multiplication by public coefficients.
+We might consider something like
+
+$$
+t(w,z)=nw+z.
+$$
+
+This distinguishes every ordered pair of $n$th roots of unity. However, it does not use the symmetry of the table, because $t(w,z)\neq t(z,w)$ when $w\neq z$. Ideally, they would be equal so that we can use fewer interpolation points and get a lower degree.
+
+So, we want to create a function $t(w,z)$ such that $t(w,z)=t(u,v)$ if and only if
+
+$$
+(u,v)=(w,z)\quad\text{or}\quad(u,v)=(z,w).
+$$
+
+Instead, consider something with a nonlinear term:
+
+$$
+t(w,z)=w+z+c wz.
+$$
+
+This is symmetric, but we need to choose $c$ so that two different unordered pairs do not give the same value.
+
+If two pairs give the same value, then
+
+$$
+w+z+c wz=u+v+c uv,
+$$
+
+so
+
+$$
+c(wz-uv)=u+v-w-z.
+$$
+
+If $wz=uv$, then their sums must also be equal. Having the same sum and product means they are the same unordered pair.
+
+Otherwise, there is just one value of $c$ that would make these two pairs collide:
+
+$$
+c=\frac{u+v-w-z}{wz-uv}.
+$$
+
+Since there are only finitely many pairs, there are only finitely many values of $c$ to avoid. So we can choose a $c$ that works.
+
+Then, we interpolate a polynomial $q$ such that
+
+$$
+q\bigl(t(\xi^a,\xi^b)\bigr)=\xi^{ab}.
+$$
+
+Now we only need one interpolation point for each unordered pair. This gives us $n(n+1)/2$ points instead of $n^2$, and therefore a degree bound of $n(n+1)/2-1$ instead of $n^2-1$.
+
+For example, let $n=3$ and let $\xi=e^{2\pi i/3}$. Then
+
+$$
+\xi^3=1
+$$
+
+In this case, we can choose $c=1$, giving
+
+$$
+t(w,z)=w+z+wz.
+$$
+
+We only need to consider the following six unordered pairs:
+
+$$
+\begin{array}{c|c|c}
+(w,z) & t(w,z) & \text{Desired output } \xi^{ab} \\
+\hline
+(1,1)         & 3          & 1 \\
+(1,\xi)       & 1+2\xi     & 1 \\
+(1,\xi^2)     & 1+2\xi^2   & 1 \\
+(\xi,\xi)     & 2\xi+\xi^2      & \xi \\
+(\xi,\xi^2)   & \xi^2 +\xi + 1          & \xi^2 \\
+(\xi^2,\xi^2) & 2\xi^2+\xi    & \xi\\
+(\xi^2,1)     & 1+2\xi^2   & 1 \\
+(\xi^2,\xi)   & \xi^2+\xi+1  & \xi^2 \\
+(\xi^2,\xi^2)     & 2\xi^2 + \xi   & \xi \\
+\end{array}
+$$
+
+
+There are six values in the middle column which are distinct, so we can interpolate a polynomial $q$ of degree at most $5$ with these inputs and outputs.  We also notice that values which aren't distinct have corresponding flipped $w$ and $z$ values. 
+
+Explicitly, label the interpolation points
+
+$$
+(t_0,t_1,t_2,t_3,t_4,t_5)
+=
+(3,1+2\xi,1+2\xi^2,\xi-1,0,\xi^2-1).
+$$
+
+Let
+
+$$
+L_j(T)=
+\prod_{\substack{0\le k\le 5\\k\ne j}}
+\frac{T-t_k}{t_j-t_k}.
+$$
+
+Then our polynomial is
+
+$$
+q(T)=L_0(T)+L_1(T)+L_2(T)
++\xi L_3(T)+\xi^2L_4(T)+\xi L_5(T).
+$$
+
+Thus, for any $a,b\in\{0,1,2\}$,
+
+$$
+q\left(\xi^a+\xi^b+\xi^{a+b}\right)=\xi^{ab}.
+$$
+
+We can construct $q$ publicly beforehand. Given encrypted inputs $w$ and $z$, we would then evaluate $q(w+z+wz)$.
+
+### Comparing two methods
+
+For $n=4$, we can compare the number of multiplications needed to evaluate each polynomial.
 
 For our method, calculating $t=u+v+cuv$ takes one multiplication. Then, calculating $t^2,\ldots,t^9$ takes eight more.
 
 For their method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. There are also nine mixed terms $u^iv^j$ with $i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
 
-However, their method allows more of these multiplications to happen in parallel. Our method have multiplicative depth 5. One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
+However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
 
-Thus, $$
+Thus, 
+$$
 \begin{array}{c|cc}
  & \text{Our method} & \text{Their method}\\
 \hline
@@ -102,6 +245,12 @@ Thus, $$
 $$
 
 Our method uses fewer multiplications, while theirs has less depth.
+
+### Exploiting Symmetry
+
+Consider the case of modular multiplication.  This operation is symmetric.  That is, $a*b = b*a$.  It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.
+
+Below are the two methods of polynomial interpolation on the multiplication table with $n = 4$.
 
 $$
 \begin{aligned}
@@ -114,10 +263,14 @@ P(u,v)=\frac14\bigl[&
 \end{aligned}
 $$
 
-$c=2$ $$
+$c=2$ 
+
+$$
 t(u,v)=u+v+2uv.
 $$
 
+
+Our method:
 $$
 \begin{aligned}
 Q(t)=1+\frac{1}{7072000}\bigl[&

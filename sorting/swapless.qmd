@@ -1,5 +1,5 @@
 ---
-title: "Swapless Sorting"
+title: "Rank Based Sorting"
 format: html
 ---
 
@@ -9,27 +9,27 @@ With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting 
 
 ### Methods
 
-To understand the process of the swapless sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:
+To understand the process of the rank-based sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:
 
--   CMP (Comparison)
+- CMP (Comparison)
 
--   IND (Index)
+- IND (Index)
 
--   MASKR
+- SUM
 
--   SUMR
+- REPL (Replicate)
 
--   REPLR (Replicate)
+- TRANS (Transpose)
 
--   TRANSR (Transform)
+- RANK
 
--   RANK
+- EQ (Equality)
 
 ### Assumption
 
 Before conducting the sort, we need to take care of one main assumption.
 
--   All elements in the vector are distinct, unless we consider tie corrections
+- All elements in the vector are distinct, unless we consider tie corrections
 
 ### Rank
 
@@ -37,15 +37,9 @@ First, we need to find the overall order statistics of each element. To find whi
 
 To determine the rank of a vector we will first need to replicate the vector of n rows into a matrix of n x n.
 
-Then, we need to compare (CMP) the replicated matrix with its transpose. To create a matrix of 0s, 1s, and 0.5s.
+Then, we need to compare the replicated matrix with its transpose. To do so, we will take the difference between the two matrices to output a matrix of -1, 0, 1 values. Then we will incorporate our sign function to isolate the positive values to create a matrix of just 0 and 1. By summing either the columns or rows depending on the initial difference matrix, we will have a final output of the statistic rank from 0 to n-1 which we then can add 1 to each element ending with a column/row vector of statistic rank 1 to n.
 
-Finally, we will sum all the rows together and add 0.5 to determine each element's position.
-
-Then we can choose which element will take each position as a vertical vector outputting a matrix with a sorted vertical vector. 
-
-![](images/swapless_sort_visual.png){fig-alt="swapless_sort_Mazzone_etal" fig-align="center"}
-
-### Swapless Sort
+### Rank-Based Sort
 
 (add a visual of a simplified example or use the one in the document and cite)
 
@@ -59,5 +53,15 @@ Order of operations for sort:
 ### Ties
 
 When a given vector includes non distinct elements, we will have to perform a tie correction.
+
+To do so, we will first create an equality matrix by comparing the replicated matrix and it's transpose outputting 1 if the index is equal and 0 else.
+
+Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements.
+
+Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).
+
+Lastly, compute the difference between M1 and M2 to output the offset vector of values 0 and 1 with 1 being the value of the tie.
+
+For example, if we add this offset vector to the original rank method we should go from 1,2,2,4 to 1,3,2,4 or 1,2,3,4.
 
 **EXPLAIN LARGER SCALE SCENARIOS (a group of people each send their own vector and want the overall spot each input they send is in the overall)**

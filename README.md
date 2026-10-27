@@ -23,7 +23,7 @@ cd fhe-intro-book
 Install the following packages in R studio:
 
 ``` r
-install.packages(c("knitr", "ggplot2", "dplyr", "gganimate", "gifski", "showtext", "sysfonts"))
+install.packages(c("knitr", "rmarkdown", "ggplot2", "dplyr", "gganimate", "gifski", "showtext", "sysfonts"))
 ```
 
 From the project folder, render the book:
