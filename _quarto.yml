@@ -80,7 +80,7 @@ format:
     toc: true
 
 # store any code computations 
-execute: 
-  freeze: auto 
+#execute: 
+#  freeze: auto 
 
 # editor: visual
