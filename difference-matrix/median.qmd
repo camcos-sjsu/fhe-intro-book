@@ -2,6 +2,7 @@
 
 We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and $N/2$ is odd. 1. Create a matrix $D$ where $$D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).$$ We can just compute the same matrix and then run the sign function over every row. This looks like:
 
+$$
 \begin{array}{c|ccccc}
   & x_1 & x_2 & x_3 & \cdots & x_{N/2} \\
 \hline
@@ -11,6 +12,7 @@ x_3 & 1 & 1 & 0 & \cdots & -1 \\
 \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
 x_{N/2} & 1 & 1 & 1 & \cdots & 0
 \end{array}
+$$
 
 though unlike $D$ from earlier, $\delta_{i,j} \in \{-1, 1\}$. We assume the diagonals are assigned $0$ here.[^median-1]
 

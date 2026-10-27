@@ -49,11 +49,11 @@ $x_i = 0$. In this case, L'Hopitals rule dictates that the correct
 contribution of the $-P(x) \log P(x) = 0 * (\infty)$ should be $0$. We
 have two suggestions, and it is not clear to us which one is better (it
 is likely to be very implementation-dependent): 1. "iron out" the
-eventual answer with multiplication by an $\texttt{equal(x_i, 0)}$
+eventual answer with multiplication by an $\texttt{equal(x\_i, 0)}$
 vector at the very end (before the summation), which would ensure all
 elements coming from an $x_i$ very close to $0$ actually contributes
 $0$; 2. interrupt the computation right before the $\log()$ step by
-**adding** the $\texttt{equal(x_i, 0)}$ vector, which would switch the
+**adding** the $\texttt{equal(x\_i, 0)}$ vector, which would switch the
 $x_i$s close to $0$ to close to $1$ (therefore making the
 $\log(x_i) \approx 0$.
 

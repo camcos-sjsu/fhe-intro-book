@@ -27,12 +27,15 @@ jobs:
         with:
           packages:
             any::knitr
+            any::rmarkdown
             any::ggplot2
             any::dplyr
             any::gganimate
             any::gifski
             any::showtext
             any::sysfonts
+            any::rmarkdown
+            any::curl
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2

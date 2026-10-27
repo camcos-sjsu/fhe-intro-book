@@ -4,4 +4,12 @@ The sum of the geometric series does most of its heavy lifting in the first few 
 
 Perhaps the two approaches could be combined into a hybrid. The first one or two terms of the sum of the geometric series are less expensive and put us strongly within the basin of convergence, at which point we can put Newton in the driver's seat. Our opening guess for Newton's $x_0$ would be guaranteed to be in the convergence basin and well ahead of the default universal guess.
 
-![hybrid_animation](https://hackmd.io/_uploads/S1Djilqbfe.gif)
+```{r}
+#| echo: false
+#| results: asis
+
+if (knitr::is_html_output()) {
+  cat("![hybrid_animation](https://hackmd.io/_uploads/S1Djilqbfe.gif)")
+} else {
+}
+```

@@ -3,7 +3,7 @@
 Obtaining the mode should be a bit easier for discrete values (it would be similar to bucketing), so we approach the continuous case, given a vector $z$ with assumed real values for simplicity.
 
 Here we compute the difference matrix for $x_i$, which results in a matrix (stored as row vectors).
-
+$$
 \begin{array}{c|ccccc}
   & x_1 & x_2 & x_3 & \cdots & x_{N/2} \\
 \hline
@@ -13,6 +13,7 @@ x_3 & \delta_{3,1} & \delta_{3,2} & 0 & \cdots & \delta_{3,N/2} \\
 \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
 x_{N/2} & \delta_{N/2,1} & \delta_{N/2,2} & \delta_{N/2,3} & \cdots & 0
 \end{array}
+$$
 
 Note: Some of the non-diagonal elelents $\delta_{i,j}$ can also be $0$. For instance, we expect the most nondiagonal zeros in the row of the mode $x_i$.
 
