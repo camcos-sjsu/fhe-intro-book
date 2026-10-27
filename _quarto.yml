@@ -52,13 +52,14 @@ book:
     - lit-review.qmd
     - part: discrete-model/intro.qmd
       chapters:
-        - discrete-model/binary-approach.qmd
+        - discrete-model/roots-of-unity.qmd
+        - discrete-model/lookup-tables.qmd
         - discrete-model/modular-operations.qmd
+        - discrete-model/binary-approach.qmd
+        - discrete-model/extended-binary-expansion.qmd
         - discrete-model/roots-of-unity.qmd
         - discrete-model/index-one-hot.qmd
-        - discrete-model/extended-binary-expansion.qmd
         - discrete-model/discrete-sign-and-notes-on-sorting.qmd
-        - discrete-model/lookup-tables.qmd
         - discrete-model/summary.qmd
         
 
