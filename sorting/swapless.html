@@ -51,8 +51,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d89eeb3616a2ec4763cd1f07bb270cbd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-79e620d2f80a79992166ed9044a82d9e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-488118a782d8dcbe071a213e153d6c4a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-ccd2922c385f0b5a051095c6db8397bb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -669,7 +669,7 @@ ul.task-list li input[type="checkbox"] {
 <p>To understand the process of the rank-based sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:</p>
 <ul>
 <li><p>CMP (Comparison)</p></li>
-<li><p>IND (Index)</p></li>
+<li><p>IND (Indicator)</p></li>
 <li><p>SUM</p></li>
 <li><p>REPL (Replicate)</p></li>
 <li><p>TRANS (Transpose)</p></li>
@@ -693,20 +693,18 @@ ul.task-list li input[type="checkbox"] {
 <section id="rank-based-sort" class="level3" data-number="20.0.4">
 <h3 data-number="20.0.4" class="anchored" data-anchor-id="rank-based-sort"><span class="header-section-number">20.0.4</span> Rank-Based Sort</h3>
 <p>(add a visual of a simplified example or use the one in the document and cite)</p>
-<p>Order of operations for sort:</p>
-<ol type="1">
-<li>Create rank matrix A and replicate the input into matrix B</li>
-<li>Let C be the subtraction of A with the plaintext constant matrix</li>
-<li>Find the index of the C and multiply the index with B</li>
-<li>Sum the product of C and B and transpose to finish the sort</li>
-</ol>
+<p>To sort a vector of degree n, we need the following:</p>
+<ul>
+<li><p>A matrix of replicated rows of our input</p></li>
+<li><p>A matrix of replicated rank row vectors (Matrix A)</p></li>
+<li><p>A plain text constant matrix with all elements in each row being one singular number from 1 to n (Matrix B)</p></li>
+</ul>
+<p>First, we need to subtract matrix A with matrix B and use the indicator function to set all elements that are 0 to value 1 with rest being 0. Then we will take the product of our replicated matrix and the indicator matrix and sum the columns. By transposing our final matrix, we will then end with a sorted row vector.</p>
 </section>
 <section id="ties" class="level3" data-number="20.0.5">
 <h3 data-number="20.0.5" class="anchored" data-anchor-id="ties"><span class="header-section-number">20.0.5</span> Ties</h3>
 <p>When a given vector includes non distinct elements, we will have to perform a tie correction.</p>
-<p>To do so, we will first create an equality matrix by comparing the replicated matrix and it’s transpose outputting 1 if the index is equal and 0 else.</p>
-<p>Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements.</p>
-<p>Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).</p>
+<p>To do so, we will first create an equality matrix by comparing the replicated matrix and it’s transpose outputting 1 if the index is equal and 0 else. Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements. Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).</p>
 <p>Lastly, compute the difference between M1 and M2 to output the offset vector of values 0 and 1 with 1 being the value of the tie.</p>
 <p>For example, if we add this offset vector to the original rank method we should go from 1,2,2,4 to 1,3,2,4 or 1,2,3,4.</p>
 <p><strong>EXPLAIN LARGER SCALE SCENARIOS (a group of people each send their own vector and want the overall spot each input they send is in the overall)</strong></p>
