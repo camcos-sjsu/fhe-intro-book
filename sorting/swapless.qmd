@@ -11,25 +11,25 @@ With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting 
 
 To understand the process of the rank-based sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:
 
-- CMP (Comparison)
+-   CMP (Comparison)
 
-- IND (Index)
+-   IND (Indicator)
 
-- SUM
+-   SUM
 
-- REPL (Replicate)
+-   REPL (Replicate)
 
-- TRANS (Transpose)
+-   TRANS (Transpose)
 
-- RANK
+-   RANK
 
-- EQ (Equality)
+-   EQ (Equality)
 
 ### Assumption
 
 Before conducting the sort, we need to take care of one main assumption.
 
-- All elements in the vector are distinct, unless we consider tie corrections
+-   All elements in the vector are distinct, unless we consider tie corrections
 
 ### Rank
 
@@ -43,22 +43,21 @@ Then, we need to compare the replicated matrix with its transpose. To do so, we 
 
 (add a visual of a simplified example or use the one in the document and cite)
 
-Order of operations for sort:
+To sort a vector of degree n, we need the following:
 
-1.  Create rank matrix A and replicate the input into matrix B
-2.  Let C be the subtraction of A with the plaintext constant matrix
-3.  Find the index of the C and multiply the index with B
-4.  Sum the product of C and B and transpose to finish the sort
+-   A matrix of replicated rows of our input
+
+-   A matrix of replicated rank row vectors (Matrix A)
+
+-   A plain text constant matrix with all elements in each row being one singular number from 1 to n (Matrix B)
+
+First, we need to subtract matrix A with matrix B and use the indicator function to set all elements that are 0 to value 1 with rest being 0. Then we will take the product of our replicated matrix and the indicator matrix and sum the columns. By transposing our final matrix, we will then end with a sorted row vector.
 
 ### Ties
 
 When a given vector includes non distinct elements, we will have to perform a tie correction.
 
-To do so, we will first create an equality matrix by comparing the replicated matrix and it's transpose outputting 1 if the index is equal and 0 else.
-
-Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements.
-
-Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).
+To do so, we will first create an equality matrix by comparing the replicated matrix and it's transpose outputting 1 if the index is equal and 0 else. Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements. Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).
 
 Lastly, compute the difference between M1 and M2 to output the offset vector of values 0 and 1 with 1 being the value of the tie.
 
