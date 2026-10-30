@@ -26,7 +26,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -609,26 +628,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../discrete-model/roots-of-unity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Roots of Unity</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../discrete-model/index-one-hot.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Index To One-Hot</span></span></a>
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Index To One-Hot</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/discrete-sign-and-notes-on-sorting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Discrete sign and notes on sorting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Discrete sign and notes on sorting</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">38</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
       </ul>
@@ -660,9 +673,12 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#example-n4" id="toc-example-n4" class="nav-link active" data-scroll-target="#example-n4"><span class="header-section-number">31.0.1</span> Example: $n=4$</a></li>
-  <li><a href="#comparing-two-methods" id="toc-comparing-two-methods" class="nav-link" data-scroll-target="#comparing-two-methods"><span class="header-section-number">31.0.2</span> Comparing two methods</a></li>
-  <li><a href="#exploiting-symmetry" id="toc-exploiting-symmetry" class="nav-link" data-scroll-target="#exploiting-symmetry"><span class="header-section-number">31.0.3</span> Exploiting Symmetry</a></li>
+  <li><a href="#multivariable-interpolation" id="toc-multivariable-interpolation" class="nav-link active" data-scroll-target="#multivariable-interpolation"><span class="header-section-number">31.0.1</span> Multivariable Interpolation</a></li>
+  <li><a href="#example-n4" id="toc-example-n4" class="nav-link" data-scroll-target="#example-n4"><span class="header-section-number">31.0.2</span> Example: <span class="math inline">\(n=4\)</span></a></li>
+  <li><a href="#combining-inputs" id="toc-combining-inputs" class="nav-link" data-scroll-target="#combining-inputs"><span class="header-section-number">31.0.3</span> Combining Inputs</a></li>
+  <li><a href="#exploiting-symmetry" id="toc-exploiting-symmetry" class="nav-link" data-scroll-target="#exploiting-symmetry"><span class="header-section-number">31.0.4</span> Exploiting Symmetry</a></li>
+  <li><a href="#example-modular-multiplication-for-n-4" id="toc-example-modular-multiplication-for-n-4" class="nav-link" data-scroll-target="#example-modular-multiplication-for-n-4"><span class="header-section-number">31.0.5</span> Example: Modular Multiplication for n = 4</a></li>
+  <li><a href="#comparing-two-methods" id="toc-comparing-two-methods" class="nav-link" data-scroll-target="#comparing-two-methods"><span class="header-section-number">31.0.6</span> Comparing two methods</a></li>
   </ul>
 </nav>
     </div>
@@ -689,26 +705,27 @@ window.Quarto = {
 </header>
 
 
-<p>Suppose that you want to perform an operation <span class="math inline">\(f(a,b)\)</span>. Recall that <span class="math inline">\(a,b \in \{0,...,n-1\}\)</span> and that <span class="math inline">\(a,b\)</span> are stored as roots of unity <span class="math inline">\(\zeta^a, \zeta^b\)</span>. The desired output may be a value in either root of unity form or as a regular encoded value.</p>
+<p>Suppose that you want to perform an operation <span class="math inline">\(f(a,b)\)</span>. Recall that <span class="math inline">\(a,b \in \{0,...,n-1\}\)</span> and that <span class="math inline">\(a,b\)</span> are stored as roots of unity <span class="math inline">\(\zeta^a, \zeta^b\)</span> where <span class="math inline">\(\zeta = e^{2\pi i/n}\)</span>. The desired output may be a value in either root of unity form or as a regular encoded value.</p>
 <p>Since there are finitely many possible inputs, we could calculate every possible value of <span class="math inline">\(f(a,b)\)</span> beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.</p>
 <p>This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more.</p>
 <p>One approach is to interpolate a polynomial that gives the desired output at every possible input. Evaluating this polynomial on the encrypted inputs then performs the lookup. The table and polynomial coefficients can be public while the inputs and resulting output remain encrypted.</p>
-<p>Chung, Kim, Kim, and Lee use this approach with inputs encoded as roots of unity. Suppose there are <span class="math inline">\(n\)</span> possible values. For a lookup table <span class="math inline">\(T\)</span> with one input, we construct a polynomial satisfying <span class="math display">\[
+<p>Chung, Kim, Kim, and Lee <span class="citation" data-cites="chung2024">(<a href="../references.html#ref-chung2024" role="doc-biblioref">Chung et al. 2024</a>)</span> use this approach with inputs encoded as roots of unity. Suppose there are <span class="math inline">\(n\)</span> possible values. For a lookup table <span class="math inline">\(T\)</span> with one input, we construct a polynomial satisfying <span class="math display">\[
 f(\zeta^a)=\zeta^{T(a)}.
 \]</span> There are <span class="math inline">\(n\)</span> interpolation points, so the polynomial has at most degree <span class="math inline">\(n-1\)</span>.</p>
-<p>For operations with multiple inputs, they use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying <span class="math display">\[
+<p>For operations with multiple inputs, we will consider two approaches. First, we will consider the approach which interpolates a polynomial in multiple variables while keeping inputs separate. Then, we will consider the approach which combines inputs into a single value and interpolates a single variable polynomial.</p>
+<section id="multivariable-interpolation" class="level3" data-number="31.0.1">
+<h3 data-number="31.0.1" class="anchored" data-anchor-id="multivariable-interpolation"><span class="header-section-number">31.0.1</span> Multivariable Interpolation</h3>
+<p>Chung, Kim, Kim, and Lee <span class="citation" data-cites="chung2024">(<a href="../references.html#ref-chung2024" role="doc-biblioref">Chung et al. 2024</a>)</span> use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying <span class="math display">\[
 f(\zeta^a,\zeta^b)=\zeta^{ab}.
 \]</span></p>
-<p>Instead of combining two inputs into a single value, Chung, Kim, Kim, and Lee construct a polynomial in two variables. Suppose each input belongs to the group <span class="math display">\[
-C=\{1,\zeta,\ldots,\zeta^{n-1}\},
-\]</span> where <span class="math inline">\(\zeta\)</span> is a primitive <span class="math inline">\(n\)</span>-th root of unity. Let <span class="math inline">\(d_{ab}\)</span> be the desired encoded output for the input pair <span class="math inline">\((\zeta^a,\zeta^b)\)</span>. We want a polynomial satisfying <span class="math display">\[
+<p>Instead of combining two inputs into a single value, Chung, Kim, Kim, and Lee construct a polynomial in two variables. Suppose each input is an <span class="math inline">\(n\)</span>-th root of unity. Let <span class="math inline">\(d_{ab}\)</span> be the desired encoded output for the input pair <span class="math inline">\((\zeta^a,\zeta^b)\)</span>. We want a polynomial satisfying <span class="math display">\[
 f(\zeta^a,\zeta^b)=d_{ab}
 \]</span> for every possible pair of inputs.</p>
-<section id="example-n4" class="level3" data-number="31.0.1">
-<h3 data-number="31.0.1" class="anchored" data-anchor-id="example-n4"><span class="header-section-number">31.0.1</span> Example: $n=4$</h3>
-<p>Let <span class="math inline">\(\zeta=e^{-2\pi i/4}=-i\)</span>. Each input belongs to <span class="math display">\[
-C=\{1,\zeta,\zeta^2,\zeta^3\}.
-\]</span> The lookup table has sixteen entries: <span class="math display">\[
+</section>
+<section id="example-n4" class="level3" data-number="31.0.2">
+<h3 data-number="31.0.2" class="anchored" data-anchor-id="example-n4"><span class="header-section-number">31.0.2</span> Example: <span class="math inline">\(n=4\)</span></h3>
+<p>Each input is a fourth root of unity.</p>
+<p>The lookup table has sixteen entries: <span class="math display">\[
 \begin{array}{c|cccc}
 &amp; v=1 &amp; v=\zeta &amp; v=\zeta^2 &amp; v=\zeta^3\\
 \hline
@@ -761,12 +778,20 @@ d_{ab}L_a(u)L_b(v).
 <p>Each Lagrange polynomial has degree three, so <span class="math inline">\(f\)</span> has degree at most three in each variable. After expanding, it has the form <span class="math display">\[
 f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
 \]</span> There are sixteen coefficients, but the total degree is at most six, coming from the term <span class="math inline">\(u^3v^3\)</span>.</p>
+</section>
+<section id="combining-inputs" class="level3" data-number="31.0.3">
+<h3 data-number="31.0.3" class="anchored" data-anchor-id="combining-inputs"><span class="header-section-number">31.0.3</span> Combining Inputs</h3>
 <p>Alternatively, we could encode a pair of elements as a single value, and then interpolate a polynomial in one variable. We can do all of this publicly beforehand, so only evaluating the polynomial needs to happen in an encrypted setting.</p>
 <p>We might consider something like</p>
 <p><span class="math display">\[
 t(w,z)=nw+z.
 \]</span></p>
-<p>This distinguishes every ordered pair of <span class="math inline">\(n\)</span>th roots of unity. However, it does not use the symmetry of the table, because <span class="math inline">\(t(w,z)\neq t(z,w)\)</span> when <span class="math inline">\(w\neq z\)</span>. Ideally, they would be equal so that we can use fewer interpolation points and get a lower degree.</p>
+<p>This distinguishes every ordered pair of <span class="math inline">\(n\)</span>th roots of unity, and gives <span class="math inline">\(n^2\)</span> points to interpolate on. Thus, the lookup table may be represented as polynomial of degree at most <span class="math inline">\(n^2-1\)</span>. Although the polynomial is higher degree, this method has a particular advantage with symmetric functions.</p>
+</section>
+<section id="exploiting-symmetry" class="level3" data-number="31.0.4">
+<h3 data-number="31.0.4" class="anchored" data-anchor-id="exploiting-symmetry"><span class="header-section-number">31.0.4</span> Exploiting Symmetry</h3>
+<p>Consider the case of modular multiplication. This operation is symmetric. That is, <span class="math inline">\(f(a,b) = f(b,a)\)</span>. It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.</p>
+<p>The current construction does not use the symmetry of the table, because <span class="math inline">\(t(w,z)\neq t(z,w)\)</span> when <span class="math inline">\(w\neq z\)</span>. Ideally, they would be equal so that we can use fewer interpolation points and get a lower degree.</p>
 <p>So, we want to create a function <span class="math inline">\(t(w,z)\)</span> such that <span class="math inline">\(t(w,z)=t(u,v)\)</span> if and only if</p>
 <p><span class="math display">\[
 (u,v)=(w,z)\quad\text{or}\quad(u,v)=(z,w).
@@ -792,12 +817,12 @@ c=\frac{u+v-w-z}{wz-uv}.
 <p>Since there are only finitely many pairs, there are only finitely many values of <span class="math inline">\(c\)</span> to avoid. So we can choose a <span class="math inline">\(c\)</span> that works.</p>
 <p>Then, we interpolate a polynomial <span class="math inline">\(q\)</span> such that</p>
 <p><span class="math display">\[
-q\bigl(t(\xi^a,\xi^b)\bigr)=\xi^{ab}.
+q\bigl(t(\zeta^a,\zeta^b)\bigr)=\zeta^{ab}.
 \]</span></p>
 <p>Now we only need one interpolation point for each unordered pair. This gives us <span class="math inline">\(n(n+1)/2\)</span> points instead of <span class="math inline">\(n^2\)</span>, and therefore a degree bound of <span class="math inline">\(n(n+1)/2-1\)</span> instead of <span class="math inline">\(n^2-1\)</span>.</p>
-<p>For example, let <span class="math inline">\(n=3\)</span> and let <span class="math inline">\(\xi=e^{2\pi i/3}\)</span>. Then</p>
+<p>For example, let <span class="math inline">\(n=3\)</span> and let <span class="math inline">\(\zeta=e^{2\pi i/3}\)</span>. Then</p>
 <p><span class="math display">\[
-\xi^3=1
+\zeta^3=1
 \]</span></p>
 <p>In this case, we can choose <span class="math inline">\(c=1\)</span>, giving</p>
 <p><span class="math display">\[
@@ -806,17 +831,17 @@ t(w,z)=w+z+wz.
 <p>We only need to consider the following six unordered pairs:</p>
 <p><span class="math display">\[
 \begin{array}{c|c|c}
-(w,z) &amp; t(w,z) &amp; \text{Desired output } \xi^{ab} \\
+(w,z) &amp; t(w,z) &amp; \text{Desired output } \zeta^{ab} \\
 \hline
 (1,1)         &amp; 3          &amp; 1 \\
-(1,\xi)       &amp; 1+2\xi     &amp; 1 \\
-(1,\xi^2)     &amp; 1+2\xi^2   &amp; 1 \\
-(\xi,\xi)     &amp; 2\xi+\xi^2      &amp; \xi \\
-(\xi,\xi^2)   &amp; \xi^2 +\xi + 1          &amp; \xi^2 \\
-(\xi^2,\xi^2) &amp; 2\xi^2+\xi    &amp; \xi\\
-(\xi^2,1)     &amp; 1+2\xi^2   &amp; 1 \\
-(\xi^2,\xi)   &amp; \xi^2+\xi+1  &amp; \xi^2 \\
-(\xi^2,\xi^2)     &amp; 2\xi^2 + \xi   &amp; \xi \\
+(1,\xi)       &amp; 1+2\zeta     &amp; 1 \\
+(1,\xi^2)     &amp; 1+2\zeta^2   &amp; 1 \\
+(\xi,\xi)     &amp; 2\zeta+\zeta^2      &amp; \zeta \\
+(\xi,\xi^2)   &amp; \zeta^2 +\zeta + 1          &amp; \zeta^2 \\
+(\xi^2,\xi^2) &amp; 2\zeta^2+\zeta    &amp; \zeta\\
+(\xi^2,1)     &amp; 1+2\zeta^2   &amp; 1 \\
+(\xi^2,\xi)   &amp; \zeta^2+\zeta+1  &amp; \zeta^2 \\
+(\xi^2,\xi^2)     &amp; 2\zeta^2 + \zeta   &amp; \zeta \\
 \end{array}
 \]</span></p>
 <p>There are six values in the middle column which are distinct, so we can interpolate a polynomial <span class="math inline">\(q\)</span> of degree at most <span class="math inline">\(5\)</span> with these inputs and outputs. We also notice that values which aren’t distinct have corresponding flipped <span class="math inline">\(w\)</span> and <span class="math inline">\(z\)</span> values.</p>
@@ -824,7 +849,7 @@ t(w,z)=w+z+wz.
 <p><span class="math display">\[
 (t_0,t_1,t_2,t_3,t_4,t_5)
 =
-(3,1+2\xi,1+2\xi^2,\xi-1,0,\xi^2-1).
+(3,1+2\zeta,1+2\zeta^2,\zeta-1,0,\zeta^2-1).
 \]</span></p>
 <p>Let</p>
 <p><span class="math display">\[
@@ -835,33 +860,16 @@ L_j(T)=
 <p>Then our polynomial is</p>
 <p><span class="math display">\[
 q(T)=L_0(T)+L_1(T)+L_2(T)
-+\xi L_3(T)+\xi^2L_4(T)+\xi L_5(T).
++\zeta L_3(T)+\zeta^2L_4(T)+\zeta L_5(T).
 \]</span></p>
 <p>Thus, for any <span class="math inline">\(a,b\in\{0,1,2\}\)</span>,</p>
 <p><span class="math display">\[
-q\left(\xi^a+\xi^b+\xi^{a+b}\right)=\xi^{ab}.
+q\left(\zeta^a+\zeta^b+\zeta^{a+b}\right)=\zeta^{ab}.
 \]</span></p>
 <p>We can construct <span class="math inline">\(q\)</span> publicly beforehand. Given encrypted inputs <span class="math inline">\(w\)</span> and <span class="math inline">\(z\)</span>, we would then evaluate <span class="math inline">\(q(w+z+wz)\)</span>.</p>
 </section>
-<section id="comparing-two-methods" class="level3" data-number="31.0.2">
-<h3 data-number="31.0.2" class="anchored" data-anchor-id="comparing-two-methods"><span class="header-section-number">31.0.2</span> Comparing two methods</h3>
-<p>For <span class="math inline">\(n=4\)</span>, we can compare the number of multiplications needed to evaluate each polynomial.</p>
-<p>For our method, calculating <span class="math inline">\(t=u+v+cuv\)</span> takes one multiplication. Then, calculating <span class="math inline">\(t^2,\ldots,t^9\)</span> takes eight more.</p>
-<p>For their method, calculating <span class="math inline">\(u^2,u^3,v^2,v^3\)</span> takes four multiplications. There are also nine mixed terms <span class="math inline">\(u^iv^j\)</span> with <span class="math inline">\(i,j\in\{1,2,3\}\)</span>, giving thirteen multiplications altogether.</p>
-<p>However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate <span class="math inline">\(t\)</span>, and four more to get all powers through <span class="math inline">\(t^9\)</span>. Their method needs only three layers: two to obtain powers through <span class="math inline">\(u^3\)</span> and <span class="math inline">\(v^3\)</span>, and one more for the mixed terms.</p>
-<p>Thus, <span class="math display">\[
-\begin{array}{c|cc}
-&amp; \text{Our method} &amp; \text{Their method}\\
-\hline
-\text{Encrypted multiplications} &amp; 9 &amp; 13\\
-\text{Multiplication depth} &amp; 5 &amp; 3
-\end{array}
-\]</span></p>
-<p>Our method uses fewer multiplications, while theirs has less depth.</p>
-</section>
-<section id="exploiting-symmetry" class="level3" data-number="31.0.3">
-<h3 data-number="31.0.3" class="anchored" data-anchor-id="exploiting-symmetry"><span class="header-section-number">31.0.3</span> Exploiting Symmetry</h3>
-<p>Consider the case of modular multiplication. This operation is symmetric. That is, <span class="math inline">\(a*b = b*a\)</span>. It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.</p>
+<section id="example-modular-multiplication-for-n-4" class="level3" data-number="31.0.5">
+<h3 data-number="31.0.5" class="anchored" data-anchor-id="example-modular-multiplication-for-n-4"><span class="header-section-number">31.0.5</span> Example: Modular Multiplication for n = 4</h3>
 <p>Below are the two methods of polynomial interpolation on the multiplication table with <span class="math inline">\(n = 4\)</span>.</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -892,11 +900,29 @@ Q(t)=1+\frac{1}{7072000}\bigl[&amp;
 \bigr].
 \end{aligned}
 \]</span></p>
-<p><span class="math display">\[
-Q\bigl(i^a+i^b+2i^{a+b}\bigr)=i^{ab}.
+</section>
+<section id="comparing-two-methods" class="level3" data-number="31.0.6">
+<h3 data-number="31.0.6" class="anchored" data-anchor-id="comparing-two-methods"><span class="header-section-number">31.0.6</span> Comparing two methods</h3>
+<p>For <span class="math inline">\(n=4\)</span>, we can compare the number of multiplications needed to evaluate each polynomial.</p>
+<p>For our method, calculating <span class="math inline">\(t=u+v+cuv\)</span> takes one multiplication. Then, calculating <span class="math inline">\(t^2,\ldots,t^9\)</span> takes eight more.</p>
+<p>For their method, calculating <span class="math inline">\(u^2,u^3,v^2,v^3\)</span> takes four multiplications. There are also nine mixed terms <span class="math inline">\(u^iv^j\)</span> with <span class="math inline">\(i,j\in\{1,2,3\}\)</span>, giving thirteen multiplications altogether.</p>
+<p>However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate <span class="math inline">\(t\)</span>, and four more to get all powers through <span class="math inline">\(t^9\)</span>. Their method needs only three layers: two to obtain powers through <span class="math inline">\(u^3\)</span> and <span class="math inline">\(v^3\)</span>, and one more for the mixed terms.</p>
+<p>Thus, <span class="math display">\[
+\begin{array}{c|cc}
+&amp; \text{Our method} &amp; \text{Their method}\\
+\hline
+\text{Encrypted multiplications} &amp; 9 &amp; 13\\
+\text{Multiplication depth} &amp; 5 &amp; 3
+\end{array}
 \]</span></p>
+<p>Our method uses fewer multiplications, while theirs has less depth.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-chung2024" class="csl-entry" role="listitem">
+Chung, Heewon, Hyojun Kim, Young-Sik Kim, and Yongwoo Lee. 2024. <em>Amortized Large Look-up Table Evaluation with Multivariate Polynomials for Homomorphic Encryption</em>. Cryptology ePrint Archive, Paper 2024/274. <a href="https://eprint.iacr.org/2024/274">https://eprint.iacr.org/2024/274</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
