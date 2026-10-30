@@ -24,6 +24,10 @@ The one catch with Newton's method is that in order to be effective, it has to i
 
 ### Guessing a Starting Point
 
+::: {.callout-tip icon="false" title="**Regarding Fixed-Point**"}
+Newton's method is a special case of the more general fixed-point method where we approximate $f(x)$ with some function $g(x)$. In the case of Newton's method, $g(x)=\frac{f'(x)}{x}$. When doing numerical analysis on unencrypted data, a common technique is to use some other $g(x)$ for the first (few) iteration(s) to ensure a good starting point for Newton's method. However, (i) we do not know anything about the data so as to model a function from it, and (ii) our best guess would be $g(x)=\frac{1}{x}$, which is what we are looking for in the first place and do not have a priori.
+:::
+
 Naively, one (impossible) approach would be to make some different buckets of $n$ based on powers of $2$:
 
 |    n     | $ct_{2^n}$ | $ct_{2^{-n}}$ |
