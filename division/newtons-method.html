@@ -714,6 +714,19 @@ window.Quarto = {
 <p>The one catch with Newton’s method is that in order to be effective, it has to initially guess reasonably close to the root.</p>
 <section id="guessing-a-starting-point" class="level3" data-number="10.0.1">
 <h3 data-number="10.0.1" class="anchored" data-anchor-id="guessing-a-starting-point"><span class="header-section-number">10.0.1</span> Guessing a Starting Point</h3>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="**Regarding Fixed-Point**">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span><strong>Regarding Fixed-Point</strong>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Newton’s method is a special case of the more general fixed-point method where we approximate <span class="math inline">\(f(x)\)</span> with some function <span class="math inline">\(g(x)\)</span>. In the case of Newton’s method, <span class="math inline">\(g(x)=\frac{f'(x)}{x}\)</span>. When doing numerical analysis on unencrypted data, a common technique is to use some other <span class="math inline">\(g(x)\)</span> for the first (few) iteration(s) to ensure a good starting point for Newton’s method. However, (i) we do not know anything about the data so as to model a function from it, and (ii) our best guess would be <span class="math inline">\(g(x)=\frac{1}{x}\)</span>, which is what we are looking for in the first place and do not have a priori.</p>
+</div>
+</div>
 <p>Naively, one (impossible) approach would be to make some different buckets of <span class="math inline">\(n\)</span> based on powers of <span class="math inline">\(2\)</span>:</p>
 <table class="caption-top table">
 <thead>
