@@ -7,8 +7,10 @@ book:
   date: "September 28, 2026"
   chapters:
     - index.qmd
-    - intro.qmd
-    - setup.qmd
+    - part: "Preface"
+      chapters:
+      - intro.qmd
+      - setup.qmd
     - part: general/intro.qmd
       chapters:
         - general/level-precision.qmd
@@ -29,12 +31,6 @@ book:
         - sign/logistic.qmd
         - sign/tanh.qmd
         - sign/applicability.qmd
-    - part: sorting/intro.qmd
-      chapters:
-        - sorting/bubble.qmd
-        - sorting/improvements.qmd
-        - sorting/max.qmd
-        - sorting/swapless.qmd
     - part: difference-matrix/intro.qmd
       chapters:
         - difference-matrix/mode.qmd
@@ -43,13 +39,13 @@ book:
       chapters:
         - correlation-related/two-coeff.qmd
         - correlation-related/linear-regression.qmd
-    - part: other/intro.qmd
+    - part: sorting/intro.qmd
       chapters:
-        - other/matrix-multiplication.qmd
-        - other/shannon-entropy.qmd
-        - other/adaptive-division.qmd
-        - other/logarithm-revisited.qmd
-    - lit-review.qmd
+        - sorting/bubble.qmd
+        - sorting/improvements.qmd
+        - sorting/max.qmd
+        - sorting/swapless.qmd
+  #  - lit-review.qmd
     - part: discrete-model/intro.qmd
       chapters:
         - discrete-model/roots-of-unity.qmd
@@ -60,6 +56,12 @@ book:
         - discrete-model/index-one-hot.qmd
         - discrete-model/discrete-sign-and-notes-on-sorting.qmd
         - discrete-model/summary.qmd
+    - part: other/intro.qmd
+      chapters:
+        - other/matrix-multiplication.qmd
+        - other/shannon-entropy.qmd
+        - other/adaptive-division.qmd
+        - other/logarithm-revisited.qmd
         
 
   appendices:
