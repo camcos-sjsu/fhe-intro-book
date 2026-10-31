@@ -1,0 +1,33 @@
+# Boolean Algebra
+
+(Placeholder. Connects to both general functions and discrete model, so placement unclear.) 
+
+In conventional computing, calculations are assumed to be done in binary under the hood. As such, it may seem natural to be able to do binary operations. This is not necessarily the case. 
+
+(If with discrete model section: Given the change in paradigm, this is an opportune time to revisit some general functions.)
+
+(We may also discuss consequences of doing these operations on data that is not only binary.)
+
+## Left and Right Shift
+
+Let k be the desired number of shifts. Create a masking vector with 1s in the $k$ elements from the end shifted away from (on the right side for a left shift, and vice versa). Cycle your target vector by $k$, then multiply your target vector with the masking vector. 
+$c = (0_0, /dots 0_{n-k-1}, 1_{},1_{n})$
+
+What happens with an overshift?
+This can depend on implementation. One solution may be to throw an error, while another would be to zero out the target vector for any $k\geq n$. 
+
+## Modular Reduction
+When using complex numbers, as with division, this is non-trivial. 
+(Look at research paper.)
+Some of the following functions may assume that we are either able to do modular reduction or we are strictly operating on binary values. It will be noted when this is the case.  
+
+## NOT
+
+## AND
+
+## OR
+
+## XOR
+Boolean XOR can be expressed as $a+b-2ab$ or $(a-b)^2$, all of which are basic moves. No modular reduction is needed in computation, but we must assume we are receiving valid input. For maximum efficiency of an intravector XOR, use a similar technique as with intravector addition. 
+
+## Viable Branching "Good IF"
