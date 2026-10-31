@@ -1,0 +1,51 @@
+<!-- ADDED -->
+## FHE Hiring and Salary Matching
+
+Job applications collect names, contact details, work histories and, increasingly, conversations with automated screening chatbots. In 2025 security researchers Ian Carroll and Sam Curry found that the administrator interface of McHire, the hiring platform McDonald's uses (built by Paradox.ai), accepted the default username and password "123456" on a test account, and that an API flaw let them read other applicants' chat records by changing an ID number. By their estimate, up to 64 million applicant records were reachable.[^1] Paradox stated that only seven records were actually viewed, five of them containing personal information, and that the issue was fixed by July 1, 2025.[^2]
+
+[^1]: https://ian.sh/mcdonalds
+
+[^2]: https://hackread.com/mcdonalds-mchire-vulnerability-job-seekers-data-leak/
+
+Hiring platforms also see information applicants would rather keep to themselves until it matters, salary expectations above all. Salary negotiation is a textbook comparison problem, which makes it a good showcase for the sign function.
+
+As elsewhere in the book, a ciphertext holds $N/2 = 2^{15} = 32{,}768$ slots and $\mathtt{sign}(x)$ is the $0$/$1$ step function from the Sign Function part, which we can only approximate by a polynomial. By the **depth** of a computation we mean the longest chain of ciphertext–ciphertext multiplications in it (each one costs a level, see *Levels, Precision, and Time*); multiplications by plaintext constants are not counted. A polynomial of degree $d$ has depth $\lceil \log_2 d \rceil$, so the degree-9 sign polynomial from the Hyperbolic Tangent chapter has depth $4$.
+
+### Situation 1: Do Our Salary Ranges Overlap?
+
+Alice will not accept less than $a$; the employer will not pay more than $b$. Both want to learn only whether a deal is possible, $b \ge a$, without revealing their numbers. This is Yao's *millionaires' problem*, the example Yao used to introduce secure two-party computation.[^3]
+
+[^3]: https://doi.org/10.1109/SFCS.1982.38
+
+Measure salaries in thousands of dollars, so that $a$ and $b$ are integers in $[0, 1000]$, well within our bound. With
+$$
+\mathsf{ct}_A = \mathsf{enc}(a, 0, \dots, 0), \qquad \mathsf{ct}_B = \mathsf{enc}(b, 0, \dots, 0),
+$$
+the server computes
+$$
+\mathtt{sign}\left(\frac{b - a + 0.5}{1000}\right),
+$$
+where the $+0.5$ makes the tie $b = a$ count as an overlap and keeps the input at least $0.5/1000$ away from $0$. To resolve gaps of $1/2000$ on an interval of length about $2$, the sign approximation needs roughly 12 bits of precision, far more than the degree-9 polynomial delivers; we need the stronger approximations listed under Related Literature. Depth: $\text{depth}(\mathtt{sign})$.
+
+What should the platform reveal *after* an overlap? Proposing the midpoint $m = (a + b)/2$ is a single addition and a plaintext multiplication, but it is a leak: Alice knows $a$, so from $m$ she learns $b = 2m - a$ exactly. Any revealed function of both inputs must be checked this way. (Multiplying $m$ by the overlap bit, so that nothing is revealed when there is no overlap, costs one more level but does not fix this leak.)
+
+### Situation 2: Screening Many Postings at Once
+
+Alice wants to see only postings that pay at least $a$ and whose required experience $r_j$ is at most her $e$ years, without the platform learning $a$ or $e$. Pack the postings into slots and repeat Alice's values in every slot:
+$$
+\mathsf{ct}_{b} = \mathsf{enc}(b_1, \dots, b_{N/2}), \quad \mathsf{ct}_{r} = \mathsf{enc}(r_1, \dots, r_{N/2}), \quad \mathsf{ct}_{a} = \mathsf{enc}(a, \dots, a), \quad \mathsf{ct}_{e} = \mathsf{enc}(e, \dots, e).
+$$
+Then
+$$
+\text{match}_j = \mathtt{sign}(b_j - a + 0.5) \cdot \mathtt{sign}(e - r_j + 0.5)
+$$
+(each argument scaled into the approximation's interval) is computed for all postings in parallel. More conditions multiply in the same way, for example the distance test from Situation 1 of the FHE Dating chapter, applied to commute distance. With $k$ conditions the depth is $\text{depth}(\mathtt{sign}) + \lceil \log_2 k \rceil$. If there are at most $N/(2k)$ postings, we can even put the $k$ differences in $k$ separate blocks of one ciphertext, evaluate $\mathtt{sign}$ once, and use cycles to line the blocks up before multiplying. Only Alice decrypts the $0$/$1$ vector of matches.
+
+### Related Literature
+
+- **Protocols for secure computations (1982)**: <https://doi.org/10.1109/SFCS.1982.38>
+- **Efficient Homomorphic Comparison Methods with Optimal Complexity (2020)**: <https://eprint.iacr.org/2019/1234>
+- **Minimax Approximation of Sign Function by Composite Polynomial for Homomorphic Comparison (2021)**: <https://eprint.iacr.org/2020/834>
+- **User-centric Distributed Solutions for Privacy-preserving Analytics (2017)**: <https://core.ac.uk/download/215923794.pdf>
+
+<!-- /ADDED -->
