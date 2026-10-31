@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>20&nbsp; Rank Based Sorting – fhe-intro-book</title>
+<title>24&nbsp; Rank Based Sorting – fhe-intro-book</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../difference-matrix/intro.html" rel="next">
+<link href="../discrete-model/intro.html" rel="next">
 <link href="../sorting/max.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -254,7 +254,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -288,27 +288,38 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Cover / Title Page</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../setup.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../general/intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">General Functions</span></a>
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Preface</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Setup</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../general/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">General Functions</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../general/level-precision.html" class="sidebar-item-text sidebar-link">
@@ -351,11 +362,11 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../division/intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Division</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../division/geometric-series.html" class="sidebar-item-text sidebar-link">
@@ -386,11 +397,11 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../sign/discrete-math.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Discrete Math</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sign/intro.html" class="sidebar-item-text sidebar-link">
@@ -419,41 +430,6 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../sorting/intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Sorting</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../sorting/bubble.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Bubble Sort</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../sorting/improvements.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../sorting/max.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Max Function</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../sorting/swapless.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
             <a href="../difference-matrix/intro.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Difference Matrix Method</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
@@ -464,13 +440,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../difference-matrix/mode.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Mode</span></span></a>
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Mode</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../difference-matrix/median.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Median</span></span></a>
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Median</span></span></a>
   </div>
 </li>
       </ul>
@@ -487,21 +463,21 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../correlation-related/two-coeff.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Two Coefficients</span></span></a>
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Two Coefficients</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../correlation-related/linear-regression.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Linear Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Linear Regression</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../other/intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Other Explorations</span></a>
+            <a href="../sorting/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sorting</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -509,36 +485,30 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../other/matrix-multiplication.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Dot Products and Matrix Multiplication</span></span></a>
+  <a href="../sorting/bubble.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Bubble Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../other/shannon-entropy.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Shannon Entropy</span></span></a>
+  <a href="../sorting/improvements.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../other/adaptive-division.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">“Adaptive” Division</span></span></a>
+  <a href="../sorting/max.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Max Function</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../other/logarithm-revisited.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">Logarithm (Revisited)</span></span></a>
+  <a href="../sorting/swapless.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../lit-review.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">lit-review.html</span></span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="../discrete-model/intro.html" class="sidebar-item-text sidebar-link">
@@ -551,62 +521,97 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/roots-of-unity.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Roots of Unity</span></span></a>
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Roots of Unity</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/lookup-tables.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Lookup Tables</span></span></a>
+ <span class="menu-text"><span class="chapter-number">26</span>&nbsp; <span class="chapter-title">Lookup Tables</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/modular-operations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Modular Operations</span></span></a>
+ <span class="menu-text"><span class="chapter-number">27</span>&nbsp; <span class="chapter-title">Modular Operations</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/binary-approach.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">A Binary Approach to Inequality and Sorting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">28</span>&nbsp; <span class="chapter-title">A Binary Approach to Inequality and Sorting</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/extended-binary-expansion.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Comparison and Extended Binary Numbers</span></span></a>
+ <span class="menu-text"><span class="chapter-number">29</span>&nbsp; <span class="chapter-title">Comparison and Extended Binary Numbers</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/index-one-hot.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">Index To One-Hot</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Index To One-Hot</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/discrete-sign-and-notes-on-sorting.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Discrete sign and notes on sorting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">31</span>&nbsp; <span class="chapter-title">Discrete sign and notes on sorting</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../discrete-model/summary.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+ <span class="menu-text"><span class="chapter-number">32</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
- <span class="menu-text">Appendices</span></a>
+            <a href="../other/intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Other Explorations</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../other/matrix-multiplication.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">33</span>&nbsp; <span class="chapter-title">Dot Products and Matrix Multiplication</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../other/shannon-entropy.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">34</span>&nbsp; <span class="chapter-title">Shannon Entropy</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../other/adaptive-division.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">35</span>&nbsp; <span class="chapter-title">“Adaptive” Division</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../other/logarithm-revisited.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">36</span>&nbsp; <span class="chapter-title">Logarithm (Revisited)</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-10" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-10" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../references.html" class="sidebar-item-text sidebar-link">
@@ -625,11 +630,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods"><span class="header-section-number">20.0.1</span> Methods</a></li>
-  <li><a href="#assumption" id="toc-assumption" class="nav-link" data-scroll-target="#assumption"><span class="header-section-number">20.0.2</span> Assumption</a></li>
-  <li><a href="#rank" id="toc-rank" class="nav-link" data-scroll-target="#rank"><span class="header-section-number">20.0.3</span> Rank</a></li>
-  <li><a href="#rank-based-sort" id="toc-rank-based-sort" class="nav-link" data-scroll-target="#rank-based-sort"><span class="header-section-number">20.0.4</span> Rank-Based Sort</a></li>
-  <li><a href="#ties" id="toc-ties" class="nav-link" data-scroll-target="#ties"><span class="header-section-number">20.0.5</span> Ties</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link active" data-scroll-target="#methods"><span class="header-section-number">24.0.1</span> Methods</a></li>
+  <li><a href="#assumption" id="toc-assumption" class="nav-link" data-scroll-target="#assumption"><span class="header-section-number">24.0.2</span> Assumption</a></li>
+  <li><a href="#rank" id="toc-rank" class="nav-link" data-scroll-target="#rank"><span class="header-section-number">24.0.3</span> Rank</a></li>
+  <li><a href="#rank-based-sort" id="toc-rank-based-sort" class="nav-link" data-scroll-target="#rank-based-sort"><span class="header-section-number">24.0.4</span> Rank-Based Sort</a></li>
+  <li><a href="#ties" id="toc-ties" class="nav-link" data-scroll-target="#ties"><span class="header-section-number">24.0.5</span> Ties</a></li>
   </ul>
 </nav>
     </div>
@@ -637,9 +642,9 @@ ul.task-list li input[type="checkbox"] {
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></h1>
+<h1 class="title"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></h1>
 </div>
 
 
@@ -658,8 +663,8 @@ ul.task-list li input[type="checkbox"] {
 
 <p>An excerpt from Frederico Mazzone et al.&nbsp;(CITATION) discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with. Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.</p>
 <p>With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.</p>
-<section id="methods" class="level3" data-number="20.0.1">
-<h3 data-number="20.0.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">20.0.1</span> Methods</h3>
+<section id="methods" class="level3" data-number="24.0.1">
+<h3 data-number="24.0.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">24.0.1</span> Methods</h3>
 <p>To understand the process of the rank-based sorting, we will need the following methods, the methods will be followed with either L or R to signify left and right:</p>
 <ul>
 <li><p>CMP (Comparison)</p></li>
@@ -671,21 +676,21 @@ ul.task-list li input[type="checkbox"] {
 <li><p>EQ (Equality)</p></li>
 </ul>
 </section>
-<section id="assumption" class="level3" data-number="20.0.2">
-<h3 data-number="20.0.2" class="anchored" data-anchor-id="assumption"><span class="header-section-number">20.0.2</span> Assumption</h3>
+<section id="assumption" class="level3" data-number="24.0.2">
+<h3 data-number="24.0.2" class="anchored" data-anchor-id="assumption"><span class="header-section-number">24.0.2</span> Assumption</h3>
 <p>Before conducting the sort, we need to take care of one main assumption.</p>
 <ul>
 <li>All elements in the vector are distinct, unless we consider tie corrections</li>
 </ul>
 </section>
-<section id="rank" class="level3" data-number="20.0.3">
-<h3 data-number="20.0.3" class="anchored" data-anchor-id="rank"><span class="header-section-number">20.0.3</span> Rank</h3>
+<section id="rank" class="level3" data-number="24.0.3">
+<h3 data-number="24.0.3" class="anchored" data-anchor-id="rank"><span class="header-section-number">24.0.3</span> Rank</h3>
 <p>First, we need to find the overall order statistics of each element. To find which element is in the “k-th” place, we need to start with the rank function. The rank will allow us to determine which element should be in the i’th position for our sort.</p>
 <p>To determine the rank of a vector we will first need to replicate the vector of n rows into a matrix of n x n.</p>
 <p>Then, we need to compare the replicated matrix with its transpose. To do so, we will take the difference between the two matrices to output a matrix of -1, 0, 1 values. Then we will incorporate our sign function to isolate the positive values to create a matrix of just 0 and 1. By summing either the columns or rows depending on the initial difference matrix, we will have a final output of the statistic rank from 0 to n-1 which we then can add 1 to each element ending with a column/row vector of statistic rank 1 to n.</p>
 </section>
-<section id="rank-based-sort" class="level3" data-number="20.0.4">
-<h3 data-number="20.0.4" class="anchored" data-anchor-id="rank-based-sort"><span class="header-section-number">20.0.4</span> Rank-Based Sort</h3>
+<section id="rank-based-sort" class="level3" data-number="24.0.4">
+<h3 data-number="24.0.4" class="anchored" data-anchor-id="rank-based-sort"><span class="header-section-number">24.0.4</span> Rank-Based Sort</h3>
 <p>(add a visual of a simplified example or use the one in the document and cite)</p>
 <p>To sort a vector of degree n, we need the following:</p>
 <ul>
@@ -695,8 +700,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>First, we need to subtract matrix A with matrix B and use the indicator function to set all elements that are 0 to value 1 with rest being 0. Then we will take the product of our replicated matrix and the indicator matrix and sum the columns. By transposing our final matrix, we will then end with a sorted row vector.</p>
 </section>
-<section id="ties" class="level3" data-number="20.0.5">
-<h3 data-number="20.0.5" class="anchored" data-anchor-id="ties"><span class="header-section-number">20.0.5</span> Ties</h3>
+<section id="ties" class="level3" data-number="24.0.5">
+<h3 data-number="24.0.5" class="anchored" data-anchor-id="ties"><span class="header-section-number">24.0.5</span> Ties</h3>
 <p>When a given vector includes non distinct elements, we will have to perform a tie correction.</p>
 <p>To do so, we will first create an equality matrix by comparing the replicated matrix and it’s transpose outputting 1 if the index is equal and 0 else. Then, we will multiply this with a upper triangular matrix to convert the tie elements into two different elements. Afterwards, we will sum the rows of the original equality matrix (M1) and sum the rows of the previous product matrix (M2).</p>
 <p>Lastly, compute the difference between M1 and M2 to output the offset vector of values 0 and 1 with 1 being the value of the tie.</p>
@@ -1123,12 +1128,12 @@ ul.task-list li input[type="checkbox"] {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="../sorting/max.html" class="pagination-link" aria-label="Max Function">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Max Function</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Max Function</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../difference-matrix/intro.html" class="pagination-link" aria-label="Difference Matrix Method">
-        <span class="nav-page-text">Difference Matrix Method</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../discrete-model/intro.html" class="pagination-link" aria-label="Discrete Computational Models">
+        <span class="nav-page-text">Discrete Computational Models</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
