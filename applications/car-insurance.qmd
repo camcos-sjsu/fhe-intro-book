@@ -1,0 +1,74 @@
+<!-- ADDED -->
+## FHE Car Insurance
+
+Modern cars are connected computers: they record where the car goes, how fast it travels, and how hard the driver brakes. Insurers would like this data, and many offer "usage-based" discounts to drivers who share it. The trouble is that drivers often do not know where their data ends up. In January 2026 the U.S. Federal Trade Commission finalized an order against General Motors and its OnStar subsidiary, settling allegations that GM collected precise geolocation and driving behavior data from millions of vehicles through its Smart Driver feature without clearly telling drivers, and sold it to third parties without their consent. The order bans GM for five years from disclosing such data to consumer reporting agencies and, for its full 20-year term, requires affirmative consent before connected-vehicle data is collected or shared.[^1] According to press reports, the buyers included data brokers such as LexisNexis and Verisk, which sold the data on to insurance companies.[^2]
+
+[^1]: https://www.ftc.gov/node/327916
+
+[^2]: https://techcrunch.com/2026/01/14/the-ftcs-data-sharing-order-against-gm-is-finally-settled
+
+The striking thing is how little an insurer actually needs. To price a policy it wants a handful of numbers (how many miles, how many hard stops, how much speeding), not a second-by-second record of every trip. Can those numbers be computed from encrypted driving data, so that the trips themselves never leave the car in readable form?
+
+As elsewhere in the book, a ciphertext holds $N/2 = 2^{15} = 32{,}768$ slots and $\mathtt{sign}(x)$ is the $0$/$1$ step function from the Sign Function part, which we can only approximate by a polynomial. By the **depth** of a computation we mean the longest chain of ciphertext–ciphertext multiplications in it (each one costs a level, see *Levels, Precision, and Time*); multiplications by plaintext constants are not counted. A polynomial of degree $d$ has depth $\lceil \log_2 d \rceil$, so the degree-9 sign polynomial from the Hyperbolic Tangent chapter has depth $4$.
+
+### Situation 1: A Safe-Driving Discount
+
+Alice wants the discount for careful driving, but she does not want her insurer to see when and where she drives.
+
+**Encoding.** Suppose the car's telematics unit records Alice's speed $v_t$ (in mph) once per second and encrypts it under Alice's key, so that neither Alice nor the insurer can alter or read it. One ciphertext then holds $32{,}768$ seconds, a little over 9 hours of driving; a six-month policy with about an hour of driving a day is $180$ hours $= 648{,}000$ seconds, or $\lceil 648{,}000 / 32{,}768 \rceil = 20$ ciphertexts
+$$
+\mathsf{ct}_v^{(r)} = \mathsf{enc}(v_1^{(r)}, v_2^{(r)}, \dots, v_{N/2}^{(r)}), \qquad r = 1, \dots, 20.
+$$
+Along with the speeds, the car encrypts two more vectors: the speed limit $\ell_t$ at each moment (looked up on the car's own map, so the location never leaves the car) and a mask $m_t$ that is $1$ for real samples and $0$ for padding at the end of the last ciphertext.
+
+**Hard braking.** The deceleration over one second is $d_t = v_t - v_{t+1}$. To line $v_{t+1}$ up with $v_t$ we cycle once (in the notation of the Setup chapter, $k = 2$):
+$$
+\mathsf{ct}_v - \mathtt{cycle}(\mathsf{ct}_v) = \mathsf{enc}(v_1 - v_2,\; v_2 - v_3,\; \dots,\; v_{N/2-1} - v_{N/2},\; v_{N/2} - v_1).
+$$
+The last slot wraps around and is meaningless, so the car sets $m_{N/2} = 0$ there; consecutive ciphertexts overlap by one sample so that no real pair is lost. The mask also takes care of the jump from the last real speed to the zero padding, which would otherwise look like a violent stop. A hard brake is a deceleration above the insurer's threshold $\theta$ (for illustration, $\theta = 7$ mph per second), so
+$$
+\text{brake}_t = m_t \cdot \mathtt{sign}\left(\frac{d_t - \theta}{S}\right),
+$$
+where $S$ is a plaintext scale that maps the possible values of $d_t - \theta$ into the interval where our sign approximation works. Adding the 20 ciphertexts and taking an intravector sum gives the number of hard brakes $B = \sum_t \text{brake}_t$.
+
+**Mileage.** Distance needs no comparison at all: with one sample per second,
+$$
+D = \frac{1}{3600} \sum_t v_t
+$$
+miles, a plaintext multiplication and a sum. (Padding slots hold $v_t = 0$ and add nothing.)
+
+**The rule, without division.** Suppose the insurer grants the discount when there are at most $\beta$ hard brakes per $100$ miles, $100B/D \le \beta$. That is a division by the encrypted $D$, which our model does not allow. But we only need a comparison, and $D > 0$, so we can multiply through:
+$$
+\frac{100\,B}{D} \le \beta \iff \frac{\beta}{100}\, D - B \ge 0.
+$$
+So the decision is a second evaluation of $\mathtt{sign}$, applied to a combination of $D$ and $B$ that uses only plaintext constants (and a plaintext scale to bring it into range).
+
+A speeding rule works the same way. With
+$$
+\text{speed}_t = m_t \cdot \mathtt{sign}\left(\frac{v_t - \ell_t - 10}{S'}\right)
+$$
+marking seconds spent more than $10$ mph over the limit, "at most a fraction $f_0$ of driving time spent speeding" becomes $f_0 \sum_t m_t - \sum_t \text{speed}_t \ge 0$, again one sign. The two decision bits can be combined into a discount with plaintext weights, $\delta_1 \cdot \text{bit}_1 + \delta_2 \cdot \text{bit}_2$, and only that discount is decrypted. How the insurer can trust the decrypted value is a key-management question beyond FHE, just as in Situation 2 of the FHE Dating chapter.
+
+**Depth.** The per-second indicators cost $\text{depth}(\mathtt{sign}) + 1$ (the extra level is the mask), the sums cost nothing, and the decision adds a second $\mathtt{sign}$: in total $2 \cdot \text{depth}(\mathtt{sign}) + 1$, which is $9$ with the book's degree-9 polynomial.
+
+:::{.callout-tip icon=false title="**Remark**"}
+Sums of approximate signs need *very* accurate signs. If each $\text{brake}_t$ is off by at most $\epsilon$, the count $B$ can be off by up to $648{,}000\,\epsilon$. Keeping that error below $\frac{1}{2}$, so that the count still rounds correctly, needs $\epsilon < 1/1{,}296{,}000 \approx 7.7 \times 10^{-7}$, about $20$ bits of accuracy away from the threshold. A second effect cannot be fixed by a better polynomial: a deceleration that lands almost exactly on $\theta$ contributes about $\frac{1}{2}$ to the count. Since measured speeds are not integers, we cannot move the threshold halfway between possible values to avoid this, so $B$ is really a "soft" count, and the insurer's rule has to tolerate it.
+:::
+
+### Situation 2: Pay per Mile, Day and Night
+
+Some policies charge by the mile, with a higher rate $r_{\text{night}}$ for night driving than the daytime rate $r_{\text{day}}$. Alice is happy to pay for her miles but does not want to reveal her schedule.
+
+Let the car also encrypt a night indicator $n_t \in \{0, 1\}$, computed from its own clock. The cost of the period is
+$$
+\text{cost} = \sum_t \frac{v_t}{3600} \Big( r_{\text{day}} + (r_{\text{night}} - r_{\text{day}})\, n_t \Big),
+$$
+which is one ciphertext–ciphertext multiplication ($v_t \cdot n_t$), plaintext multiplications by the rates, and a sum: depth $1$, and no comparison anywhere. This situation is the opposite of Situation 1: once the right data is encoded, the computation is exactly the kind FHE does best. As with any output, it is worth checking what it reveals. If the insurer also learns the total mileage $D$, then from the cost it can solve for the exact number of night miles.
+
+### Related Literature
+
+- **PriPAYD: Privacy Friendly Pay-As-You-Drive Insurance (2007; journal version 2011)**: <https://doi.org/10.1145/1314333.1314353>
+- **Privacy Preserving Services for Intelligent Transportation Systems with Homomorphic Encryption (2021)**: <https://www.scitepress.org/Papers/2021/103497/>
+- **Efficient Homomorphic Comparison Methods with Optimal Complexity (2020)**: <https://eprint.iacr.org/2019/1234>
+
+<!-- /ADDED -->
