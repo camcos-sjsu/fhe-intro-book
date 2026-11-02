@@ -5,3 +5,4 @@ In the case that your domain has finite discrete values, any function on that do
 A finite domain may be encoded by integers modulo something. We explore modular representation by roots of unity and $k$-bit binary.
 
 We also discuss uses such as modular arithmetic, the sign function, and sorting, and consider the computational costs and numerical accuracy of these methods. 
+

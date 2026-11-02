@@ -1,4 +1,5 @@
 ### A Binary Approach to Inequality and Sorting
+In this computational model, each ciphertext vector with length $n/2$ stores $n/(2k)$ numbers, using $k$ components to store each number.  The user supplies not only (or instead of, but it seems fairly cheap to have both representations) $x$, but also the digits of $x$ (assuming integers for simplicity, maybe $x = (x_{k-1} \cdots x_0)|_b$ in base $b$, and each $x_i$ represents an element of $\{0, 1, \ldots, b-1\}$.
 
 For this example, assume $b=2$ so things are stored in binary. We will show that the inequality function can be done "exactly" as polynomials instead of approximated with a Taylor expansion.
 
