@@ -8,9 +8,8 @@ book:
   date-format: iso
   chapters:
     - index.qmd
-    - part: "Preface"
+    - part: intro.qmd
       chapters:
-      - intro.qmd
       - setup.qmd
     - part: general/intro.qmd
       chapters:
