@@ -239,6 +239,8 @@ We can construct $q$ publicly beforehand. Given encrypted inputs $w$ and $z$, we
 
 Below are the two methods of polynomial interpolation on the multiplication table with $n = 4$.
 
+Bivariate interpolation gives:
+
 $$
 \begin{aligned}
 P(u,v)=\frac14\bigl[&
@@ -257,7 +259,7 @@ t(u,v)=u+v+2uv.
 $$
 
 
-Our method:
+Single variable encoding gives:
 $$
 \begin{aligned}
 Q(t)=1+\frac{1}{7072000}\bigl[&
