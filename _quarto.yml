@@ -4,7 +4,8 @@ project:
 book:
   title: "fhe-intro-book"
   author: "camcos-sjsu"
-  date: "September 28, 2026"
+  date: today
+  date-format: iso
   chapters:
     - index.qmd
     - part: "Preface"
