@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>21&nbsp; From Bubble Sort to Odd-Even Sort – fhe-intro-book</title>
+<title>21&nbsp; Odd-Even Sort – fhe-intro-book</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -292,7 +292,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/odd_even.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/odd_even.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Odd-Even Sort</span></a></li></ol></nav>
         <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -524,19 +524,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sorting/odd_even.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Odd-Even Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sorting/bitonic.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">From Odd-Even Sort to Bitonic Sort</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Bitonic Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sorting/swapless.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -667,9 +667,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content" tabindex="-1">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/odd_even.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/odd_even.html"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Odd-Even Sort</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-odd-even" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></span></h1>
+<h1 class="title"><span id="sec-odd-even" class="quarto-section-identifier"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Odd-Even Sort</span></span></h1>
 </div>
 
 
@@ -708,7 +708,7 @@ x''=(a_1,c_1,d_1,c_2,d_2,\ldots,c_{N/2-1},d_{N/2-1},b_{N/2}),
 <p><a href="#fig-odd-even-network" class="quarto-xref">Figure&nbsp;<span>21.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one compare and swap, with the larger value moving toward the arrowhead.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-odd-even-network" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value." data-fig-align="center">
+<div id="fig-odd-even-network" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-odd-even-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="odd_even_files/figure-html/fig-odd-even-network-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value." width="864">
@@ -1262,8 +1262,8 @@ Figure&nbsp;21.1: The odd-even sorting network for eight inputs, with 8 layers a
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../sorting/bitonic.html" class="pagination-link" aria-label="From Odd-Even Sort to Bitonic Sort">
-        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">From Odd-Even Sort to Bitonic Sort</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../sorting/bitonic.html" class="pagination-link" aria-label="Bitonic Sort">
+        <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Bitonic Sort</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

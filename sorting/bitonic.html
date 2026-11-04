@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>22&nbsp; From Odd-Even Sort to Bitonic Sort – fhe-intro-book</title>
+<title>22&nbsp; Bitonic Sort – fhe-intro-book</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -311,7 +311,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/bitonic.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">From Odd-Even Sort to Bitonic Sort</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/bitonic.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Bitonic Sort</span></a></li></ol></nav>
         <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -543,19 +543,19 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sorting/odd_even.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></span></a>
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Odd-Even Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sorting/bitonic.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">From Odd-Even Sort to Bitonic Sort</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Bitonic Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../sorting/swapless.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -686,9 +686,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content" tabindex="-1">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/bitonic.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">From Odd-Even Sort to Bitonic Sort</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/bitonic.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Bitonic Sort</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-bitonic-sort" class="quarto-section-identifier"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">From Odd-Even Sort to Bitonic Sort</span></span></h1>
+<h1 class="title"><span id="sec-bitonic-sort" class="quarto-section-identifier"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">Bitonic Sort</span></span></h1>
 </div>
 
 
@@ -707,9 +707,12 @@ window.Quarto = {
 
 <p>Odd-even sort reduces depth by comparing many neighboring pairs at once. But its comparisons only move values one position per round. Values that start far apart must make progress through many neighboring comparisons, so an <span class="math inline">\(N\)</span>-element input can require <span class="math inline">\(N\)</span> rounds and <span class="math inline">\(O(N^2)\)</span> compare-and-swaps. In FHE, where each comparison layer has a cost, this leaves room to improve.</p>
 <p>A <strong>sorting network</strong> is a fixed schedule of compare and swap operations. Each layer contains disjoint pairs, so all comparisons in that layer can run in parallel. Unlike an ordinary comparison sort, the schedule does not depend on the input values. The design challenge is to choose a schedule that moves values into order with fewer layers and fewer total comparisons.</p>
-<section id="bitonic-sort" class="level4" data-number="22.0.0.1">
-<h4 data-number="22.0.0.1" class="anchored" data-anchor-id="bitonic-sort"><span class="header-section-number">22.0.0.1</span> Bitonic sort</h4>
+<section id="bitonic-sequences-and-merging" class="level4" data-number="22.0.0.1">
+<h4 data-number="22.0.0.1" class="anchored" data-anchor-id="bitonic-sequences-and-merging"><span class="header-section-number">22.0.0.1</span> Bitonic sequences and merging</h4>
 <p>Bitonic sort builds and merges <strong>bitonic sequences</strong> <span class="citation" data-cites="ref15">(<a href="../references.html#ref-ref15" role="doc-biblioref">Batcher 1968</a>)</span>, which are sequences that are first increasing and then decreasing. A bitonic merge compares elements that are far apart first, then progressively compares closer pairs. This lets large values move toward the end and small values toward the beginning in a few structured layers, rather than only one position at a time. To sort a block, we sort its first half in ascending order and its second half in descending order, which makes the whole block bitonic, then merge it, repeating this from pairs up to the full vector. The result is a sorting network with <span class="math inline">\(O(\log^2 N)\)</span> layers and <span class="math inline">\(O(N\log^2 N)\)</span> total comparisons <span class="citation" data-cites="ref15">(<a href="../references.html#ref-ref15" role="doc-biblioref">Batcher 1968</a>)</span>, which is better than odd-even sort’s <span class="math inline">\(O(N)\)</span> layers and <span class="math inline">\(O(N^2)\)</span> comparisons.</p>
+</section>
+<section id="merging-a-bitonic-sequence" class="level4" data-number="22.0.0.2">
+<h4 data-number="22.0.0.2" class="anchored" data-anchor-id="merging-a-bitonic-sequence"><span class="header-section-number">22.0.0.2</span> Merging a Bitonic Sequence</h4>
 <p>Below is an example of a bitonic merge on a sequence of eight values, starting from a bitonic sequence. In practice this sequence is built from smaller bitonic sequences, but the merge works the same way. The input is</p>
 <p><span class="math display">\[
 (2,5,7,8,6,4,3,1).
@@ -757,8 +760,8 @@ Figure&nbsp;22.1: The bitonic sorting network for eight inputs, with 6 layers an
 </div>
 </div>
 </section>
-<section id="how-much-does-this-save" class="level4" data-number="22.0.0.2">
-<h4 data-number="22.0.0.2" class="anchored" data-anchor-id="how-much-does-this-save"><span class="header-section-number">22.0.0.2</span> How much does this save?</h4>
+<section id="how-much-does-this-save" class="level4" data-number="22.0.0.3">
+<h4 data-number="22.0.0.3" class="anchored" data-anchor-id="how-much-does-this-save"><span class="header-section-number">22.0.0.3</span> How much does this save?</h4>
 <p>For eight inputs, odd-even sort uses eight alternating odd/even comparison rounds. Each round compares three or four neighboring pairs, for 28 compare and swaps total. The bitonic network uses six layers and 24 compare and swaps. Both schedules can batch each layer’s disjoint comparisons across ciphertext slots, but bitonic sort needs fewer sequential layers and fewer comparisons in this example. Since each layer is one vector-wide evaluation, the layer count is the saving that matters most in FHE. Bitonic sort functionally uses <span class="math inline">\(O(\log^2 N)\)</span> layers and <span class="math inline">\(O(N\log^2 N)\)</span> comparisons <span class="citation" data-cites="ref15">(<a href="../references.html#ref-ref15" role="doc-biblioref">Batcher 1968</a>)</span>, versus <span class="math inline">\(O(N)\)</span> rounds and <span class="math inline">\(O(N^2)\)</span> comparisons for odd-even sort.</p>
 <p>Each layer still uses the same compare-and-swap operation described in <a href="intro.html#sec-comparison-based-sorting" class="quarto-xref"><span>Section 0.1</span></a>. The next step is to look at a different way to organize sorting: compute how many values in the array are less than a given value, then move it to that index.</p>
 
@@ -1297,13 +1300,13 @@ Batcher, K. E. 1968. <span>“Sorting Networks and Their Applications.”</span>
   </script>
 <nav class="page-navigation" aria-label="Page">
   <div class="nav-page nav-page-previous">
-      <a href="../sorting/odd_even.html" class="pagination-link" aria-label="From Bubble Sort to Odd-Even Sort">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">From Bubble Sort to Odd-Even Sort</span></span>
+      <a href="../sorting/odd_even.html" class="pagination-link" aria-label="Odd-Even Sort">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Odd-Even Sort</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../sorting/swapless.html" class="pagination-link" aria-label="Rank Based Sorting">
-        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sorting</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../sorting/swapless.html" class="pagination-link" aria-label="Rank Based Sort">
+        <span class="nav-page-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
