@@ -1,10 +1,10 @@
-### From Odd-Even Sort to Bitonic Sort {#sec-bitonic-sort}
+### Bitonic Sort {#sec-bitonic-sort}
 
 Odd-even sort reduces depth by comparing many neighboring pairs at once. But its comparisons only move values one position per round. Values that start far apart must make progress through many neighboring comparisons, so an $N$-element input can require $N$ rounds and $O(N^2)$ compare-and-swaps. In FHE, where each comparison layer has a cost, this leaves room to improve.
 
 A **sorting network** is a fixed schedule of compare and swap operations. Each layer contains disjoint pairs, so all comparisons in that layer can run in parallel. Unlike an ordinary comparison sort, the schedule does not depend on the input values. The design challenge is to choose a schedule that moves values into order with fewer layers and fewer total comparisons.
 
-#### Bitonic sort
+#### Bitonic sequences
 
 Bitonic sort builds and merges **bitonic sequences** [@ref15], which are sequences that are first increasing and then decreasing. A bitonic merge compares elements that are far apart first, then progressively compares closer pairs. This lets large values move toward the end and small values toward the beginning in a few structured layers, rather than only one position at a time. To sort a block, we sort its first half in ascending order and its second half in descending order, which makes the whole block bitonic, then merge it, repeating this from pairs up to the full vector. The result is a sorting network with $O(\log^2 N)$ layers and $O(N\log^2 N)$ total comparisons [@ref15], which is better than odd-even sort's $O(N)$ layers and $O(N^2)$ comparisons.
 
