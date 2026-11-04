@@ -42,9 +42,10 @@ book:
     - part: sorting/intro.qmd
       chapters:
         - sorting/bubble.qmd
-        - sorting/improvements.qmd
-        - sorting/max.qmd
+        - sorting/odd_even.qmd
+        - sorting/bitonic.qmd
         - sorting/swapless.qmd
+        - sorting/max.qmd
   #  - lit-review.qmd
     - part: discrete-model/intro.qmd
       chapters:
