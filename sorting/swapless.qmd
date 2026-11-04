@@ -1,5 +1,5 @@
 ---
-title: "Rank Based Sorting"
+title: "Rank Based Sort"
 format: html
 ---
 

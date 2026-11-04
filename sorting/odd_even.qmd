@@ -1,4 +1,4 @@
-### From Bubble Sort to Odd-Even Sort {#sec-odd-even}
+### Odd-Even Sort {#sec-odd-even}
 
 Bubble sort applies the comparison and swap to two elements in a vector, then uses its updated vector in the next comparison. In FHE we have a unique advantage, that being the vectorwide nature of computation. This causes computations batched on a ciphertext to be functionally the same cost regardless of how much of the ciphertext is populated. Using this, we can organize the comparisons into layers of adjacent pairs, where each layer is a single vectorwide comparison and swap. This is called odd-even sort. It is a simple example of optimizations that can be made to bubble sort, and is a stepping stone to more advanced sorting networks.
 
