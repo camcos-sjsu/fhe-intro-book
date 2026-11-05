@@ -1,0 +1,143 @@
+### Bitonic Sort {#sec-bitonic-sort}
+
+Odd-even sort reduces depth by comparing many neighboring pairs at once. But its comparisons only move values one position per round. Values that start far apart must make progress through many neighboring comparisons, so an $N$-element input can require $N$ rounds and $O(N^2)$ compare-and-swaps. In FHE, where each comparison layer has a cost, this leaves room to improve.
+
+A **sorting network** is a fixed schedule of compare and swap operations. Each layer contains disjoint pairs, so all comparisons in that layer can run in parallel. Unlike an ordinary comparison sort, the schedule does not depend on the input values. The design challenge is to choose a schedule that moves values into order with fewer layers and fewer total comparisons.
+
+#### Bitonic sequences and merging
+
+Bitonic sort builds and merges **bitonic sequences** [@ref15], which are sequences that are first increasing and then decreasing. A bitonic merge compares elements that are far apart first, then progressively compares closer pairs. This lets large values move toward the end and small values toward the beginning in a few structured layers, rather than only one position at a time. To sort a block, we sort its first half in ascending order and its second half in descending order, which makes the whole block bitonic, then merge it, repeating this from pairs up to the full vector. The result is a sorting network with $O(\log^2 N)$ layers and $O(N\log^2 N)$ total comparisons [@ref15], which is better than odd-even sort's $O(N)$ layers and $O(N^2)$ comparisons.
+
+#### Merging a Bitonic Sequence
+
+Below is an example of a bitonic merge on a sequence of eight values, starting from a bitonic sequence. In practice this sequence is built from smaller bitonic sequences, but the merge works the same way. The input is
+
+$$
+(2,5,7,8,6,4,3,1).
+$$
+
+An ascending bitonic merge starts by comparing positions $1$ and $5$, $2$ and $6$, $3$ and $7$, and $4$ and $8$, placing the smaller value in the first position of each pair. In the steps below, values with the same color are compared with each other, and the positions compared are listed above the arrow:
+
+::: {.hidden}
+$$
+\newcommand{\pairA}[1]{\textcolor[RGB]{230,159,0}{#1}}
+\newcommand{\pairB}[1]{\textcolor[RGB]{86,180,233}{#1}}
+\newcommand{\pairC}[1]{\textcolor[RGB]{0,158,115}{#1}}
+\newcommand{\pairD}[1]{\textcolor[RGB]{204,121,167}{#1}}
+$$
+:::
+
+$$
+(\pairA{2},\pairB{5},\pairC{7},\pairD{8},\pairA{6},\pairB{4},\pairC{3},\pairD{1})
+\xrightarrow{(1,5),\ (2,6),\ (3,7),\ (4,8)}
+(\pairA{2},\pairB{4},\pairC{3},\pairD{1},\pairA{6},\pairB{5},\pairC{7},\pairD{8}).
+$$
+
+The two halves are now bitonic subsequences, as long as we also count rotations of a bitonic sequence: $(6,5,7,8)$ is a rotation of $(7,8,6,5)$, and the merge works the same way on it. Repeat the merge within each half, now comparing positions two apart:
+
+$$
+(\pairA{2},\pairB{4},\pairA{3},\pairB{1},\pairC{6},\pairD{5},\pairC{7},\pairD{8})
+\xrightarrow{(1,3),\ (2,4),\ (5,7),\ (6,8)}
+(\pairA{2},\pairB{1},\pairA{3},\pairB{4},\pairC{6},\pairD{5},\pairC{7},\pairD{8}),
+$$
+
+then compare adjacent pairs:
+
+$$
+(\pairA{2},\pairA{1},\pairB{3},\pairB{4},\pairC{6},\pairC{5},\pairD{7},\pairD{8})
+\xrightarrow{(1,2),\ (3,4),\ (5,6),\ (7,8)}
+(\pairA{1},\pairA{2},\pairB{3},\pairB{4},\pairC{5},\pairC{6},\pairD{7},\pairD{8}).
+$$
+
+Those three layers merge one bitonic sequence of length eight. Bitonic sort constructs larger bitonic sequences from smaller ones, then applies these merges. For $N$ a power of two, its network has $\frac{\log_2 N(\log_2 N+1)}{2}$ layers [@ref15].
+
+@fig-bitonic-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one compare and swap, with the larger value moving toward the arrowhead.
+
+```{r}
+#| label: fig-bitonic-network
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 4.6
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "The bitonic sorting network for eight inputs, with 6 layers and 24 compare and swaps. The colored arrows are the three merge layers from the worked example, using the same colors as the equations above."
+#| fig-alt: "A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations in six layers, grouped into three stages. The first stage has one layer comparing adjacent pairs. The second has two layers that merge to length four, comparing positions two apart and then adjacent positions. The third has three layers that merge to length eight, comparing positions four apart, then two apart, then adjacent positions. Arrows point to the position that receives the larger value."
+
+library(ggplot2)
+
+# Each row is one compare and swap: the larger value moves to `to`.
+# Comparators with the same layer and different slots overlap vertically, so
+# they are drawn side by side. `pair` matches the colors in the equations above.
+network <- data.frame(
+  layer = rep(1:6, each = 4),
+  slot  = c(0, 0, 0, 0,   0, 1, 0, 1,   0, 0, 0, 0,
+            0, 1, 2, 3,   0, 1, 0, 1,   0, 0, 0, 0),
+  from  = c(1, 4, 5, 8,   1, 2, 7, 8,   1, 3, 6, 8,
+            1, 2, 3, 4,   1, 2, 5, 6,   1, 3, 5, 7),
+  to    = c(2, 3, 6, 7,   3, 4, 5, 6,   2, 4, 5, 7,
+            5, 6, 7, 8,   3, 4, 7, 8,   2, 4, 6, 8),
+  pair  = c(rep("none", 12), rep(c("A", "B", "C", "D"), 3))
+)
+
+layer_start <- c(1, 2, 3.2, 4.4, 6, 7.2)
+network$x <- layer_start[network$layer] + 0.3 * network$slot
+
+stages <- data.frame(
+  xmin  = c(0.65, 1.65, 4.05),
+  xmax  = c(1.35, 3.55, 7.55),
+  label = c("Sort pairs", "Merge to length 4", "Merge to length 8")
+)
+
+neutral <- "grey50"
+pair_colors <- c(A = "#E69F00", B = "#56B4E9", C = "#009E73", D = "#CC79A7", none = neutral)
+
+ggplot() +
+  geom_rect(
+    data = stages,
+    aes(xmin = xmin, xmax = xmax, ymin = 0.55, ymax = 8.45),
+    fill = neutral, alpha = 0.12
+  ) +
+  geom_text(
+    data = stages,
+    aes(x = (xmin + xmax) / 2, y = 0.2, label = label),
+    color = neutral, size = 5, fontface = "bold"
+  ) +
+  annotate(
+    "segment",
+    x = 0.45, xend = 7.75, y = 1:8, yend = 1:8,
+    color = neutral, linewidth = 0.4
+  ) +
+  annotate(
+    "text",
+    x = 0.3, y = 1:8, label = 1:8,
+    color = neutral, size = 5, fontface = "bold"
+  ) +
+  geom_segment(
+    data = network,
+    aes(x = x, xend = x, y = from, yend = to, color = pair),
+    linewidth = 0.9,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  geom_point(
+    data = network,
+    aes(x = x, y = from, color = pair),
+    size = 2
+  ) +
+  scale_color_manual(values = pair_colors, guide = "none") +
+  scale_y_reverse() +
+  coord_cartesian(clip = "off") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA)
+  )
+```
+
+
+#### How much does this save?
+
+For eight inputs, odd-even sort uses eight alternating odd/even comparison rounds. Each round compares three or four neighboring pairs, for 28 compare and swaps total. The bitonic network uses six layers and 24 compare and swaps. Both schedules can batch each layer's disjoint comparisons across ciphertext slots, but bitonic sort needs fewer sequential layers and fewer comparisons in this example. Since each layer is one vector-wide evaluation, the layer count is the saving that matters most in FHE. Bitonic sort functionally uses $O(\log^2 N)$ layers and $O(N\log^2 N)$ comparisons [@ref15], versus $O(N)$ rounds and $O(N^2)$ comparisons for odd-even sort.
+
+Each layer still uses the same compare-and-swap operation described in @sec-comparison-based-sorting. The next step is to look at a different way to organize sorting: compute how many values in the array are less than a given value, then move it to that index.

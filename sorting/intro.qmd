@@ -7,7 +7,7 @@ Sorting an encrypted vector can provide useful information, including its minimu
 The first intuitive method is to utilize sorts that compare and swap values on a schedule irrelevant of the input of the data. Sorts such as merge and quicksort are not suitable for FHE because their branching depends on the results of the comparison. In FHE, comparisons can be expressed as an arithmetic operation using a polynomial approximation of the sign funciton. 
 
 For two encrypted values $x_i$ and $x_j$, let
-$$s = \mathtt{sign}(x_i-x_j),$$
+$$s = \mathtt{sign}(x_i-x_j),$$ 
 where the sign function is approximated by a polynomial and returns approximately $1$ when $x_i \geq x_j$ and $0$ when $x_i < x_j$. This replaces an ordinary conditional such as “if $x_i \geq x_j$, swap” with arithmetic selection:
 
 $$
@@ -35,7 +35,7 @@ A different strategy exists that avoids moving values through successive swaps. 
 
 ### Comparing costs
 
-We will compare methods by their total comparisons, sequential comparison layers, and arithmetic depth. The chapters develop these ideas in order: pairwise compare-and-swap, bubble sort, parallel schedules and maximum extraction, then rank-based sorting. The discrete-model section gives a comparison construction for bounded integer inputs; here the focus is how sorting methods use comparisons.
+We will compare methods by their total comparisons, sequential comparison layers, and arithmetic depth. The chapters develop these ideas in order: pairwise compare-and-swap, bubble sort, parallel schedules, rank-based sorting, then maximum extraction. The discrete-model section gives a comparison construction for bounded integer inputs; here the focus is how sorting methods use comparisons.
 
 ### Maximum and minimum
 
