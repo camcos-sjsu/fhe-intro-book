@@ -72,6 +72,7 @@ bibliography: references.bib
 
 format:
   html:
+    number-sections: true
     axe: true
     grid:
       body-width: 4000px
