@@ -25,6 +25,7 @@ We call one pass of this function over a vector as a "bubble," $\mathtt{bub_{i,j
 #| message: false
 #| fig-align: center
 #| fig-alt: "A gif animation of a simple bubble sort being done on 6 bar barplot"
+#| cache: true
 
 if (knitr::is_html_output()) {
 library(ggplot2)
