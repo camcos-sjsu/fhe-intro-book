@@ -688,7 +688,7 @@ window.Quarto = {
 
 <p>As a proof-of-concept, we choose to use bubble sort as a starting point for sorting.<br>
 The <strong>bubble sort</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> function passes through a given vector, performing <span class="math inline">\(O(n^2)\)</span> repeated pairwise element comparisons to finish the sort.<br>
-It has the benefit of having local operations, mostly comparisons and swaps, without more advanced logic such as dynamic memory allocation (that e.g.&nbsp;quicksort would need), so it is a good candidate for FHE prototyping despite being a well-known “slow” sorting algorithm.</p>
+It has the benefit of having local operations, only swaps, without more advanced logic such as dynamic memory allocation (that e.g.&nbsp;quicksort would need). It is a good candidate for FHE prototyping despite being a well-known “slow” sorting algorithm.</p>
 <p>Given an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(x\)</span>, the following move will return an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(y\)</span> that is equal to <span class="math inline">\(x\)</span> in every coordinate except possibly <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>.<br>
 We call one pass of this function over a vector as a “bubble,” <span class="math inline">\(\mathtt{bub_{i,j}(x)}\)</span>:</p>
 <blockquote class="blockquote">
@@ -706,7 +706,7 @@ We call one pass of this function over a vector as a “bubble,” <span class="
 </div>
 </div>
 <p>To perform the pairwise comparisons in a non-logical-branching FHE setting, we can use a polynomial-approximated sign function.<br>
-Recall that we can implement a sign function <span class="math inline">\(\mathtt{sign}(x)\)</span> that returns <span class="math inline">\(1\)</span> if <span class="math inline">\(x \geq 0\)</span> and <span class="math inline">\(0\)</span> otherwise.<br>
+Recall that a sign function <span class="math inline">\(\mathtt{sign}(x)\)</span> returns <span class="math inline">\(1\)</span> if <span class="math inline">\(x \geq 0\)</span> and <span class="math inline">\(0\)</span> otherwise.<br>
 As a proof of concept, define <span class="math inline">\(s=\mathtt{sign}(x_i-x_j)\)</span> and consider: <span class="math display">\[
 \begin{aligned}
 y_i &amp;= s \cdot x_j + (1-s) \cdot x_i \\
