@@ -31,7 +31,7 @@ Therefore, as we build additional functions, we must keep in mind the cost of ea
 
 1. In the rest of the book, for the sake of simplicity, we will be optimizing for the amount of "operations", which is proportional to the costs we have in the table.
 
-2. In [Division](division/intro.qmd) and [Discrete Math](discrete/intro.qmd), you are thrown into the proverbial deep end as you will see costs skyrocket.
+2. In [Division](division/intro.qmd) and [Discrete Math](sign/intro.qmd), you are thrown into the proverbial deep end as you will see costs skyrocket.
 
 :::
 
