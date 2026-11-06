@@ -1,12 +1,7 @@
----
-editor: 
-  markdown: 
-    wrap: 72
----
 
 ## Two Coefficients
 
-Given vectors $x$ and $y$, there are $2$ closely related quantities: 1.
+Given vectors $\mathbf{x}$ and $\mathbf{y}$, there are $2$ closely related quantities: 1.
 The **correlation coefficient**[^two-coeff-1], a measure of normalized
 linear association, is
 $$ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.$$
@@ -26,10 +21,12 @@ $$\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_
 
 These can be approached with the same general strategy:
 
-1.  compute the means $\bar{x}$ and $\bar{y}$ and subtract them off from
+1.  Compute the means $\bar{x}$ and $\bar{y}$ and subtract them off from
     the original vectors;
-2.  compute the numerators and denominators separately;
-3.  divide (which might be costly).
+    
+2.  Compute the numerators and denominators separately;
+
+3.  Divide (which might be costly).
 
 With some more detail:
 
@@ -45,17 +42,18 @@ Our task for $r$ then (the work for the regression coefficient is
 similar) becomes computing
 $$ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\sum_{i=1}^{N/2}(y'_i)^2}} $$
 
-1.  The numerator is the intra-vector sum of $(x')*(y')$, which we know
-    how to compute.
+1.  The numerator is the [intra-vector sum](/general/intravector-sum.qmd) of $(x')*(y')$.
+    
 2.  The denominator is the square of the (scalar) product of two
     intravector sums of $(x')^2$ and $(y')^2$.
-3.  Finally, we need to do a division.
+    
+3.  Finally, we need to do an (expensive) [division](/division/intro.qmd).
 
 ::: {.callout-tip icon="false" title="**Remark**"}
 As usual (for the correlation coefficient; the regression coefficient is
 similar), we can avoid the possibly costly division and square roots for
 $r$ by giving the user the numerator and the *square* of the denominator
-separately and have the user compute the coeffcient. If we are willing
+separately and have the user compute the coefficient. If we are willing
 to do the division but want to save a square root, we can just give them
 $r^2$ instead.
 :::
