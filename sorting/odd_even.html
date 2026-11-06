@@ -686,7 +686,7 @@ window.Quarto = {
 </header>
 
 
-<p>Bubble sort applies the comparison and swap to two elements in a vector, then uses its updated vector in the next comparison. In FHE we have a unique advantage, that being the vectorwide nature of computation. This causes computations batched on a ciphertext to be functionally the same cost regardless of how much of the ciphertext is populated. Using this, we can organize the comparisons into layers of adjacent pairs, where each layer is a single vectorwide comparison and swap. This is called odd-even sort. It is a simple example of optimizations that can be made to bubble sort, and is a stepping stone to more advanced sorting networks.</p>
+<p>Bubble sort applies PairSort to two elements in a vector, then uses its updated vector in the next comparison. In FHE we have a unique advantage, that being the vectorwide nature of computation. This causes computations batched on a ciphertext to be functionally the same cost regardless of how much of the ciphertext is populated. Using this, we can organize the comparisons into layers of adjacent pairs, where each layer is a single vectorwide PairSort. This is called odd-even sort. It is a simple example of optimizations that can be made to bubble sort, and is a stepping stone to more advanced sorting networks.</p>
 <p>Odd-even sort organizes the comparisons into two alternating layers <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Number the vector positions from <span class="math inline">\(1\)</span>. The <strong>odd layer</strong> compares</p>
 <p><span class="math display">\[
 (1,2),\ (3,4),\ (5,6),\ldots,
@@ -695,32 +695,32 @@ window.Quarto = {
 <p><span class="math display">\[
 (2,3),\ (4,5),\ (6,7),\ldots.
 \]</span></p>
-<p>For one iteration, let the input be <span class="math inline">\(x=(x_1,\ldots,x_N)\)</span> with <span class="math inline">\(N\)</span> even. In the odd layer, compare and swap the disjoint pairs <span class="math inline">\((x_1,x_2)\)</span>, <span class="math inline">\((x_3,x_4),\ldots,(x_{N-1},x_N)\)</span> simultaneously. Write the resulting vector as</p>
+<p>For one iteration, let the input be <span class="math inline">\(x=(x_1,\ldots,x_N)\)</span> with <span class="math inline">\(N\)</span> even. In the odd layer, apply PairSort to the disjoint pairs <span class="math inline">\((x_1,x_2)\)</span>, <span class="math inline">\((x_3,x_4),\ldots,(x_{N-1},x_N)\)</span> simultaneously. Write the resulting vector as</p>
 <p><span class="math display">\[
 x'=(a_1,b_1,a_2,b_2,\ldots,a_{N/2},b_{N/2}),
 \]</span></p>
-<p>where <span class="math inline">\((a_k,b_k)=(\min(x_{2k-1},x_{2k}),\max(x_{2k-1},x_{2k}))\)</span> for <span class="math inline">\(k=1,\ldots,N/2\)</span>. Then the even layer compare and swaps <span class="math inline">\((b_1,a_2),(b_2,a_3),\ldots,(b_{N/2-1},a_{N/2})\)</span> simultaneously, leaving the endpoints in place. This produces the next vector</p>
+<p>where <span class="math inline">\((a_k,b_k)=(\min(x_{2k-1},x_{2k}),\max(x_{2k-1},x_{2k}))\)</span> for <span class="math inline">\(k=1,\ldots,N/2\)</span>. Then the even layer applies PairSort to <span class="math inline">\((b_1,a_2),(b_2,a_3),\ldots,(b_{N/2-1},a_{N/2})\)</span> simultaneously, leaving the endpoints in place. This produces the next vector</p>
 <p><span class="math display">\[
 x''=(a_1,c_1,d_1,c_2,d_2,\ldots,c_{N/2-1},d_{N/2-1},b_{N/2}),
 \]</span></p>
 <p>where <span class="math inline">\((c_k,d_k)=(\min(b_k,a_{k+1}),\max(b_k,a_{k+1}))\)</span> for <span class="math inline">\(k=1,\ldots,N/2-1\)</span>. One odd layer followed by one even layer is one odd-even iteration; repeating this fixed schedule moves values toward their sorted positions.</p>
-<p>Repeat the alternating layers for <span class="math inline">\(N\)</span> phases to sort <span class="math inline">\(N\)</span> inputs. Sequentially, bubble sort performs <span class="math inline">\(O(N^2)\)</span> individual compare and swaps, but Odd-even sort instead needs only <span class="math inline">\(O(N)\)</span> <strong>comparison layers</strong>, due to only requiring one vector-wide comparison-polynomial evaluation per pass, regardless of how many pairs are being compared.</p>
-<p><a href="#fig-odd-even-network" class="quarto-xref">Figure&nbsp;<span>21.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one compare and swap, with the larger value moving toward the arrowhead.</p>
+<p>Repeat the alternating layers for <span class="math inline">\(N\)</span> phases to sort <span class="math inline">\(N\)</span> inputs. Sequentially, bubble sort performs <span class="math inline">\(O(N^2)\)</span> individual PairSorts, but Odd-even sort instead needs only <span class="math inline">\(O(N)\)</span> <strong>comparison layers</strong>, due to only requiring one vector-wide comparison-polynomial evaluation per pass, regardless of how many pairs are being compared.</p>
+<p><a href="#fig-odd-even-network" class="quarto-xref">Figure&nbsp;<span>21.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-odd-even-network" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value.">
+<div id="fig-odd-even-network" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-odd-even-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="odd_even_files/figure-html/fig-odd-even-network-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value." width="864">
+<img src="odd_even_files/figure-html/fig-odd-even-network-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value." width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-odd-even-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;21.1: The odd-even sorting network for eight inputs, with 8 layers and 28 compare and swaps.
+Figure&nbsp;21.1: The odd-even sorting network for eight inputs, with 8 layers and 28 PairSorts.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>For the compare and swap operation used in each layer, see <a href="intro.html#sec-comparison-based-sorting" class="quarto-xref"><span>Section 0.1</span></a>.</p>
+<p>For the PairSort operation used in each layer, see <a href="bubble.html#sec-pairsort" class="quarto-xref"><span>Section 20.0.1</span></a>.</p>
 
 
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">

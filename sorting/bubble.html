@@ -660,8 +660,15 @@ window.Quarto = {
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-pairsort" id="toc-sec-pairsort" class="nav-link active" data-scroll-target="#sec-pairsort"><span class="header-section-number">20.0.1</span> PairSort</a></li>
+  <li><a href="#the-bubble-sort-algorithm" id="toc-the-bubble-sort-algorithm" class="nav-link" data-scroll-target="#the-bubble-sort-algorithm"><span class="header-section-number">20.0.2</span> The Bubble Sort Algorithm</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content" tabindex="-1">
@@ -686,16 +693,56 @@ window.Quarto = {
 </header>
 
 
-<p>As a proof-of-concept, we choose to use bubble sort as a starting point for sorting.<br>
-The <strong>bubble sort</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> function passes through a given vector, performing <span class="math inline">\(O(n^2)\)</span> repeated pairwise element comparisons to finish the sort.<br>
-It has the benefit of having local operations, only swaps, without more advanced logic such as dynamic memory allocation (that e.g.&nbsp;quicksort would need). It is a good candidate for FHE prototyping despite being a well-known “slow” sorting algorithm.</p>
+<p>As a proof-of-concept, we choose to use <strong>bubble sort</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> as a starting point for sorting.<br>
+It has the benefit of having local operations, only swaps, without more advanced logic such as dynamic memory allocation (that e.g.&nbsp;quicksort would need). It is a good candidate for FHE prototyping despite being a well-known “slow” sorting algorithm. Each of its steps is one operation on a pair of positions, so we define that operation first.</p>
+<section id="sec-pairsort" class="level3" data-number="20.0.1">
+<h3 data-number="20.0.1" class="anchored" data-anchor-id="sec-pairsort"><span class="header-section-number">20.0.1</span> PairSort</h3>
 <p>Given an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(x\)</span>, the following move will return an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(y\)</span> that is equal to <span class="math inline">\(x\)</span> in every coordinate except possibly <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>.<br>
-We call one pass of this function over a vector as a “bubble,” <span class="math inline">\(\mathtt{bub_{i,j}(x)}\)</span>:</p>
+We call this move <span class="math inline">\(\mathtt{PairSort}_{i,j}(x)\)</span>:</p>
 <blockquote class="blockquote">
 <p>Compare <span class="math inline">\(x_i, x_j\)</span> (typically, <span class="math inline">\(i+1 = j\)</span>).<br>
 (1) If <span class="math inline">\(x_i &lt; x_j\)</span>, then <span class="math inline">\(y = x\)</span> with no swapping performed.<br>
 (2) If <span class="math inline">\(x_i &gt; x_j\)</span>, then <span class="math inline">\(y\)</span> has <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> swapped.</p>
 </blockquote>
+<p>PairSort is known elsewhere as a compare-and-swap or comparator. To perform it without branching in FHE, we use a polynomial approximation of the sign function.</p>
+<p>For two encrypted values <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>, let <span class="math display">\[s = \mathtt{sign}(x_i-x_j),\]</span> where the sign function is approximated by a polynomial and returns approximately <span class="math inline">\(1\)</span> when <span class="math inline">\(x_i \geq x_j\)</span> and <span class="math inline">\(0\)</span> when <span class="math inline">\(x_i &lt; x_j\)</span>. This replaces an ordinary conditional such as “if <span class="math inline">\(x_i \geq x_j\)</span>, swap” with arithmetic selection:</p>
+<p><span class="math display">\[
+\begin{aligned}
+y_i &amp;= s x_j + (1-s)x_i,\\
+y_j &amp;= s x_i + (1-s)x_j.
+\end{aligned}
+\]</span></p>
+<p>This gives <span class="math inline">\(y_i\)</span> the smaller value between <span class="math inline">\(\{x_i, x_j\}\)</span> and <span class="math inline">\(y_j\)</span> the larger value.</p>
+<div style="text-align: center;">
+<p>For <span class="math inline">\((x_i,x_j)\)</span>, the outputs are computed to be <span class="math inline">\((y_i, y_j)\)</span>.</p>
+<p><span class="math inline">\((x_i,x_j)=(7,3)\)</span>, <span class="math inline">\(s\approx1\)</span> so the output is <span class="math inline">\((3,7)\)</span>.</p>
+<p><span class="math inline">\((x_i,x_j)=(3,7)\)</span>, <span class="math inline">\(s\approx0\)</span> so they remain <span class="math inline">\((3,7)\)</span>.</p>
+</div>
+<p>The same operations run in both cases; no branch depends on encrypted data. The approximation is reliable only on its intended input range and away from the transition near equality.</p>
+<p>It’s a bit tricky to actually implement this with vector-wide operations without being wasteful.<br>
+Here is one draft:</p>
+<ol type="1">
+<li>Construct constant <span class="math inline">\(1\)</span>-hot vectors <span class="math inline">\(c_1 = (1, 0, \ldots, 0)\)</span>, <span class="math inline">\(c_2 = (0, 1, 0, \ldots)\)</span>, … Let <span class="math inline">\(x = (x_1, \ldots, x_n)\)</span>.</li>
+<li>For a given <span class="math inline">\(i, j\)</span>, compute <span class="math display">\[m' = (c_i - c_j) * (x_i, x_i, \ldots, x_i) + (c_j - c_i) * (x_j, x_j, \ldots, x_j).\]</span> This will have a <span class="math inline">\(0\)</span> everywhere, except <span class="math inline">\(m'_i = x_i - x_j\)</span> and <span class="math inline">\(m'_j = x_j - x_i.\)</span></li>
+<li>Now multiply <span class="math inline">\(m = (c_i - c_j) * m'\)</span>. This will also have a <span class="math inline">\(0\)</span> everywhere, except <span class="math inline">\(m_i = m_j = x_i - x_j\)</span>.</li>
+<li>Let <span class="math inline">\(s = -\mathtt{sign}(m)*m'\)</span>. Here,
+<ul>
+<li><span class="math inline">\(s_i\)</span> will be <span class="math inline">\(x_j - x_i\)</span> if <span class="math inline">\(x_i &gt; x_j\)</span>, 0 otherwise.</li>
+<li><span class="math inline">\(s_j\)</span> will be <span class="math inline">\(x_i - x_j\)</span> if <span class="math inline">\(x_i &gt; x_j\)</span>, 0 otherwise.</li>
+<li>all other elements are 0.</li>
+</ul></li>
+<li>Compute <span class="math inline">\(y = x + s\)</span>. If <span class="math inline">\(x_i &lt; x_j\)</span> then <span class="math inline">\(s_k = 0\)</span> everywhere, so <span class="math inline">\(y = x\)</span>. If <span class="math inline">\(x_i &gt; x_j\)</span> then <span class="math inline">\(y_i = x_i + (x_j - x_i) = x_j\)</span>, and <span class="math inline">\(y_j = x_j + (x_i-x_j) = x_i\)</span>. In other words, the result flips <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> if <span class="math inline">\(x_i &gt; x_j\)</span>, meaning the smaller element goes to <span class="math inline">\(x_i\)</span> and the larger element goes to <span class="math inline">\(x_j\)</span>.</li>
+</ol>
+<p>The resulting <span class="math inline">\(y\)</span> is <span class="math inline">\(\mathtt{PairSort}_{i,j}(x)\)</span>. Note this is fully FHE legal and involves no branching.</p>
+</section>
+<section id="the-bubble-sort-algorithm" class="level3" data-number="20.0.2">
+<h3 data-number="20.0.2" class="anchored" data-anchor-id="the-bubble-sort-algorithm"><span class="header-section-number">20.0.2</span> The Bubble Sort Algorithm</h3>
+<p>Bubble sort passes through a given vector, applying PairSort to each neighboring pair. Each pass moves the largest remaining element to the end of the unsorted part, which takes <span class="math inline">\(O(n^2)\)</span> repeated pairwise element comparisons to finish the sort:</p>
+<ol type="1">
+<li>Perform <span class="math inline">\(\mathtt{PairSort}_{1,2}(x)\)</span>, …, <span class="math inline">\(\mathtt{PairSort}_{n-1,n}(x)\)</span>. These <span class="math inline">\(n-1\)</span> moves ensure the maximum element is now at <span class="math inline">\(x_n\)</span>.</li>
+<li>Perform <span class="math inline">\(\mathtt{PairSort}_{1,2}(x)\)</span>, …, <span class="math inline">\(\mathtt{PairSort}_{n-2,n-1}(x)\)</span>. These <span class="math inline">\(n-2\)</span> moves ensure the second-largest element is now at <span class="math inline">\(x_{n-1}\)</span>.</li>
+<li>…</li>
+</ol>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -705,36 +752,10 @@ We call one pass of this function over a vector as a “bubble,” <span class="
 </div>
 </div>
 </div>
-<p>To perform the pairwise comparisons in a non-logical-branching FHE setting, we can use a polynomial-approximated sign function.<br>
-Recall that a sign function <span class="math inline">\(\mathtt{sign}(x)\)</span> returns <span class="math inline">\(1\)</span> if <span class="math inline">\(x \geq 0\)</span> and <span class="math inline">\(0\)</span> otherwise.<br>
-As a proof of concept, define <span class="math inline">\(s=\mathtt{sign}(x_i-x_j)\)</span> and consider: <span class="math display">\[
-\begin{aligned}
-y_i &amp;= s \cdot x_j + (1-s) \cdot x_i \\
-y_j &amp;= s \cdot x_i + (1-s) \cdot x_j.
-\end{aligned} \]</span> We can see that this would give <span class="math inline">\(y_i\)</span> the smaller value between <span class="math inline">\(\{x_i, x_j\}\)</span> and <span class="math inline">\(y_j\)</span> the larger value.</p>
-<p>It’s a bit tricky to actually implement this with vector-wide operations without being wasteful.<br>
-Here is one draft:</p>
-<ol type="1">
-<li>Construct constant <span class="math inline">\(1\)</span>-hot vectors <span class="math inline">\(c_1 = (1, \ldots, 0, 0, 0)\)</span>, <span class="math inline">\(c_2 = (0, 1, 0, \ldots)\)</span>, … Let <span class="math inline">\(x = (x_1, \ldots, x_{n/2})\)</span>.</li>
-<li>For a given <span class="math inline">\(i, j\)</span>, compute <span class="math display">\[m' = (c_i - c_j) * (x_i, x_i, \ldots, x_i) + (c_j - c_i) * (x_j, x_j, \ldots, x_j).\]</span> This will have a <span class="math inline">\(0\)</span> everywhere, except <span class="math inline">\(m'_i = x_i - x_j\)</span> and <span class="math inline">\(m'_j = x_j - x_i.\)</span></li>
-<li>Now multiply <span class="math inline">\(m = (c_i - c_j) * m'\)</span>. This will also have a <span class="math inline">\(0\)</span> everywhere, except <span class="math inline">\(m_i = m_j = x_i - x_j\)</span>.</li>
-<li>Let <span class="math inline">\(s = -\mathtt{sign}(-m)*m'\)</span>. Here,
-<ul>
-<li><span class="math inline">\(s_i\)</span> will be <span class="math inline">\(x_j - x_i\)</span> if <span class="math inline">\(x_j &gt; x_i\)</span>, 0 otherwise.</li>
-<li><span class="math inline">\(s_j\)</span> will be <span class="math inline">\(x_i - x_j\)</span> if <span class="math inline">\(x_j &gt; x_i\)</span>, 0 otherwise.</li>
-<li>all other elements are 0.</li>
-</ul></li>
-<li>Compute <span class="math inline">\(y = x + s\)</span>. If <span class="math inline">\(x_j &lt; x_i\)</span> then <span class="math inline">\(s_k = 0\)</span> everywhere, so <span class="math inline">\(y = x\)</span>. If <span class="math inline">\(x_j &gt; x_i\)</span> then <span class="math inline">\(y_i = x_i + (x_j - x_i) = x_j\)</span>, and <span class="math inline">\(y_j = x_j + (x_i-x_j) = x_i\)</span>. In other words, the result flips <span class="math inline">\(x_j\)</span> and <span class="math inline">\(x_i\)</span> if <span class="math inline">\(x_j &gt; x_i\)</span>, meaning the larger element goes to <span class="math inline">\(x_i\)</span> and the lower element goes to <span class="math inline">\(x_j\)</span>.</li>
-</ol>
-<p>We can then define <span class="math inline">\(\mathtt{bub_{i,j}}(x)\)</span> to be the operation that changes <span class="math inline">\(x\)</span> to the resulting <span class="math inline">\(y\)</span>. Note this is fully FHE legal and involves no branching.</p>
-<ol type="1">
-<li>Perform <span class="math inline">\(\mathtt{bub_{{n/2-1},n/2}}(x)\)</span>, …, <span class="math inline">\(\mathtt{bub_{1,2}}(x)\)</span>. These <span class="math inline">\(n-1\)</span> moves ensure the maximum element is now at <span class="math inline">\(x_1\)</span>.</li>
-<li>Perform <span class="math inline">\(\mathtt{bub_{{n/2-1},n/2}}(x)\)</span>, …, <span class="math inline">\(\mathtt{bub_{2,3}}(x)\)</span>. These <span class="math inline">\(n-2\)</span> moves ensure the second-largest element is now at <span class="math inline">\(x_2\)</span>.</li>
-<li>…</li>
-</ol>
 <p><span class="math inline">\(O(n^2)\)</span> total comparisons (with <span class="math inline">\(O(n)\)</span> per pass) will entirely sort <span class="math inline">\(x\)</span>. However, this gets fairly costly and noisy due to the multiplications in the approximated comparisons.</p>
 
 
+</section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
