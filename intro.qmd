@@ -11,9 +11,8 @@
 
 # Introduction
 
-**CKKS**[^intro-1] (Jung Hee **C**heon, Andrey **K**im, Miran **K**im, and Yongsoo **S**ong) is a **fully homomorphic encryption (FHE)** scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.
+**CKKS** @CKKS (Jung Hee **C**heon, Andrey **K**im, Miran **K**im, and Yongsoo **S**ong) is a **fully homomorphic encryption (FHE)** scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.
 
-[^intro-1]: Jung Hee Cheon, Andrey Kim, Miran Kim, Yongsoo Song; **Homomorphic Encryption for Arithmetic of Approximate Numbers** available from https://eprint.iacr.org/2016/421.pdf
 
 (List was briefly edited to match with current state of book. To be rewritten with more flair.)
 
@@ -23,18 +22,22 @@ In this book, we explore functions that can be built under the CKKS homomorphic 
 
 2.  In [Division](division/intro.qmd) we explore division, which is surprisingly tricky but important.
 
-3.  In [Discrete Math](discrete/intro.qmd) we study "discrete math" concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have).
+3.  In [Discrete Math](sign/intro.qmd) we study "discrete math" concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have).
 
-4. In [Difference Matrix](difference-matrix/intro.qmd) we explore applications of the branching logic built in discrete math, which can support statistical functions like mode and median.
+4.  In [Difference Matrix](difference-matrix/intro.qmd) we explore applications of the branching logic built in discrete math, which can support statistical functions like mode and median.
 
 5.  In [Correlation and Related Functions](correlation-related/intro.qmd) we look at statistical applications to linear regression.
 
 6.  In [Sorting](sorting/intro.qmd) we explore sorting starting from a similar entry point as in conventional computing before quickly diverging down a different path based on constraints of the CKKS scheme.
 
-6.  In [Discrete Computational](discrete-model/intro.qmd) we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.
+7.  In [Discrete Computational](discrete-model/intro.qmd) we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.
 
-7.  We end with some more speculative approaches to various topics in [Other Explorations](other/intro.qmd), including an iterative approach to log and some linear algebra.
+8.  We end with some more speculative approaches to various topics in [Other Explorations](other/intro.qmd), including an iterative approach to log and some linear algebra.
 
-CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of "batching" techniques à la SIMD[^intro-2] (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are "packed" into a single ciphertext and computed upon simultaneously.
+CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of "batching" techniques à la SIMD @Flynn_1972 (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are "packed" into a single ciphertext and computed upon simultaneously.
 
-[^intro-2]: Michael J. Flynn; **Some Computer Organizations and Their Effectiveness** available from https://users.cs.utah.edu/\~hari/teaching/paralg/Flynn72.pdf
+---
+
+
+
+
