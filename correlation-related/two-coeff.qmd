@@ -1,13 +1,14 @@
 
 ## Two Coefficients
 
-Given vectors $\mathbf{x}$ and $\mathbf{y}$, there are $2$ closely related quantities: 1.
-The **correlation coefficient**[^two-coeff-1], a measure of normalized
-linear association, is
+Given vectors $\mathbf{x}$ and $\mathbf{y}$, there are $2$ closely related quantities: 
+
+1. The **correlation coefficient**[^two-coeff-1], a measure of normalized linear association, is
 $$ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.$$
-Often people are instead interested in the square $r^2$, which is called
-the **coefficient of determination**[^two-coeff-2]. 3. The **regression
-coefficient**[^two-coeff-3], a measure of linear rate of change, is
+2. Often people are instead interested in the square $r^2$, which is called
+the **coefficient of determination**[^two-coeff-2].
+
+3. The **regression coefficient**[^two-coeff-3], a measure of linear rate of change, is
 $$\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_i-\bar{x})^2}$$
 
 [^two-coeff-1]: **Correlation coefficient** available from
@@ -21,8 +22,7 @@ $$\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_
 
 These can be approached with the same general strategy:
 
-1.  Compute the means $\bar{x}$ and $\bar{y}$ and subtract them off from
-    the original vectors;
+1.  Compute the means $\bar{x}$ and $\bar{y}$ and subtract them off from the original vectors;
     
 2.  Compute the numerators and denominators separately;
 
@@ -42,7 +42,7 @@ Our task for $r$ then (the work for the regression coefficient is
 similar) becomes computing
 $$ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\sum_{i=1}^{N/2}(y'_i)^2}} $$
 
-1.  The numerator is the [intra-vector sum](/general/intravector-sum.qmd) of $(x')*(y')$.
+1.  The numerator is the [intra-vector sum](/general/intravector-sums.qmd) of $(x')*(y')$.
     
 2.  The denominator is the square of the (scalar) product of two
     intravector sums of $(x')^2$ and $(y')^2$.
