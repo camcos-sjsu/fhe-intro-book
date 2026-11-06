@@ -98,13 +98,13 @@ The example below works through $x = [30, 10, 10, 20]$, with the entries belongi
 \newcommand{\tied}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
 ```
 
-::: {.content-visible when-format="html"}
-::: {.hidden}
+:::: {.content-visible when-format="html"}
+::: hidden
 $$
 \newcommand{\tied}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
 $$
 :::
-:::
+::::
 
 $$
 \overset{A}{\begin{bmatrix}
