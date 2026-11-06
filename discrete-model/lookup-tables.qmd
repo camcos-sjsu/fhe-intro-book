@@ -234,6 +234,21 @@ $$
 
 We can construct $q$ publicly beforehand. Given encrypted inputs $w$ and $z$, we would then evaluate $q(w+z+wz)$.
 
+### Exploiting Symmetry with Multivariate Interpolation
+
+We can also use symmetry to our advantage while keeping variables separate. First, notice that since the interpolated points are symmetric, the polynomial is also symmetric. 
+
+
+
+
+Again, consider the case of modular multiplication with $n = 4$.  Then the polynomial is 
+
+$$
+\boxed{
+f(u,v)=\sum_{a=0}^{3}\sum_{b=0}^{3}
+d_{ab}L_a(u)L_b(v).
+}
+$$
 
 ### Example: Modular Multiplication for n = 4
 
