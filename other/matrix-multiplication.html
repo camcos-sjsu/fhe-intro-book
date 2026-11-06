@@ -687,11 +687,11 @@ window.Quarto = {
 
 
 <p>Let us work with square matrices for simplicity. A client gives us <span class="math inline">\(A, B \in \mathbb{C}^{n \times n}\)</span> and we want to compute <span class="math inline">\(C = A \cdot B\)</span>. For simplicity, we assume that the <em>rows</em> of <span class="math inline">\(A\)</span> and the <em>columns</em> of <span class="math inline">\(B\)</span> are given. If we only have rows of <span class="math inline">\(B\)</span>, we can tweak them to obtain columns.</p>
-<p>Recall the dot product of two vectors <span class="math inline">\(x = (x_1, \dots , x_n)\)</span> and <span class="math inline">\(y = (y_1, \dots , y_n)\)</span> is defined as <span class="math inline">\(x \cdot y = x_1y_1 + \dots + x_ny_n = \sum_{i=1}^{n} x_i y_i\)</span>.</p>
+<p>Recall the <a href="../general/intravector-sums.html">dot product</a> of two vectors <span class="math inline">\(x = (x_1, \dots , x_n)\)</span> and <span class="math inline">\(y = (y_1, \dots , y_n)\)</span> is defined as <span class="math inline">\(x \cdot y = x_1y_1 + \dots + x_ny_n = \sum_{i=1}^{n} x_i y_i\)</span>.</p>
 <ol type="1">
 <li>Suppose we had two encoded vectors <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. We can obtain the vector <span class="math inline">\(x*y = (x_1y_1, x_2y_2, \dots, x_ny_n)\)</span> with element-wise multiplication.</li>
 <li>We then perform an intravector sum to obtain a vector <span class="math display">\[v(x,y) = \mathtt{sum}(x * y) = (d,d,\ldots, d),\]</span> where <span class="math inline">\(d = x \cdot y\)</span>.</li>
-<li>We can then e.g.&nbsp;multiply it with a <span class="math inline">\(1\)</span>-hot mask vector <span class="math inline">\((0, 0, \ldots, 1, 0, \ldots, 0)\)</span> or use it in any other way we wish.</li>
+<li>We can then e.g.&nbsp;multiply it with a <span class="math inline">\(1\)</span>-hot <a href="../general/intro.html">mask vector</a> <span class="math inline">\((0, 0, \ldots, 1, 0, \ldots, 0)\)</span> or use it in any other way we wish.</li>
 </ol>
 <p>This directly lets us compute the <em>entries</em> of the <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(C = A \times B\)</span>, since those are dot products:</p>
 <ol type="1">
