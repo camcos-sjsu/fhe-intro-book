@@ -6,19 +6,70 @@ editor:
 
 ### Bubble Sort
 
-As a proof-of-concept, we choose to use bubble sort as a starting point for sorting.\
-The **bubble sort**[^bubble-1] function passes through a given vector, performing $O(n^2)$ repeated pairwise element comparisons to finish the sort.\
+As a proof-of-concept, we choose to use **bubble sort**[^bubble-1] as a starting point for sorting.\
 It has the benefit of having local operations, only swaps, without more advanced logic such as dynamic memory allocation (that e.g. quicksort would need).
 It is a good candidate for FHE prototyping despite being a well-known "slow" sorting algorithm.
+Each of its steps is one operation on a pair of positions, so we define that operation first.
 
 [^bubble-1]: **Bubble sort** available from https://en.wikipedia.org/wiki/Bubble_sort
 
+### PairSort {#sec-pairsort}
+
 Given an $n$-length vector $x$, the following move will return an $n$-length vector $y$ that is equal to $x$ in every coordinate except possibly $x_i$ and $x_j$.\
-We call one pass of this function over a vector as a "bubble," $\mathtt{bub_{i,j}(x)}$:
+We call this move $\mathtt{PairSort}_{i,j}(x)$:
 
 > Compare $x_i, x_j$ (typically, $i+1 = j$).\
 > (1) If $x_i < x_j$, then $y = x$ with no swapping performed.\
 > (2) If $x_i > x_j$, then $y$ has $x_i$ and $x_j$ swapped.
+
+PairSort is known elsewhere as a compare-and-swap or comparator. To perform it without branching in FHE, we use a polynomial approximation of the sign function.
+
+For two encrypted values $x_i$ and $x_j$, let
+$$s = \mathtt{sign}(x_i-x_j),$$
+where the sign function is approximated by a polynomial and returns approximately $1$ when $x_i \geq x_j$ and $0$ when $x_i < x_j$. This replaces an ordinary conditional such as "if $x_i \geq x_j$, swap" with arithmetic selection:
+
+$$
+\begin{aligned}
+y_i &= s x_j + (1-s)x_i,\\
+y_j &= s x_i + (1-s)x_j.
+\end{aligned}
+$$
+
+This gives $y_i$ the smaller value between $\{x_i, x_j\}$ and $y_j$ the larger value.
+
+::: {style="text-align: center;"}
+For $(x_i,x_j)$, the outputs are computed to be $(y_i, y_j)$.
+
+$(x_i,x_j)=(7,3)$, $s\approx1$ so the output is $(3,7)$.
+
+$(x_i,x_j)=(3,7)$, $s\approx0$ so they remain $(3,7)$.
+:::
+
+The same operations run in both cases; no branch depends on encrypted data. The approximation is reliable only on its intended input range and away from the transition near equality.
+
+It's a bit tricky to actually implement this with vector-wide operations without being wasteful.\
+Here is one draft:
+
+1.  Construct constant $1$-hot vectors $c_1 = (1, 0, \ldots, 0)$, $c_2 = (0, 1, 0, \ldots)$, ... Let $x = (x_1, \ldots, x_n)$.
+2.  For a given $i, j$, compute $$m' = (c_i - c_j) * (x_i, x_i, \ldots, x_i) + (c_j - c_i) * (x_j, x_j, \ldots, x_j).$$ This will have a $0$ everywhere, except $m'_i = x_i - x_j$ and $m'_j = x_j - x_i.$
+3.  Now multiply $m = (c_i - c_j) * m'$. This will also have a $0$ everywhere, except $m_i = m_j = x_i - x_j$.
+4.  Let $s = -\mathtt{sign}(m)*m'$. Here,
+    -   $s_i$ will be $x_j - x_i$ if $x_i > x_j$, 0 otherwise.
+    -   $s_j$ will be $x_i - x_j$ if $x_i > x_j$, 0 otherwise.
+    -   all other elements are 0.
+5.  Compute $y = x + s$. If $x_i < x_j$ then $s_k = 0$ everywhere, so $y = x$. If $x_i > x_j$ then $y_i = x_i + (x_j - x_i) = x_j$, and $y_j = x_j + (x_i-x_j) = x_i$. In other words, the result flips $x_i$ and $x_j$ if $x_i > x_j$, meaning the smaller element goes to $x_i$ and the larger element goes to $x_j$.
+
+The resulting $y$ is $\mathtt{PairSort}_{i,j}(x)$.
+Note this is fully FHE legal and involves no branching.
+
+### The Bubble Sort Algorithm
+
+Bubble sort passes through a given vector, applying PairSort to each neighboring pair.
+Each pass moves the largest remaining element to the end of the unsorted part, which takes $O(n^2)$ repeated pairwise element comparisons to finish the sort:
+
+1.  Perform $\mathtt{PairSort}_{1,2}(x)$, ..., $\mathtt{PairSort}_{n-1,n}(x)$. These $n-1$ moves ensure the maximum element is now at $x_n$.
+2.  Perform $\mathtt{PairSort}_{1,2}(x)$, ..., $\mathtt{PairSort}_{n-2,n-1}(x)$. These $n-2$ moves ensure the second-largest element is now at $x_{n-1}$.
+3.  ...
 
 ```{r}
 #| echo: false
@@ -129,33 +180,6 @@ knitr::include_graphics("sorting_visualizer.gif")
 } else {
 }
 ```
-
-To perform the pairwise comparisons in a non-logical-branching FHE setting, we can use a polynomial-approximated sign function.\
-Recall that a sign function $\mathtt{sign}(x)$ returns $1$ if $x \geq 0$ and $0$ otherwise.\
-As a proof of concept, define $s=\mathtt{sign}(x_i-x_j)$ and consider: $$
-\begin{aligned}
-y_i &= s \cdot x_j + (1-s) \cdot x_i \\
-y_j &= s \cdot x_i + (1-s) \cdot x_j.
-\end{aligned} $$ We can see that this would give $y_i$ the smaller value between $\{x_i, x_j\}$ and $y_j$ the larger value.
-
-It's a bit tricky to actually implement this with vector-wide operations without being wasteful.\
-Here is one draft:
-
-1.  Construct constant $1$-hot vectors $c_1 = (1, \ldots, 0, 0, 0)$, $c_2 = (0, 1, 0, \ldots)$, ... Let $x = (x_1, \ldots, x_{n/2})$.
-2.  For a given $i, j$, compute $$m' = (c_i - c_j) * (x_i, x_i, \ldots, x_i) + (c_j - c_i) * (x_j, x_j, \ldots, x_j).$$ This will have a $0$ everywhere, except $m'_i = x_i - x_j$ and $m'_j = x_j - x_i.$
-3.  Now multiply $m = (c_i - c_j) * m'$. This will also have a $0$ everywhere, except $m_i = m_j = x_i - x_j$.
-4.  Let $s = -\mathtt{sign}(-m)*m'$. Here,
-    -   $s_i$ will be $x_j - x_i$ if $x_j > x_i$, 0 otherwise.
-    -   $s_j$ will be $x_i - x_j$ if $x_j > x_i$, 0 otherwise.
-    -   all other elements are 0.
-5.  Compute $y = x + s$. If $x_j < x_i$ then $s_k = 0$ everywhere, so $y = x$. If $x_j > x_i$ then $y_i = x_i + (x_j - x_i) = x_j$, and $y_j = x_j + (x_i-x_j) = x_i$. In other words, the result flips $x_j$ and $x_i$ if $x_j > x_i$, meaning the larger element goes to $x_i$ and the lower element goes to $x_j$.
-
-We can then define $\mathtt{bub_{i,j}}(x)$ to be the operation that changes $x$ to the resulting $y$.
-Note this is fully FHE legal and involves no branching.
-
-1.  Perform $\mathtt{bub_{{n/2-1},n/2}}(x)$, ..., $\mathtt{bub_{1,2}}(x)$. These $n-1$ moves ensure the maximum element is now at $x_1$.
-2.  Perform $\mathtt{bub_{{n/2-1},n/2}}(x)$, ..., $\mathtt{bub_{2,3}}(x)$. These $n-2$ moves ensure the second-largest element is now at $x_2$.
-3.  ...
 
 $O(n^2)$ total comparisons (with $O(n)$ per pass) will entirely sort $x$.
 However, this gets fairly costly and noisy due to the multiplications in the approximated comparisons.

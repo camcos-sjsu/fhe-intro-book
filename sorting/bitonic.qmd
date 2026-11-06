@@ -1,8 +1,8 @@
 ### Bitonic Sort {#sec-bitonic-sort}
 
-Odd-even sort reduces depth by comparing many neighboring pairs at once. But its comparisons only move values one position per round. Values that start far apart must make progress through many neighboring comparisons, so an $N$-element input can require $N$ rounds and $O(N^2)$ compare-and-swaps. In FHE, where each comparison layer has a cost, this leaves room to improve.
+Odd-even sort reduces depth by comparing many neighboring pairs at once. But its comparisons only move values one position per round. Values that start far apart must make progress through many neighboring comparisons, so an $N$-element input can require $N$ rounds and $O(N^2)$ PairSorts. In FHE, where each comparison layer has a cost, this leaves room to improve.
 
-A **sorting network** is a fixed schedule of compare and swap operations. Each layer contains disjoint pairs, so all comparisons in that layer can run in parallel. Unlike an ordinary comparison sort, the schedule does not depend on the input values. The design challenge is to choose a schedule that moves values into order with fewer layers and fewer total comparisons.
+A **sorting network** is a fixed schedule of PairSort operations. Each layer contains disjoint pairs, so all comparisons in that layer can run in parallel. Unlike an ordinary comparison sort, the schedule does not depend on the input values. The design challenge is to choose a schedule that moves values into order with fewer layers and fewer total comparisons.
 
 #### Bitonic sequences and merging
 
@@ -60,7 +60,7 @@ $$
 
 Those three layers merge one bitonic sequence of length eight. Bitonic sort constructs larger bitonic sequences from smaller ones, then applies these merges. For $N$ a power of two, its network has $\frac{\log_2 N(\log_2 N+1)}{2}$ layers [@ref15].
 
-@fig-bitonic-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one compare and swap, with the larger value moving toward the arrowhead.
+@fig-bitonic-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.
 
 ```{r}
 #| label: fig-bitonic-network
@@ -71,13 +71,13 @@ Those three layers merge one bitonic sequence of length eight. Bitonic sort cons
 #| fig-width: 9
 #| fig-height: 4.6
 #| dev.args: !expr list(bg = "transparent")
-#| fig-cap: "The bitonic sorting network for eight inputs, with 6 layers and 24 compare and swaps. The colored arrows are the three merge layers from the worked example, using the same colors as the equations above."
-#| fig-alt: "A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations in six layers, grouped into three stages. The first stage has one layer comparing adjacent pairs. The second has two layers that merge to length four, comparing positions two apart and then adjacent positions. The third has three layers that merge to length eight, comparing positions four apart, then two apart, then adjacent positions. Arrows point to the position that receives the larger value."
+#| fig-cap: "The bitonic sorting network for eight inputs, with 6 layers and 24 PairSorts. The colored arrows are the three merge layers from the worked example, using the same colors as the equations above."
+#| fig-alt: "A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations in six layers, grouped into three stages. The first stage has one layer comparing adjacent pairs. The second has two layers that merge to length four, comparing positions two apart and then adjacent positions. The third has three layers that merge to length eight, comparing positions four apart, then two apart, then adjacent positions. Arrows point to the position that receives the larger value."
 
 library(ggplot2)
 
-# Each row is one compare and swap: the larger value moves to `to`.
-# Comparators with the same layer and different slots overlap vertically, so
+# Each row is one PairSort: the larger value moves to `to`.
+# PairSorts with the same layer and different slots overlap vertically, so
 # they are drawn side by side. `pair` matches the colors in the equations above.
 network <- data.frame(
   layer = rep(1:6, each = 4),
@@ -147,6 +147,6 @@ ggplot() +
 
 #### How much does this save?
 
-For eight inputs, odd-even sort uses eight alternating odd/even comparison rounds. Each round compares three or four neighboring pairs, for 28 compare and swaps total. The bitonic network uses six layers and 24 compare and swaps. Both schedules can batch each layer's disjoint comparisons across ciphertext slots, but bitonic sort needs fewer sequential layers and fewer comparisons in this example. Since each layer is one vector-wide evaluation, the layer count is the saving that matters most in FHE. Bitonic sort functionally uses $O(\log^2 N)$ layers and $O(N\log^2 N)$ comparisons [@ref15], versus $O(N)$ rounds and $O(N^2)$ comparisons for odd-even sort.
+For eight inputs, odd-even sort uses eight alternating odd/even comparison rounds. Each round compares three or four neighboring pairs, for 28 PairSorts total. The bitonic network uses six layers and 24 PairSorts. Both schedules can batch each layer's disjoint comparisons across ciphertext slots, but bitonic sort needs fewer sequential layers and fewer comparisons in this example. Since each layer is one vector-wide evaluation, the layer count is the saving that matters most in FHE. Bitonic sort functionally uses $O(\log^2 N)$ layers and $O(N\log^2 N)$ comparisons [@ref15], versus $O(N)$ rounds and $O(N^2)$ comparisons for odd-even sort.
 
-Each layer still uses the same compare-and-swap operation described in @sec-comparison-based-sorting. The next step is to look at a different way to organize sorting: compute how many values in the array are less than a given value, then move it to that index.
+Each layer still uses the same PairSort operation described in @sec-pairsort. The next step is to look at a different way to organize sorting: compute how many values in the array are less than a given value, then move it to that index.

@@ -1,6 +1,6 @@
 ### Odd-Even Sort {#sec-odd-even}
 
-Bubble sort applies the comparison and swap to two elements in a vector, then uses its updated vector in the next comparison. In FHE we have a unique advantage, that being the vectorwide nature of computation. This causes computations batched on a ciphertext to be functionally the same cost regardless of how much of the ciphertext is populated. Using this, we can organize the comparisons into layers of adjacent pairs, where each layer is a single vectorwide comparison and swap. This is called odd-even sort. It is a simple example of optimizations that can be made to bubble sort, and is a stepping stone to more advanced sorting networks.
+Bubble sort applies PairSort to two elements in a vector, then uses its updated vector in the next comparison. In FHE we have a unique advantage, that being the vectorwide nature of computation. This causes computations batched on a ciphertext to be functionally the same cost regardless of how much of the ciphertext is populated. Using this, we can organize the comparisons into layers of adjacent pairs, where each layer is a single vectorwide PairSort. This is called odd-even sort. It is a simple example of optimizations that can be made to bubble sort, and is a stepping stone to more advanced sorting networks.
 
 Odd-even sort organizes the comparisons into two alternating layers [^odd-even-1]. Number the vector positions from $1$. The **odd layer** compares
 
@@ -15,13 +15,13 @@ $$
 $$
 
 
-For one iteration, let the input be $x=(x_1,\ldots,x_N)$ with $N$ even. In the odd layer, compare and swap the disjoint pairs $(x_1,x_2)$, $(x_3,x_4),\ldots,(x_{N-1},x_N)$ simultaneously. Write the resulting vector as
+For one iteration, let the input be $x=(x_1,\ldots,x_N)$ with $N$ even. In the odd layer, apply PairSort to the disjoint pairs $(x_1,x_2)$, $(x_3,x_4),\ldots,(x_{N-1},x_N)$ simultaneously. Write the resulting vector as
 
 $$
 x'=(a_1,b_1,a_2,b_2,\ldots,a_{N/2},b_{N/2}),
 $$
 
-where $(a_k,b_k)=(\min(x_{2k-1},x_{2k}),\max(x_{2k-1},x_{2k}))$ for $k=1,\ldots,N/2$. Then the even layer compare and swaps $(b_1,a_2),(b_2,a_3),\ldots,(b_{N/2-1},a_{N/2})$ simultaneously, leaving the endpoints in place. This produces the next vector
+where $(a_k,b_k)=(\min(x_{2k-1},x_{2k}),\max(x_{2k-1},x_{2k}))$ for $k=1,\ldots,N/2$. Then the even layer applies PairSort to $(b_1,a_2),(b_2,a_3),\ldots,(b_{N/2-1},a_{N/2})$ simultaneously, leaving the endpoints in place. This produces the next vector
 
 $$
 x''=(a_1,c_1,d_1,c_2,d_2,\ldots,c_{N/2-1},d_{N/2-1},b_{N/2}),
@@ -29,12 +29,12 @@ $$
 
 where $(c_k,d_k)=(\min(b_k,a_{k+1}),\max(b_k,a_{k+1}))$ for $k=1,\ldots,N/2-1$. One odd layer followed by one even layer is one odd-even iteration; repeating this fixed schedule moves values toward their sorted positions.
 
-Repeat the alternating layers for $N$ phases to sort $N$ inputs. Sequentially, bubble sort performs $O(N^2)$ individual compare and swaps, but Odd-even sort instead needs only $O(N)$ **comparison layers**, due to only requiring one vector-wide comparison-polynomial evaluation per pass, regardless of how many pairs are being compared. 
+Repeat the alternating layers for $N$ phases to sort $N$ inputs. Sequentially, bubble sort performs $O(N^2)$ individual PairSorts, but Odd-even sort instead needs only $O(N)$ **comparison layers**, due to only requiring one vector-wide comparison-polynomial evaluation per pass, regardless of how many pairs are being compared. 
 
 [^odd-even-1]: N. Habermann, **Parallel neighbor-sort (or the glory of the induction principle)**, available from https://kilthub.cmu.edu/articles/journal_contribution/Parallel_neighbor-sort_or_the_glory_of_the_induction_principle\_/6608258?file=12099395
 
 
-@fig-odd-even-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one compare and swap, with the larger value moving toward the arrowhead.
+@fig-odd-even-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.
 
 ```{r}
 #| label: fig-odd-even-network
@@ -45,12 +45,12 @@ Repeat the alternating layers for $N$ phases to sort $N$ inputs. Sequentially, b
 #| fig-width: 9
 #| fig-height: 4.6
 #| dev.args: !expr list(bg = "transparent")
-#| fig-cap: "The odd-even sorting network for eight inputs, with 8 layers and 28 compare and swaps."
-#| fig-alt: "A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark compare and swap operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value."
+#| fig-cap: "The odd-even sorting network for eight inputs, with 8 layers and 28 PairSorts."
+#| fig-alt: "A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions in eight layers. Odd layers compare positions 1 and 2, 3 and 4, 5 and 6, and 7 and 8. Even layers compare positions 2 and 3, 4 and 5, and 6 and 7. The two layer types alternate, and each arrow points to the higher position, which receives the larger value."
 
 library(ggplot2)
 
-# Each row is one compare and swap: the larger value moves to `to`.
+# Each row is one PairSort: the larger value moves to `to`.
 odd_layer  <- data.frame(from = c(1, 3, 5, 7), to = c(2, 4, 6, 8))
 even_layer <- data.frame(from = c(2, 4, 6), to = c(3, 5, 7))
 
@@ -103,4 +103,4 @@ ggplot() +
   )
 ```
 
-For the compare and swap operation used in each layer, see @sec-comparison-based-sorting.
+For the PairSort operation used in each layer, see @sec-pairsort.
