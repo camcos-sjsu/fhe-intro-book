@@ -1,6 +1,6 @@
 # Division
 
-In this section, we tackle **division,** which is surprisingly tricky in our specialized context. Here, by division we mean dividing by an encrypted unknown value, such as wanting $\mathtt{enc}(\frac{1}{z_*})$ given $\mathtt{enc}(z_*)$. This is not obvious and cannot be precomputed.
+In this section, we tackle **division**, which is surprisingly tricky in our specialized context. Here, by division we mean dividing by an encrypted unknown value, such as wanting $\mathtt{enc}(\frac{1}{z_*})$ given $\mathtt{enc}(z_*)$. This is not obvious and cannot be precomputed.
 
 ::: {.callout-tip icon="false" title="**Remark**"}
 Of course, this depends on context. For example, in a hypothetical scenario where we only ever divide by *user input*, we can just ask the users to supply inverses to their own numbers (that is, if every time we get an encryption of $x_i$ we also get $\mathtt{enc}(1/x_i)$), then this is not a hard problem.
