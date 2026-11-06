@@ -1,6 +1,6 @@
 # Difference Matrix Method
 
-A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don't have. We introduce what we call the **difference matrix method** which will allow us to implement both statistics in a similar way (though still requiring tools from the Discrete Math section, especially Equality and Max).
+A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don't have. We introduce what we call the **difference matrix method** which will allow us to implement both statistics in a similar way (though still requiring tools from the [Discrete Math](/sign/intro.qmd) section, especially Equality and Max).
 
 ![median-mode.drawio (1)](https://hackmd.io/_uploads/rkgUFSP-ze.png)
 
@@ -29,11 +29,11 @@ Here is how we would generate the difference matrix:
 ::: {.callout-tip icon="false" title="**Info**"}
 **Remark**: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following:
 
-1.  given an input vector $(x_1, \ldots, x_{N/2})$,
+1.  Given an input vector $(x_1, \ldots, x_{N/2})$,
 
-2.  define indicator vectors $c_i = (0,0,\dots,1_i,0\dots,0)$.
+2.  Define indicator vectors $c_i = (0,0,\dots,1_i,0\dots,0)$.
 
 3.  Compute $x_i = \sum_{i=1}^{N/2}(c_i*x)$; this will isolate the $x$'s vector value at index $i$,
 
-4.  ...and then the rest is the same as before.
+...and then the rest is the same as before.
 :::
