@@ -8,7 +8,8 @@ editor:
 
 As a proof-of-concept, we choose to use bubble sort as a starting point for sorting.\
 The **bubble sort**[^bubble-1] function passes through a given vector, performing $O(n^2)$ repeated pairwise element comparisons to finish the sort.\
-It has the benefit of having local operations, mostly comparisons and swaps, without more advanced logic such as dynamic memory allocation (that e.g. quicksort would need), so it is a good candidate for FHE prototyping despite being a well-known "slow" sorting algorithm.
+It has the benefit of having local operations, only swaps, without more advanced logic such as dynamic memory allocation (that e.g. quicksort would need).
+It is a good candidate for FHE prototyping despite being a well-known "slow" sorting algorithm.
 
 [^bubble-1]: **Bubble sort** available from https://en.wikipedia.org/wiki/Bubble_sort
 
@@ -130,7 +131,7 @@ knitr::include_graphics("sorting_visualizer.gif")
 ```
 
 To perform the pairwise comparisons in a non-logical-branching FHE setting, we can use a polynomial-approximated sign function.\
-Recall that we can implement a sign function $\mathtt{sign}(x)$ that returns $1$ if $x \geq 0$ and $0$ otherwise.\
+Recall that a sign function $\mathtt{sign}(x)$ returns $1$ if $x \geq 0$ and $0$ otherwise.\
 As a proof of concept, define $s=\mathtt{sign}(x_i-x_j)$ and consider: $$
 \begin{aligned}
 y_i &= s \cdot x_j + (1-s) \cdot x_i \\
