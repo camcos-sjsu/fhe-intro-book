@@ -686,7 +686,7 @@ window.Quarto = {
 </header>
 
 
-<p>Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.</p>
+<p>Using the <a href="general/intravector-sums.qmd">sum</a> technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.</p>
 <p>Let vector <span class="math inline">\(\vec{x}\)</span> be an encoded series of <span class="math inline">\(n\)</span> sample measurements):</p>
 <p><span class="math display">\[\vec{x}=(x_1,x_2,\ldots,x_n)\]</span></p>
 <p>Define the <span class="math inline">\(k\)</span>-th <strong>(raw) moment</strong> to be the expectation of the <span class="math inline">\(k^{th}\)</span> power of the random variable <span class="math inline">\(X\)</span></p>
@@ -699,7 +699,7 @@ window.Quarto = {
 <ol start="2" type="1">
 <li>Compute <span class="math inline">\((x_1^k+x_2^k+\ldots+x_n^k)\)</span>.</li>
 </ol>
-<p>Performing the intra-vector sum operation from the previous section allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_n^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p>
+<p>Performing the <a href="general/intravector-sum.qmd">intra-vector sum</a> operation allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_n^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p>
 <ol start="3" type="1">
 <li>Divide by <span class="math inline">\(n\)</span> (a known constant) by multiplying by the vector <span class="math inline">\((1/n) \cdot (1, 1, \cdots, 1)\)</span>.</li>
 </ol>
