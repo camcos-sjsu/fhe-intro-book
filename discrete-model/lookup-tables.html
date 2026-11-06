@@ -883,9 +883,9 @@ q\left(\zeta^a+\zeta^b+\zeta^{a+b}\right)=\zeta^{ab}.
 </section>
 <section id="exploiting-symmetry-with-multivariate-interpolation" class="level3" data-number="26.0.5">
 <h3 data-number="26.0.5" class="anchored" data-anchor-id="exploiting-symmetry-with-multivariate-interpolation"><span class="header-section-number">26.0.5</span> Exploiting Symmetry with Multivariate Interpolation</h3>
-<p>We can also use symmetry to our advantage while keeping variables separate. Since our polynomial represents a symmetric function, (P(u,v)=P(v,u)). In the expanded form, <span class="math display">\[
+<p>We can also use symmetry to our advantage while keeping variables separate. Since our polynomial represents a symmetric function, <span class="math inline">\((P(u,v)=P(v,u))\)</span>. In the expanded form, <span class="math display">\[
 P(u,v)=\sum_{i,j=0}^{n-1}A_{ij}u^iv^j,
-\]</span> we therefore have (A_{ij}=A_{ji}). This lets us group terms with matching coefficients as follows. <span class="math display">\[
+\]</span> we therefore have <span class="math inline">\((A_{ij}=A_{ji})\)</span>. This lets us group terms with matching coefficients as follows. <span class="math display">\[
 P(u,v)
 =\sum_{i=0}^{n-1}A_{ii}(uv)^i
 +\sum_{0\le i&lt;j\le n-1}
@@ -896,14 +896,14 @@ u^2+v^2=(u+iv)(u-iv).
 \]</span> This requires only one multiplication, rather than the two needed to square <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> separately.</p>
 <p>We would like to generalize this for <span class="math inline">\(k &gt; 2\)</span>. We know that we can factor any polynomial using its complex roots.</p>
 <p>First, consider the single variate case: <span class="math display">\[
-x^k+1=\prod_{i=-1}^k(x-r_i).
+x^k+1=\prod_{i=1}^k(x-r_i).
 \]</span> Where <span class="math inline">\(r_i\)</span> is the <span class="math inline">\(i\)</span>-th <span class="math inline">\(k\)</span>-th root of <span class="math inline">\(-1\)</span> .</p>
 <p>When <span class="math inline">\(v = 0\)</span> our problem is trivial. For <span class="math inline">\(v\neq 0\)</span>, substitute <span class="math inline">\(x=u/v\)</span> to get <span class="math display">\[
 \left(\frac{u}{v}\right)^k+1
-=\prod_{r^k=-1}\left(\frac{u}{v}-r\right).
+=\prod_{i=1}^k\left(\frac{u}{v}-r_i\right).
 \]</span></p>
 <p>Multiplying by <span class="math inline">\(v^k\)</span> and distributing gives <span class="math display">\[
-u^k+v^k=\prod_{r^k=-1}(u-rv).
+u^k+v^k=\prod_{r=1}^k(u-r_iv).
 \]</span></p>
 <p>Evaluating this requires <span class="math inline">\(k-1\)</span> multiplications. This can be more efficient for small <span class="math inline">\(k\)</span>, but is not efficient for larger <span class="math inline">\(k\)</span>.</p>
 </section>
@@ -948,14 +948,16 @@ Q(t)=1+\frac{1}{7072000}\bigl[&amp;
 <p>For their method, calculating <span class="math inline">\(u^2,u^3,v^2,v^3\)</span> takes four multiplications. There are also nine mixed terms <span class="math inline">\(u^iv^j\)</span> with <span class="math inline">\(i,j\in\{1,2,3\}\)</span>, giving thirteen multiplications altogether.</p>
 <p>However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate <span class="math inline">\(t\)</span>, and four more to get all powers through <span class="math inline">\(t^9\)</span>. Their method needs only three layers: two to obtain powers through <span class="math inline">\(u^3\)</span> and <span class="math inline">\(v^3\)</span>, and one more for the mixed terms.</p>
 <p>Thus, <span class="math display">\[
-\begin{array}{c|cc}
-&amp; \text{Our method} &amp; \text{Their method}\\
+\begin{array}{c|ccc}
+&amp; \text{Univariate}
+&amp; \text{Bivariate}
+&amp; \text{Bivariate with symmetry}\\
 \hline
-\text{Encrypted multiplications} &amp; 9 &amp; 13\\
-\text{Multiplication depth} &amp; 5 &amp; 3
+\text{Encrypted multiplications} &amp; 9 &amp; 13 &amp; 10\\
+\text{Multiplicative depth} &amp; 5 &amp; 3 &amp; 3
 \end{array}
 \]</span></p>
-<p>Our method uses fewer multiplications, while theirs has less depth.</p>
+<p>The combined-variable method uses fewer multiplications, while the bivariate method has less depth.</p>
 
 
 <div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
