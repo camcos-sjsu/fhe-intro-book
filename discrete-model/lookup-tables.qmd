@@ -234,6 +234,47 @@ $$
 
 We can construct $q$ publicly beforehand. Given encrypted inputs $w$ and $z$, we would then evaluate $q(w+z+wz)$.
 
+### Exploiting Symmetry with Multivariate Interpolation
+
+We can also use symmetry to our advantage while keeping variables separate. Since our polynomial represents a symmetric function, (P(u,v)=P(v,u)). In the expanded form,
+$$
+P(u,v)=\sum_{i,j=0}^{n-1}A_{ij}u^iv^j,
+$$
+we therefore have (A_{ij}=A_{ji}). This lets us group terms with matching coefficients as follows.
+$$
+P(u,v)
+=\sum_{i=0}^{n-1}A_{ii}(uv)^i
++\sum_{0\le i<j\le n-1}
+A_{ij}(uv)^i\left(u^{j-i}+v^{j-i}\right).
+$$
+We can compute the powers of $(uv)$ and the sums $(u^k+v^k)$ instead of individually multiplying every term $u^iv^j$
+
+
+To compute the $(u^k+v^k)$, we can use factorization.  For example, since $i^2=-1$,
+$$
+u^2+v^2=(u+iv)(u-iv).
+$$
+This requires only one multiplication, rather than the two needed to square $u$ and $v$ separately.
+
+We would like to generalize this for $k > 2$. We know that we can factor any polynomial using its complex roots.  It's less obvious how to do this for bivariate polynomials.  
+
+$$
+x^k+1=\prod_{r^k=-1}(x-r).
+$$
+
+
+For $v\neq 0$, substitute $x=u/v$ to get
+$$
+\left(\frac{u}{v}\right)^k+1
+=\prod_{r^k=-1}\left(\frac{u}{v}-r\right).
+$$
+Multiplying by $v^k$ and distributing gives
+$$
+u^k+v^k=\prod_{r^k=-1}(u-rv).
+$$
+
+Evaluating this requires $k-1$ multiplications. This can be more efficient for small $k$, but is not efficient for larger $k$.
+
 
 ### Example: Modular Multiplication for n = 4
 
@@ -253,6 +294,27 @@ P(u,v)=\frac14\bigl[&
 $$
 
 $c=2$ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 $$
 t(u,v)=u+v+2uv.
