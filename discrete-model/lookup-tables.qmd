@@ -256,18 +256,21 @@ u^2+v^2=(u+iv)(u-iv).
 $$
 This requires only one multiplication, rather than the two needed to square $u$ and $v$ separately.
 
-We would like to generalize this for $k > 2$. We know that we can factor any polynomial using its complex roots.  It's less obvious how to do this for bivariate polynomials.  
+We would like to generalize this for $k > 2$. We know that we can factor any polynomial using its complex roots.
 
+First, consider the single variate case:
 $$
-x^k+1=\prod_{r^k=-1}(x-r).
+x^k+1=\prod_{i=-1}^k(x-r_i).
 $$
+Where $r_i$ is the $i$-th $k$-th root of $-1$ .
 
-
-For $v\neq 0$, substitute $x=u/v$ to get
+When $v = 0$ our problem is trivial.  For $v\neq 0$, substitute $x=u/v$ to get
 $$
 \left(\frac{u}{v}\right)^k+1
 =\prod_{r^k=-1}\left(\frac{u}{v}-r\right).
 $$
+
+
 Multiplying by $v^k$ and distributing gives
 $$
 u^k+v^k=\prod_{r^k=-1}(u-rv).
