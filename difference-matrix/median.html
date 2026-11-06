@@ -686,7 +686,10 @@ window.Quarto = {
 </header>
 
 
-<p>We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and <span class="math inline">\(N/2\)</span> is odd. 1. Create a matrix <span class="math inline">\(D\)</span> where <span class="math display">\[D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).\]</span> We can just compute the same matrix and then run the sign function over every row. This looks like:</p>
+<p>We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and <span class="math inline">\(N/2\)</span> is odd.</p>
+<ol type="1">
+<li>Create a matrix <span class="math inline">\(D\)</span> where <span class="math display">\[D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).\]</span> We can just compute the same matrix and then run the sign function over every row. This looks like:</li>
+</ol>
 <p><span class="math display">\[
 \begin{array}{c|ccccc}
   &amp; x_1 &amp; x_2 &amp; x_3 &amp; \cdots &amp; x_{N/2} \\
@@ -700,9 +703,9 @@ x_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
 \]</span></p>
 <p>though unlike <span class="math inline">\(D\)</span> from earlier, <span class="math inline">\(\delta_{i,j} \in \{-1, 1\}\)</span>. We assume the diagonals are assigned <span class="math inline">\(0\)</span> here.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <ol start="2" type="1">
-<li>Now, if <span class="math inline">\(z_i\)</span> were the median, then it would have an equal number of <span class="math inline">\(-1\)</span>s and <span class="math inline">\(1\)</span>s in its row, which is equivalent with having row sum <span class="math inline">\(0\)</span> (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).</li>
-<li>Thus, we can get a vector of the sums of the <span class="math inline">\(x_i\)</span> and then compute equality with zero: <span class="math display">\[m := ((x_1 + x_2 + \cdots + x_{N/2}) == 0)\]</span> to obtain a <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vector that points out which <em>index</em> the median falls in.</li>
-<li>If we are interested in the <em>value</em> of the median instead of the <em>index,</em> then we can just multiply <span class="math inline">\(\mathtt{sum}(m * z)\)</span>. Note that this sum only works if exactly one element is the median: if, say, two elements are the median, then we would get twice the median if we sum.</li>
+<li><p>Now, if <span class="math inline">\(z_i\)</span> were the median, then it would have an equal number of <span class="math inline">\(-1\)</span>s and <span class="math inline">\(1\)</span>s in its row, which is equivalent with having row sum <span class="math inline">\(0\)</span> (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).</p></li>
+<li><p>Thus, we can get a vector of the sums of the <span class="math inline">\(x_i\)</span> and then compute equality with zero: <span class="math display">\[m := ((x_1 + x_2 + \cdots + x_{N/2}) == 0)\]</span> to obtain a <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vector that points out which <em>index</em> the median falls in.</p></li>
+<li><p>If we are interested in the <em>value</em> of the median instead of the <em>index,</em> then we can just multiply <span class="math inline">\(\mathtt{sum}(m * z)\)</span>. Note that this sum only works if exactly one element is the median: if, say, two elements are the median, then we would get twice the median if we sum.</p></li>
 </ol>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -715,8 +718,8 @@ x_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li>If we want to sort for any reason, then getting the median from the sort is immediate and we would not need to add extra computation.</li>
-<li>Constructing quartiles is similar to the median. If we use the “sum sign functions” method, then getting a 75% quartile is just finding something with row sum <span class="math inline">\(N/2\)</span> instead of <span class="math inline">\(0\)</span>.</li>
+<li><p>If we want to sort for any reason, then getting the median from the sort is immediate and we would not need to add extra computation.</p></li>
+<li><p>Constructing quartiles is similar to the median. If we use the “sum sign functions” method, then getting a 75% quartile is just finding something with row sum <span class="math inline">\(N/2\)</span> instead of <span class="math inline">\(0\)</span>.</p></li>
 </ol>
 </div>
 </div>
