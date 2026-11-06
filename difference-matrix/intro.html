@@ -686,7 +686,7 @@ window.Quarto = {
 </header>
 
 
-<p>A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don’t have. We introduce what we call the <strong>difference matrix method</strong> which will allow us to implement both statistics in a similar way (though still requiring tools from the Discrete Math section, especially Equality and Max).</p>
+<p>A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don’t have. We introduce what we call the <strong>difference matrix method</strong> which will allow us to implement both statistics in a similar way (though still requiring tools from the <a href="../sign/intro.html">Discrete Math</a> section, especially Equality and Max).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hackmd.io/_uploads/rkgUFSP-ze.png" class="img-fluid figure-img"></p>
@@ -732,11 +732,11 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p><strong>Remark</strong>: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following:</p>
 <ol type="1">
-<li><p>given an input vector <span class="math inline">\((x_1, \ldots, x_{N/2})\)</span>,</p></li>
-<li><p>define indicator vectors <span class="math inline">\(c_i = (0,0,\dots,1_i,0\dots,0)\)</span>.</p></li>
+<li><p>Given an input vector <span class="math inline">\((x_1, \ldots, x_{N/2})\)</span>,</p></li>
+<li><p>Define indicator vectors <span class="math inline">\(c_i = (0,0,\dots,1_i,0\dots,0)\)</span>.</p></li>
 <li><p>Compute <span class="math inline">\(x_i = \sum_{i=1}^{N/2}(c_i*x)\)</span>; this will isolate the <span class="math inline">\(x\)</span>’s vector value at index <span class="math inline">\(i\)</span>,</p></li>
-<li><p>…and then the rest is the same as before.</p></li>
 </ol>
+<p>…and then the rest is the same as before.</p>
 </div>
 </div>
 
