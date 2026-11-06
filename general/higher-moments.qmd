@@ -1,6 +1,6 @@
 ## Higher Moments 
 
-Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.
+Using the [sum](general/intravector-sums.qmd) technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.
 
 Let vector $\vec{x}$ be an encoded series of $n$ sample measurements):
 
@@ -19,7 +19,7 @@ $$ X \rightarrow X*X \rightarrow \cdots \rightarrow X * \cdots * X (k \text{ tim
 
 2. Compute $(x_1^k+x_2^k+\ldots+x_n^k)$.
 
-Performing the intra-vector sum operation from the previous section allows us to get the vector $(x_1^k + \cdots + x_n^k)\cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ additional operations. 
+Performing the [intra-vector sum](general/intravector-sum.qmd) operation allows us to get the vector $(x_1^k + \cdots + x_n^k)\cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ additional operations. 
 
 3. Divide by $n$ (a known constant) by multiplying by the vector $(1/n) \cdot (1, 1, \cdots, 1)$.
 
