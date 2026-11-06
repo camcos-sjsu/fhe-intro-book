@@ -2,11 +2,11 @@
 
 Let us work with square matrices for simplicity. A client gives us $A, B \in \mathbb{C}^{n \times n}$ and we want to compute $C = A \cdot B$. For simplicity, we assume that the *rows* of $A$ and the *columns* of $B$ are given. If we only have rows of $B$, we can tweak them to obtain columns.
 
-Recall the dot product of two vectors $x = (x_1, \dots , x_n)$ and $y = (y_1, \dots , y_n)$ is defined as $x \cdot y = x_1y_1 + \dots + x_ny_n = \sum_{i=1}^{n} x_i y_i$.
+Recall the [dot product](/general/intravector-sums.qmd) of two vectors $x = (x_1, \dots , x_n)$ and $y = (y_1, \dots , y_n)$ is defined as $x \cdot y = x_1y_1 + \dots + x_ny_n = \sum_{i=1}^{n} x_i y_i$.
 
 1.  Suppose we had two encoded vectors $x$ and $y$. We can obtain the vector $x*y = (x_1y_1, x_2y_2, \dots, x_ny_n)$ with element-wise multiplication.
 2.  We then perform an intravector sum to obtain a vector $$v(x,y) = \mathtt{sum}(x * y) = (d,d,\ldots, d),$$ where $d = x \cdot y$.
-3.  We can then e.g. multiply it with a $1$-hot mask vector $(0, 0, \ldots, 1, 0, \ldots, 0)$ or use it in any other way we wish.
+3.  We can then e.g. multiply it with a $1$-hot [mask vector](/general/intro.qmd) $(0, 0, \ldots, 1, 0, \ldots, 0)$ or use it in any other way we wish.
 
 This directly lets us compute the *entries* of the $n \times n$ matrix $C = A \times B$, since those are dot products:
 
