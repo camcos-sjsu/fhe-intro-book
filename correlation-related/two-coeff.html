@@ -686,21 +686,21 @@ window.Quarto = {
 </header>
 
 
-<p>Given vectors <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, there are <span class="math inline">\(2\)</span> closely related quantities: 1. The <strong>correlation coefficient</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, a measure of normalized linear association, is <span class="math display">\[ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.\]</span> Often people are instead interested in the square <span class="math inline">\(r^2\)</span>, which is called the <strong>coefficient of determination</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. 3. The <strong>regression coefficient</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, a measure of linear rate of change, is <span class="math display">\[\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_i-\bar{x})^2}\]</span></p>
+<p>Given vectors <span class="math inline">\(\mathbf{x}\)</span> and <span class="math inline">\(\mathbf{y}\)</span>, there are <span class="math inline">\(2\)</span> closely related quantities: 1. The <strong>correlation coefficient</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, a measure of normalized linear association, is <span class="math display">\[ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.\]</span> Often people are instead interested in the square <span class="math inline">\(r^2\)</span>, which is called the <strong>coefficient of determination</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. 3. The <strong>regression coefficient</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, a measure of linear rate of change, is <span class="math display">\[\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_i-\bar{x})^2}\]</span></p>
 <p>These can be approached with the same general strategy:</p>
 <ol type="1">
-<li>compute the means <span class="math inline">\(\bar{x}\)</span> and <span class="math inline">\(\bar{y}\)</span> and subtract them off from the original vectors;</li>
-<li>compute the numerators and denominators separately;</li>
-<li>divide (which might be costly).</li>
+<li><p>Compute the means <span class="math inline">\(\bar{x}\)</span> and <span class="math inline">\(\bar{y}\)</span> and subtract them off from the original vectors;</p></li>
+<li><p>Compute the numerators and denominators separately;</p></li>
+<li><p><a href="../division/intro.html">Divide</a> (which might be costly).</p></li>
 </ol>
 <p>With some more detail:</p>
 <p>Given <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, we can compute vectors that contains their means: <span class="math inline">\(x_m=(\bar{x}, \bar{x}, \cdots)\)</span> and <span class="math inline">\(y_m(\bar{y},\bar{y}, \cdots)\)</span>. Then we can subtract to obtain <span class="math inline">\(\begin{align}x'&amp;=(x_1,x_2,\dots,x_{N/2})+(\bar{x})*(-1,-1,\dots,-1) \\
 &amp;=(x_1-\bar{x}, x_2-\bar{x},\dots,x_{N/2}-\bar{x})\end{align}\)</span> and similarly <span class="math inline">\(\begin{align} y'=(y_1-\bar{y}, y_2-\bar{y},\dots,y_{N/2}-\bar{y})\end{align}\)</span></p>
 <p>Our task for <span class="math inline">\(r\)</span> then (the work for the regression coefficient is similar) becomes computing <span class="math display">\[ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\sum_{i=1}^{N/2}(y'_i)^2}} \]</span></p>
 <ol type="1">
-<li>The numerator is the intra-vector sum of <span class="math inline">\((x')*(y')\)</span>, which we know how to compute.</li>
-<li>The denominator is the square of the (scalar) product of two intravector sums of <span class="math inline">\((x')^2\)</span> and <span class="math inline">\((y')^2\)</span>.</li>
-<li>Finally, we need to do a division.</li>
+<li><p>The numerator is the <a href="../general/intravector-sum.qmd">intra-vector sum</a> of <span class="math inline">\((x')*(y')\)</span>.</p></li>
+<li><p>The denominator is the square of the (scalar) product of two intravector sums of <span class="math inline">\((x')^2\)</span> and <span class="math inline">\((y')^2\)</span>.</p></li>
+<li><p>Finally, we need to do a division.</p></li>
 </ol>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -712,7 +712,7 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>As usual (for the correlation coefficient; the regression coefficient is similar), we can avoid the possibly costly division and square roots for <span class="math inline">\(r\)</span> by giving the user the numerator and the <em>square</em> of the denominator separately and have the user compute the coeffcient. If we are willing to do the division but want to save a square root, we can just give them <span class="math inline">\(r^2\)</span> instead.</p>
+<p>As usual (for the correlation coefficient; the regression coefficient is similar), we can avoid the possibly costly division and square roots for <span class="math inline">\(r\)</span> by giving the user the numerator and the <em>square</em> of the denominator separately and have the user compute the coefficient. If we are willing to do the division but want to save a square root, we can just give them <span class="math inline">\(r^2\)</span> instead.</p>
 </div>
 </div>
 
