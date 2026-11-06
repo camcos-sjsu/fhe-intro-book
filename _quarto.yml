@@ -44,7 +44,7 @@ book:
         - sorting/bubble.qmd
         - sorting/odd_even.qmd
         - sorting/bitonic.qmd
-        - sorting/swapless.qmd
+        - sorting/rank_based.qmd
         - sorting/max.qmd
   #  - lit-review.qmd
     - part: discrete-model/intro.qmd
