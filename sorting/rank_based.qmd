@@ -3,7 +3,7 @@ title: "Rank Based Sort"
 format: html
 ---
 
-An excerpt from Frederico Mazzone et al. (CITATION) discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with. Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.
+An excerpt from Frederico Mazzone et al. [@ref23] discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with. Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.
 
 With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.
 
