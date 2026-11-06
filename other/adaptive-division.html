@@ -686,8 +686,19 @@ window.Quarto = {
 </header>
 
 
-<p>We cannot do If statements, but we can <em>encode</em> If statements with sign functions. Here’s a design that might work and require some testing, but gives an idea of how we might do “adaptive” computations unadaptively: 1. For simplicity, we assume the number to invert, <span class="math inline">\(x\)</span>, is positive and within the region <span class="math inline">\([1, 2^{16}]\)</span>. 2. We try to make a function that is essentially “the largest power of <span class="math inline">\(2\)</span> smaller than <span class="math inline">\(x\)</span>”</p>
-<p>Suppose we have an idealized sign function, then consider the following sum, where <span class="math inline">\((x &gt; k) = \mathtt{sign}{(x-k)}\)</span> is a sign indicator function (so it is <span class="math inline">\(1\)</span> if the comparision is TRUE, and <span class="math inline">\(0\)</span> otherwise): <span class="math display">\[ - \frac{1}{2^{15}} (x &gt; 2^{15}) - \frac{1}{2^{14}}(x &gt; 2^{14}) + \cdots - \frac{1}{2}(x &gt; 2) + 1.\]</span> Note: 1. if <span class="math inline">\(2 &gt; x \geq 1\)</span>, it returns <span class="math inline">\(1\)</span> since none of the comparisons are true. 2. if <span class="math inline">\(4 &gt; x \geq 2\)</span>, then it returns <span class="math inline">\(1-1/2 = 1/2\)</span>. 3. if <span class="math inline">\(8 &gt; x \geq 4\)</span>, then it returns <span class="math inline">\(1 -1/2 - 1/4 = 1/4\)</span>. 4. …the idea is that it will return <span class="math inline">\(1/2^n\)</span> if it is between <span class="math inline">\(2^{n+1}\)</span> and <span class="math inline">\(2^n\)</span>.</p>
+<p>We cannot do If statements, but we can <em>encode</em> If statements with sign functions. Here’s a design that might work and require some testing, but gives an idea of how we might do “adaptive” computations unadaptively:</p>
+<ol type="1">
+<li><p>For simplicity, we assume the number to invert, <span class="math inline">\(x\)</span>, is positive and within the region <span class="math inline">\([1, 2^{16}]\)</span>.</p></li>
+<li><p>We try to make a function that is essentially “the largest power of <span class="math inline">\(2\)</span> smaller than <span class="math inline">\(x\)</span>”</p></li>
+</ol>
+<p>Suppose we have an idealized sign function, then consider the following sum, where <span class="math inline">\((x &gt; k) = \mathtt{sign}{(x-k)}\)</span> is a sign indicator function (so it is <span class="math inline">\(1\)</span> if the comparision is TRUE, and <span class="math inline">\(0\)</span> otherwise): <span class="math display">\[ - \frac{1}{2^{15}} (x &gt; 2^{15}) - \frac{1}{2^{14}}(x &gt; 2^{14}) + \cdots - \frac{1}{2}(x &gt; 2) + 1.\]</span></p>
+<p>Note:</p>
+<ol type="1">
+<li><p>if <span class="math inline">\(2 &gt; x \geq 1\)</span>, it returns <span class="math inline">\(1\)</span> since none of the comparisons are true.</p></li>
+<li><p>if <span class="math inline">\(4 &gt; x \geq 2\)</span>, then it returns <span class="math inline">\(1-1/2 = 1/2\)</span>.</p></li>
+<li><p>if <span class="math inline">\(8 &gt; x \geq 4\)</span>, then it returns <span class="math inline">\(1 -1/2 - 1/4 = 1/4\)</span>.</p></li>
+<li><p>…the idea is that it will return <span class="math inline">\(1/2^n\)</span> if it is between <span class="math inline">\(2^{n+1}\)</span> and <span class="math inline">\(2^n\)</span>.</p></li>
+</ol>
 <p>This essentially creates a “guess” in <span class="math inline">\(\log(b)\)</span> steps (for transparency: each step is a sign call and so may be expensive), where <span class="math inline">\(b\)</span> is an upper bound of <span class="math inline">\(x\)</span>. The method needs tweaking for numbers under <span class="math inline">\(1\)</span> or negative numbers, which we omit.</p>
 
 

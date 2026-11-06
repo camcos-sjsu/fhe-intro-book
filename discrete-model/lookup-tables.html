@@ -30,6 +30,7 @@ ul.task-list li input[type="checkbox"] {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -720,13 +721,13 @@ window.Quarto = {
 <p>Since there are finitely many possible inputs, we could calculate every possible value of <span class="math inline">\(f(a,b)\)</span> beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.</p>
 <p>This is the idea behind lookup tables. In our applications, they are relevant to modular multiplication, inverses when they exist, sign functions, and more.</p>
 <p>One approach is to interpolate a polynomial that gives the desired output at every possible input. Evaluating this polynomial on the encrypted inputs then performs the lookup. The table and polynomial coefficients can be public while the inputs and resulting output remain encrypted.</p>
-<p>Chung, Kim, Kim, and Lee <span class="citation" data-cites="chung2024">(<a href="../references.html#ref-chung2024" role="doc-biblioref">Chung et al. 2024</a>)</span> use this approach with inputs encoded as roots of unity. Suppose there are <span class="math inline">\(n\)</span> possible values. For a lookup table <span class="math inline">\(T\)</span> with one input, we construct a polynomial satisfying <span class="math display">\[
+<p>Chung, Kim, Kim, and Lee <span class="citation" data-cites="chung2024"><a href="../references.html#ref-chung2024" role="doc-biblioref">[1]</a></span> use this approach with inputs encoded as roots of unity. Suppose there are <span class="math inline">\(n\)</span> possible values. For a lookup table <span class="math inline">\(T\)</span> with one input, we construct a polynomial satisfying <span class="math display">\[
 f(\zeta^a)=\zeta^{T(a)}.
 \]</span> There are <span class="math inline">\(n\)</span> interpolation points, so the polynomial has at most degree <span class="math inline">\(n-1\)</span>.</p>
 <p>For operations with multiple inputs, we will consider two approaches. First, we will consider the approach which interpolates a polynomial in multiple variables while keeping inputs separate. Then, we will consider the approach which combines inputs into a single value and interpolates a single variable polynomial.</p>
 <section id="multivariable-interpolation" class="level3" data-number="26.0.1">
 <h3 data-number="26.0.1" class="anchored" data-anchor-id="multivariable-interpolation"><span class="header-section-number">26.0.1</span> Multivariable Interpolation</h3>
-<p>Chung, Kim, Kim, and Lee <span class="citation" data-cites="chung2024">(<a href="../references.html#ref-chung2024" role="doc-biblioref">Chung et al. 2024</a>)</span> use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying <span class="math display">\[
+<p>Chung, Kim, Kim, and Lee <span class="citation" data-cites="chung2024"><a href="../references.html#ref-chung2024" role="doc-biblioref">[1]</a></span> use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying <span class="math display">\[
 f(\zeta^a,\zeta^b)=\zeta^{ab}.
 \]</span></p>
 <p>Instead of combining two inputs into a single value, Chung, Kim, Kim, and Lee construct a polynomial in two variables. Suppose each input is an <span class="math inline">\(n\)</span>-th root of unity. Let <span class="math inline">\(d_{ab}\)</span> be the desired encoded output for the input pair <span class="math inline">\((\zeta^a,\zeta^b)\)</span>. We want a polynomial satisfying <span class="math display">\[
@@ -930,9 +931,9 @@ Q(t)=1+\frac{1}{7072000}\bigl[&amp;
 <p>Our method uses fewer multiplications, while theirs has less depth.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-chung2024" class="csl-entry" role="listitem">
-Chung, Heewon, Hyojun Kim, Young-Sik Kim, and Yongwoo Lee. 2024. <em>Amortized Large Look-up Table Evaluation with Multivariate Polynomials for Homomorphic Encryption</em>. Cryptology ePrint Archive, Paper 2024/274. <a href="https://eprint.iacr.org/2024/274">https://eprint.iacr.org/2024/274</a>.
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">H. Chung, H. Kim, Y.-S. Kim, and Y. Lee, <span>“Amortized large look-up table evaluation with multivariate polynomials for homomorphic encryption.”</span> Cryptology ePrint Archive, Paper 2024/274, 2024. Available: <a href="https://eprint.iacr.org/2024/274">https://eprint.iacr.org/2024/274</a></div>
 </div>
 </div>
 </section>

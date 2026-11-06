@@ -30,6 +30,7 @@ ul.task-list li input[type="checkbox"] {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -709,7 +710,7 @@ window.Quarto = {
 <p>A <strong>sorting network</strong> is a fixed schedule of compare and swap operations. Each layer contains disjoint pairs, so all comparisons in that layer can run in parallel. Unlike an ordinary comparison sort, the schedule does not depend on the input values. The design challenge is to choose a schedule that moves values into order with fewer layers and fewer total comparisons.</p>
 <section id="bitonic-sequences-and-merging" class="level4" data-number="22.0.0.1">
 <h4 data-number="22.0.0.1" class="anchored" data-anchor-id="bitonic-sequences-and-merging"><span class="header-section-number">22.0.0.1</span> Bitonic sequences and merging</h4>
-<p>Bitonic sort builds and merges <strong>bitonic sequences</strong> <span class="citation" data-cites="ref15">(<a href="../references.html#ref-ref15" role="doc-biblioref">Batcher 1968</a>)</span>, which are sequences that are first increasing and then decreasing. A bitonic merge compares elements that are far apart first, then progressively compares closer pairs. This lets large values move toward the end and small values toward the beginning in a few structured layers, rather than only one position at a time. To sort a block, we sort its first half in ascending order and its second half in descending order, which makes the whole block bitonic, then merge it, repeating this from pairs up to the full vector. The result is a sorting network with <span class="math inline">\(O(\log^2 N)\)</span> layers and <span class="math inline">\(O(N\log^2 N)\)</span> total comparisons <span class="citation" data-cites="ref15">(<a href="../references.html#ref-ref15" role="doc-biblioref">Batcher 1968</a>)</span>, which is better than odd-even sort’s <span class="math inline">\(O(N)\)</span> layers and <span class="math inline">\(O(N^2)\)</span> comparisons.</p>
+<p>Bitonic sort builds and merges <strong>bitonic sequences</strong> <span class="citation" data-cites="ref15"><a href="../references.html#ref-ref15" role="doc-biblioref">[1]</a></span>, which are sequences that are first increasing and then decreasing. A bitonic merge compares elements that are far apart first, then progressively compares closer pairs. This lets large values move toward the end and small values toward the beginning in a few structured layers, rather than only one position at a time. To sort a block, we sort its first half in ascending order and its second half in descending order, which makes the whole block bitonic, then merge it, repeating this from pairs up to the full vector. The result is a sorting network with <span class="math inline">\(O(\log^2 N)\)</span> layers and <span class="math inline">\(O(N\log^2 N)\)</span> total comparisons <span class="citation" data-cites="ref15"><a href="../references.html#ref-ref15" role="doc-biblioref">[1]</a></span>, which is better than odd-even sort’s <span class="math inline">\(O(N)\)</span> layers and <span class="math inline">\(O(N^2)\)</span> comparisons.</p>
 </section>
 <section id="merging-a-bitonic-sequence" class="level4" data-number="22.0.0.2">
 <h4 data-number="22.0.0.2" class="anchored" data-anchor-id="merging-a-bitonic-sequence"><span class="header-section-number">22.0.0.2</span> Merging a Bitonic Sequence</h4>
@@ -743,7 +744,7 @@ window.Quarto = {
 \xrightarrow{(1,2),\ (3,4),\ (5,6),\ (7,8)}
 (\pairA{1},\pairA{2},\pairB{3},\pairB{4},\pairC{5},\pairC{6},\pairD{7},\pairD{8}).
 \]</span></p>
-<p>Those three layers merge one bitonic sequence of length eight. Bitonic sort constructs larger bitonic sequences from smaller ones, then applies these merges. For <span class="math inline">\(N\)</span> a power of two, its network has <span class="math inline">\(\frac{\log_2 N(\log_2 N+1)}{2}\)</span> layers <span class="citation" data-cites="ref15">(<a href="../references.html#ref-ref15" role="doc-biblioref">Batcher 1968</a>)</span>.</p>
+<p>Those three layers merge one bitonic sequence of length eight. Bitonic sort constructs larger bitonic sequences from smaller ones, then applies these merges. For <span class="math inline">\(N\)</span> a power of two, its network has <span class="math inline">\(\frac{\log_2 N(\log_2 N+1)}{2}\)</span> layers <span class="citation" data-cites="ref15"><a href="../references.html#ref-ref15" role="doc-biblioref">[1]</a></span>.</p>
 <p><a href="#fig-bitonic-network" class="quarto-xref">Figure&nbsp;<span>22.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one compare and swap, with the larger value moving toward the arrowhead.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -762,13 +763,13 @@ Figure&nbsp;22.1: The bitonic sorting network for eight inputs, with 6 layers an
 </section>
 <section id="how-much-does-this-save" class="level4" data-number="22.0.0.3">
 <h4 data-number="22.0.0.3" class="anchored" data-anchor-id="how-much-does-this-save"><span class="header-section-number">22.0.0.3</span> How much does this save?</h4>
-<p>For eight inputs, odd-even sort uses eight alternating odd/even comparison rounds. Each round compares three or four neighboring pairs, for 28 compare and swaps total. The bitonic network uses six layers and 24 compare and swaps. Both schedules can batch each layer’s disjoint comparisons across ciphertext slots, but bitonic sort needs fewer sequential layers and fewer comparisons in this example. Since each layer is one vector-wide evaluation, the layer count is the saving that matters most in FHE. Bitonic sort functionally uses <span class="math inline">\(O(\log^2 N)\)</span> layers and <span class="math inline">\(O(N\log^2 N)\)</span> comparisons <span class="citation" data-cites="ref15">(<a href="../references.html#ref-ref15" role="doc-biblioref">Batcher 1968</a>)</span>, versus <span class="math inline">\(O(N)\)</span> rounds and <span class="math inline">\(O(N^2)\)</span> comparisons for odd-even sort.</p>
+<p>For eight inputs, odd-even sort uses eight alternating odd/even comparison rounds. Each round compares three or four neighboring pairs, for 28 compare and swaps total. The bitonic network uses six layers and 24 compare and swaps. Both schedules can batch each layer’s disjoint comparisons across ciphertext slots, but bitonic sort needs fewer sequential layers and fewer comparisons in this example. Since each layer is one vector-wide evaluation, the layer count is the saving that matters most in FHE. Bitonic sort functionally uses <span class="math inline">\(O(\log^2 N)\)</span> layers and <span class="math inline">\(O(N\log^2 N)\)</span> comparisons <span class="citation" data-cites="ref15"><a href="../references.html#ref-ref15" role="doc-biblioref">[1]</a></span>, versus <span class="math inline">\(O(N)\)</span> rounds and <span class="math inline">\(O(N^2)\)</span> comparisons for odd-even sort.</p>
 <p>Each layer still uses the same compare-and-swap operation described in <a href="intro.html#sec-comparison-based-sorting" class="quarto-xref"><span>Section 0.1</span></a>. The next step is to look at a different way to organize sorting: compute how many values in the array are less than a given value, then move it to that index.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
 <div id="ref-ref15" class="csl-entry" role="listitem">
-Batcher, K. E. 1968. <span>“Sorting Networks and Their Applications.”</span> <em>Proceedings of the AFIPS Spring Joint Computer Conference</em> 32: 307–14. <a href="https://doi.org/10.1145/1468075.1468121">https://doi.org/10.1145/1468075.1468121</a>.
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">K. E. Batcher, <span>“Sorting networks and their applications,”</span> in <em>Proceedings of the AFIPS spring joint computer conference</em>, 1968, pp. 307–314. doi: <a href="https://doi.org/10.1145/1468075.1468121">10.1145/1468075.1468121</a>.</div>
 </div>
 </div>
 </section>

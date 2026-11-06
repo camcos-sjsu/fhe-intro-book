@@ -26,7 +26,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -665,29 +685,31 @@ ul.task-list li input[type="checkbox"] {
 - [Backburner Stash](https://hackmd.io/Z4c6GwCiT2aljyWtJnmhhw)
 - [Tech Tree MD](https://hackmd.io/@BdK1iuvsSg2AB5K8X38qfg/SJS64QCqWe)
 -->
-<p><strong>CKKS</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> (Jung Hee <strong>C</strong>heon, Andrey <strong>K</strong>im, Miran <strong>K</strong>im, and Yongsoo <strong>S</strong>ong) is a <strong>fully homomorphic encryption (FHE)</strong> scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.</p>
+<p><strong>CKKS</strong> <span class="citation" data-cites="CKKS"><a href="references.html#ref-CKKS" role="doc-biblioref">[1]</a></span> (Jung Hee <strong>C</strong>heon, Andrey <strong>K</strong>im, Miran <strong>K</strong>im, and Yongsoo <strong>S</strong>ong) is a <strong>fully homomorphic encryption (FHE)</strong> scheme. FHE allows computations to be performed directly on encrypted data without first decrypting it, whereas traditional encryption requires decryption before computation. For example, a server can now extract insights from sensitive user data without having any knowledge of the data or the insights themselves.</p>
 <p>(List was briefly edited to match with current state of book. To be rewritten with more flair.)</p>
 <p>In this book, we explore functions that can be built under the CKKS homomorphic encryption scheme:</p>
 <ol type="1">
 <li><p>We introduce a simplified problem setup in <a href="./setup.html">Setup</a>, then examine some initial functions which can be built from these base moves in <a href="./general/intro.html">General Functions</a>.</p></li>
 <li><p>In <a href="./division/intro.html">Division</a> we explore division, which is surprisingly tricky but important.</p></li>
-<li><p>In <a href="discrete/intro.qmd">Discrete Math</a> we study “discrete math” concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have).</p></li>
+<li><p>In <a href="./sign/intro.html">Discrete Math</a> we study “discrete math” concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have).</p></li>
 <li><p>In <a href="./difference-matrix/intro.html">Difference Matrix</a> we explore applications of the branching logic built in discrete math, which can support statistical functions like mode and median.</p></li>
 <li><p>In <a href="./correlation-related/intro.html">Correlation and Related Functions</a> we look at statistical applications to linear regression.</p></li>
 <li><p>In <a href="./sorting/intro.html">Sorting</a> we explore sorting starting from a similar entry point as in conventional computing before quickly diverging down a different path based on constraints of the CKKS scheme.</p></li>
 <li><p>In <a href="./discrete-model/intro.html">Discrete Computational</a> we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.</p></li>
 <li><p>We end with some more speculative approaches to various topics in <a href="./other/intro.html">Other Explorations</a>, including an iterative approach to log and some linear algebra.</p></li>
 </ol>
-<p>CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of “batching” techniques à la SIMD<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are “packed” into a single ciphertext and computed upon simultaneously.</p>
-
-
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<p>CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of “batching” techniques à la SIMD <span class="citation" data-cites="Flynn_1972"><a href="references.html#ref-Flynn_1972" role="doc-biblioref">[2]</a></span> (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are “packed” into a single ciphertext and computed upon simultaneously.</p>
 <hr>
-<ol>
-<li id="fn1"><p>Jung Hee Cheon, Andrey Kim, Miran Kim, Yongsoo Song; <strong>Homomorphic Encryption for Arithmetic of Approximate Numbers</strong> available from https://eprint.iacr.org/2016/421.pdf<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Michael J. Flynn; <strong>Some Computer Organizations and Their Effectiveness</strong> available from https://users.cs.utah.edu/~hari/teaching/paralg/Flynn72.pdf<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
+
+
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-CKKS" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. H. Cheon, A. Kim, M. Kim, and Y. Song, <span>“Homomorphic encryption for arithmetic of approximate numbers,”</span> in <em>Advances in cryptology – ASIACRYPT 2017</em>, vol. 10624, T. Takagi and T. Peyrin, Eds., in Lecture notes in computer science, vol. 10624., Cham: Springer International Publishing, 2017, pp. 409–437. doi: <a href="https://doi.org/10.1007/978-3-319-70694-8_15">10.1007/978-3-319-70694-8_15</a>.</div>
+</div>
+<div id="ref-Flynn_1972" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">M. J. Flynn, <span>“Some computer organizations and their effectiveness,”</span> <em>IEEE Transactions on Computers</em>, vol. C–21, no. 9, pp. 948–960, 1972, doi: <a href="https://doi.org/10.1109/TC.1972.5009071">10.1109/TC.1972.5009071</a>.</div>
+</div>
+</div>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
