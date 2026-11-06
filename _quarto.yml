@@ -4,7 +4,7 @@ project:
 book:
   title: "fhe-intro-book"
   author: "camcos-sjsu"
-  date: today
+  date: last-modified
   date-format: iso
   chapters:
     - index.qmd
