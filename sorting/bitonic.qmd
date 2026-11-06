@@ -18,6 +18,14 @@ $$
 
 An ascending bitonic merge starts by comparing positions $1$ and $5$, $2$ and $6$, $3$ and $7$, and $4$ and $8$, placing the smaller value in the first position of each pair. In the steps below, values with the same color are compared with each other, and the positions compared are listed above the arrow:
 
+```{=latex}
+\newcommand{\pairA}[1]{\textcolor[RGB]{230,159,0}{#1}}
+\newcommand{\pairB}[1]{\textcolor[RGB]{86,180,233}{#1}}
+\newcommand{\pairC}[1]{\textcolor[RGB]{0,158,115}{#1}}
+\newcommand{\pairD}[1]{\textcolor[RGB]{204,121,167}{#1}}
+```
+
+::: {.content-visible when-format="html"}
 ::: {.hidden}
 $$
 \newcommand{\pairA}[1]{\textcolor[RGB]{230,159,0}{#1}}
@@ -25,6 +33,7 @@ $$
 \newcommand{\pairC}[1]{\textcolor[RGB]{0,158,115}{#1}}
 \newcommand{\pairD}[1]{\textcolor[RGB]{204,121,167}{#1}}
 $$
+:::
 :::
 
 $$
