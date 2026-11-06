@@ -22,7 +22,7 @@ In this book, we explore functions that can be built under the CKKS homomorphic 
 
 2.  In [Division](division/intro.qmd) we explore division, which is surprisingly tricky but important.
 
-3.  In [Discrete Math](sign/intro.qmd) we study "discrete math" concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have).
+3.  In [Discrete Math](sign/discrete-math.qmd) we study "discrete math" concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have).
 
 4.  In [Difference Matrix](difference-matrix/intro.qmd) we explore applications of the branching logic built in discrete math, which can support statistical functions like mode and median.
 
