@@ -26,7 +26,7 @@ These can be approached with the same general strategy:
     
 2.  Compute the numerators and denominators separately;
 
-3.  Divide (which might be costly).
+3.  [Divide](/division/intro.qmd) (which might be costly).
 
 With some more detail:
 
@@ -47,7 +47,7 @@ $$ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\
 2.  The denominator is the square of the (scalar) product of two
     intravector sums of $(x')^2$ and $(y')^2$.
     
-3.  Finally, we need to do an (expensive) [division](/division/intro.qmd).
+3.  Finally, we need to do a division.
 
 ::: {.callout-tip icon="false" title="**Remark**"}
 As usual (for the correlation coefficient; the regression coefficient is
