@@ -47,8 +47,6 @@ To determine the rank of a vector:
 
 5.  $R = R + 1$ by adding 1 to each element in R, we will end with a vector of ranks 1 to n
 
-![Visual Example of Statistical Rank Calculation](rank_method%20visual.png){fig-alt="Rank Calculation Visual" fig-align="center" width="805"}
-
 ### Rank-Based Sort
 
 To sort a vector of degree n, we need the following:
@@ -93,3 +91,113 @@ To do so:
     -   This final vector will have offset values of only 1 and 0.
 
 5.  $t = R + O$ where $t$ will be our final rank vector by conducting the sum of the original ranks and the offset
+
+The example below works through $x = [30, 10, 10, 20]$, with the entries belonging to the tied values in orange.
+
+```{=latex}
+\newcommand{\tied}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+```
+
+::: {.content-visible when-format="html"}
+::: {.hidden}
+$$
+\newcommand{\tied}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+$$
+:::
+:::
+
+$$
+\overset{A}{\begin{bmatrix}
+30 & \tied{10} & \tied{10} & 20 \\
+30 & \tied{10} & \tied{10} & 20 \\
+30 & \tied{10} & \tied{10} & 20 \\
+30 & \tied{10} & \tied{10} & 20
+\end{bmatrix}}
+==
+\overset{A^T}{\begin{bmatrix}
+30 & 30 & 30 & 30 \\
+\tied{10} & \tied{10} & \tied{10} & \tied{10} \\
+\tied{10} & \tied{10} & \tied{10} & \tied{10} \\
+20 & 20 & 20 & 20
+\end{bmatrix}}
+=
+\overset{M_1}{\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & \tied{1} & \tied{1} & 0 \\
+0 & \tied{1} & \tied{1} & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}}
+$$
+
+**Step 1.** Replicate $x$ into the rows of $A$, so $A_{ij} = x_j$ and $A^T_{ij} = x_i$. Then compare the two entry by entry: $(M_1)_{ij} = 1$ if $A_{ij} = A^T_{ij}$, and 0 otherwise.
+
+$$
+\overset{M_1}{\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & \tied{1} & \tied{1} & 0 \\
+0 & \tied{1} & \tied{1} & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}}
+\odot
+\overset{U}{\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+0 & \tied{1} & \tied{1} & 1 \\
+0 & \tied{0} & \tied{1} & 1 \\
+0 & 0 & 0 & 1
+\end{bmatrix}}
+=
+\overset{M_2}{\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & \tied{1} & \tied{1} & 0 \\
+0 & \tied{0} & \tied{1} & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}}
+$$
+
+**Step 2.** Multiply $M_1$ entry by entry with an upper triangular matrix of ones, where $U_{ij} = 1$ if $i \le j$ and 0 otherwise. This gives $(M_2)_{ij} = (M_1)_{ij} \, U_{ij}$, which drops the matches below the diagonal.
+
+$$
+\overset{s_1}{\begin{bmatrix}
+1 \\
+\tied{2} \\
+\tied{2} \\
+1
+\end{bmatrix}}
+-
+\overset{s_2}{\begin{bmatrix}
+1 \\
+\tied{2} \\
+\tied{1} \\
+1
+\end{bmatrix}}
+=
+\overset{O}{\begin{bmatrix}
+0 \\
+\tied{0} \\
+\tied{1} \\
+0
+\end{bmatrix}}
+\qquad\qquad
+\overset{R}{\begin{bmatrix}
+4 \\
+\tied{1} \\
+\tied{1} \\
+3
+\end{bmatrix}}
++
+\overset{O}{\begin{bmatrix}
+0 \\
+\tied{0} \\
+\tied{1} \\
+0
+\end{bmatrix}}
+=
+\overset{t}{\begin{bmatrix}
+4 \\
+\tied{1} \\
+\tied{2} \\
+3
+\end{bmatrix}}
+$$
+
+**Step 3.** Sum the rows of each matrix, so $(s_1)_i = \sum_j (M_1)_{ij}$ and $(s_2)_i = \sum_j (M_2)_{ij}$. Subtract them to get the offset $O$, then add $O$ to the ranks $R$ so tied values get different ranks in $t$.
