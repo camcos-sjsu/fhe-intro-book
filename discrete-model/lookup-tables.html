@@ -894,14 +894,15 @@ A_{ij}(uv)^i\left(u^{j-i}+v^{j-i}\right).
 <p>To compute the <span class="math inline">\((u^k+v^k)\)</span>, we can use factorization. For example, since <span class="math inline">\(i^2=-1\)</span>, <span class="math display">\[
 u^2+v^2=(u+iv)(u-iv).
 \]</span> This requires only one multiplication, rather than the two needed to square <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> separately.</p>
-<p>We would like to generalize this for <span class="math inline">\(k &gt; 2\)</span>. We know that we can factor any polynomial using its complex roots. It’s less obvious how to do this for bivariate polynomials.</p>
-<p><span class="math display">\[
-x^k+1=\prod_{r^k=-1}(x-r).
-\]</span></p>
-<p>For <span class="math inline">\(v\neq 0\)</span>, substitute <span class="math inline">\(x=u/v\)</span> to get <span class="math display">\[
+<p>We would like to generalize this for <span class="math inline">\(k &gt; 2\)</span>. We know that we can factor any polynomial using its complex roots.</p>
+<p>First, consider the single variate case: <span class="math display">\[
+x^k+1=\prod_{i=-1}^k(x-r_i).
+\]</span> Where <span class="math inline">\(r_i\)</span> is the <span class="math inline">\(i\)</span>-th <span class="math inline">\(k\)</span>-th root of <span class="math inline">\(-1\)</span> .</p>
+<p>When <span class="math inline">\(v = 0\)</span> our problem is trivial. For <span class="math inline">\(v\neq 0\)</span>, substitute <span class="math inline">\(x=u/v\)</span> to get <span class="math display">\[
 \left(\frac{u}{v}\right)^k+1
 =\prod_{r^k=-1}\left(\frac{u}{v}-r\right).
-\]</span> Multiplying by <span class="math inline">\(v^k\)</span> and distributing gives <span class="math display">\[
+\]</span></p>
+<p>Multiplying by <span class="math inline">\(v^k\)</span> and distributing gives <span class="math display">\[
 u^k+v^k=\prod_{r^k=-1}(u-rv).
 \]</span></p>
 <p>Evaluating this requires <span class="math inline">\(k-1\)</span> multiplications. This can be more efficient for small <span class="math inline">\(k\)</span>, but is not efficient for larger <span class="math inline">\(k\)</span>.</p>
