@@ -689,8 +689,9 @@ window.Quarto = {
   <li><a href="#example-n4" id="toc-example-n4" class="nav-link" data-scroll-target="#example-n4"><span class="header-section-number">26.0.2</span> Example: <span class="math inline">\(n=4\)</span></a></li>
   <li><a href="#combining-inputs" id="toc-combining-inputs" class="nav-link" data-scroll-target="#combining-inputs"><span class="header-section-number">26.0.3</span> Combining Inputs</a></li>
   <li><a href="#exploiting-symmetry" id="toc-exploiting-symmetry" class="nav-link" data-scroll-target="#exploiting-symmetry"><span class="header-section-number">26.0.4</span> Exploiting Symmetry</a></li>
-  <li><a href="#example-modular-multiplication-for-n-4" id="toc-example-modular-multiplication-for-n-4" class="nav-link" data-scroll-target="#example-modular-multiplication-for-n-4"><span class="header-section-number">26.0.5</span> Example: Modular Multiplication for n = 4</a></li>
-  <li><a href="#comparing-two-methods" id="toc-comparing-two-methods" class="nav-link" data-scroll-target="#comparing-two-methods"><span class="header-section-number">26.0.6</span> Comparing two methods</a></li>
+  <li><a href="#exploiting-symmetry-with-multivariate-interpolation" id="toc-exploiting-symmetry-with-multivariate-interpolation" class="nav-link" data-scroll-target="#exploiting-symmetry-with-multivariate-interpolation"><span class="header-section-number">26.0.5</span> Exploiting Symmetry with Multivariate Interpolation</a></li>
+  <li><a href="#example-modular-multiplication-for-n-4" id="toc-example-modular-multiplication-for-n-4" class="nav-link" data-scroll-target="#example-modular-multiplication-for-n-4"><span class="header-section-number">26.0.6</span> Example: Modular Multiplication for n = 4</a></li>
+  <li><a href="#comparing-two-methods" id="toc-comparing-two-methods" class="nav-link" data-scroll-target="#comparing-two-methods"><span class="header-section-number">26.0.7</span> Comparing two methods</a></li>
   </ul>
 </nav>
     </div>
@@ -880,8 +881,33 @@ q\left(\zeta^a+\zeta^b+\zeta^{a+b}\right)=\zeta^{ab}.
 \]</span></p>
 <p>We can construct <span class="math inline">\(q\)</span> publicly beforehand. Given encrypted inputs <span class="math inline">\(w\)</span> and <span class="math inline">\(z\)</span>, we would then evaluate <span class="math inline">\(q(w+z+wz)\)</span>.</p>
 </section>
-<section id="example-modular-multiplication-for-n-4" class="level3" data-number="26.0.5">
-<h3 data-number="26.0.5" class="anchored" data-anchor-id="example-modular-multiplication-for-n-4"><span class="header-section-number">26.0.5</span> Example: Modular Multiplication for n = 4</h3>
+<section id="exploiting-symmetry-with-multivariate-interpolation" class="level3" data-number="26.0.5">
+<h3 data-number="26.0.5" class="anchored" data-anchor-id="exploiting-symmetry-with-multivariate-interpolation"><span class="header-section-number">26.0.5</span> Exploiting Symmetry with Multivariate Interpolation</h3>
+<p>We can also use symmetry to our advantage while keeping variables separate. Since our polynomial represents a symmetric function, (P(u,v)=P(v,u)). In the expanded form, <span class="math display">\[
+P(u,v)=\sum_{i,j=0}^{n-1}A_{ij}u^iv^j,
+\]</span> we therefore have (A_{ij}=A_{ji}). This lets us group terms with matching coefficients as follows. <span class="math display">\[
+P(u,v)
+=\sum_{i=0}^{n-1}A_{ii}(uv)^i
++\sum_{0\le i&lt;j\le n-1}
+A_{ij}(uv)^i\left(u^{j-i}+v^{j-i}\right).
+\]</span> We can compute the powers of <span class="math inline">\((uv)\)</span> and the sums <span class="math inline">\((u^k+v^k)\)</span> instead of individually multiplying every term <span class="math inline">\(u^iv^j\)</span></p>
+<p>To compute the <span class="math inline">\((u^k+v^k)\)</span>, we can use factorization. For example, since <span class="math inline">\(i^2=-1\)</span>, <span class="math display">\[
+u^2+v^2=(u+iv)(u-iv).
+\]</span> This requires only one multiplication, rather than the two needed to square <span class="math inline">\(u\)</span> and <span class="math inline">\(v\)</span> separately.</p>
+<p>We would like to generalize this for <span class="math inline">\(k &gt; 2\)</span>. We know that we can factor any polynomial using its complex roots. It’s less obvious how to do this for bivariate polynomials.</p>
+<p><span class="math display">\[
+x^k+1=\prod_{r^k=-1}(x-r).
+\]</span></p>
+<p>For <span class="math inline">\(v\neq 0\)</span>, substitute <span class="math inline">\(x=u/v\)</span> to get <span class="math display">\[
+\left(\frac{u}{v}\right)^k+1
+=\prod_{r^k=-1}\left(\frac{u}{v}-r\right).
+\]</span> Multiplying by <span class="math inline">\(v^k\)</span> and distributing gives <span class="math display">\[
+u^k+v^k=\prod_{r^k=-1}(u-rv).
+\]</span></p>
+<p>Evaluating this requires <span class="math inline">\(k-1\)</span> multiplications. This can be more efficient for small <span class="math inline">\(k\)</span>, but is not efficient for larger <span class="math inline">\(k\)</span>.</p>
+</section>
+<section id="example-modular-multiplication-for-n-4" class="level3" data-number="26.0.6">
+<h3 data-number="26.0.6" class="anchored" data-anchor-id="example-modular-multiplication-for-n-4"><span class="header-section-number">26.0.6</span> Example: Modular Multiplication for n = 4</h3>
 <p>Below are the two methods of polynomial interpolation on the multiplication table with <span class="math inline">\(n = 4\)</span>.</p>
 <p>Bivariate interpolation gives:</p>
 <p><span class="math display">\[
@@ -914,8 +940,8 @@ Q(t)=1+\frac{1}{7072000}\bigl[&amp;
 \end{aligned}
 \]</span></p>
 </section>
-<section id="comparing-two-methods" class="level3" data-number="26.0.6">
-<h3 data-number="26.0.6" class="anchored" data-anchor-id="comparing-two-methods"><span class="header-section-number">26.0.6</span> Comparing two methods</h3>
+<section id="comparing-two-methods" class="level3" data-number="26.0.7">
+<h3 data-number="26.0.7" class="anchored" data-anchor-id="comparing-two-methods"><span class="header-section-number">26.0.7</span> Comparing two methods</h3>
 <p>For <span class="math inline">\(n=4\)</span>, we can compare the number of multiplications needed to evaluate each polynomial.</p>
 <p>For our method, calculating <span class="math inline">\(t=u+v+cuv\)</span> takes one multiplication. Then, calculating <span class="math inline">\(t^2,\ldots,t^9\)</span> takes eight more.</p>
 <p>For their method, calculating <span class="math inline">\(u^2,u^3,v^2,v^3\)</span> takes four multiplications. There are also nine mixed terms <span class="math inline">\(u^iv^j\)</span> with <span class="math inline">\(i,j\in\{1,2,3\}\)</span>, giving thirteen multiplications altogether.</p>
