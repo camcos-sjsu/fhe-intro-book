@@ -26,7 +26,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -292,7 +312,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/rank_based.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></a></li></ol></nav>
         <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -535,7 +555,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../sorting/swapless.html" class="sidebar-item-text sidebar-link active">
+  <a href="../sorting/rank_based.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></span></a>
   </div>
 </li>
@@ -677,7 +697,7 @@ window.Quarto = {
 <main class="content" id="quarto-document-content" tabindex="-1">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/swapless.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../sorting/intro.html">Sorting</a></li><li class="breadcrumb-item"><a href="../sorting/rank_based.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Rank Based Sort</span></h1>
 </div>
@@ -696,7 +716,7 @@ window.Quarto = {
 </header>
 
 
-<p>An excerpt from Frederico Mazzone et al.&nbsp;(CITATION) discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with. Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.</p>
+<p>An excerpt from Frederico Mazzone et al. <span class="citation" data-cites="ref23"><a href="../references.html#ref-ref23" role="doc-biblioref">[1]</a></span> discusses a solution that applies matrix computation to reduce the comparison depth many sorting methods struggle with. Comparison, swap-based techniques, and arg-max functions that normal sorting methods use are computationally expensive in FHE. We would prefer to use these methods minimally.</p>
 <p>With CKKS’s addition, multiplication, and rotation, we can evaluate a sorting method without swapping to elements.</p>
 <section id="methods" class="level3" data-number="23.0.1">
 <h3 data-number="23.0.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">23.0.1</span> Methods</h3>
@@ -867,6 +887,11 @@ window.Quarto = {
 <p><strong>Step 3.</strong> Sum the rows of each matrix, so <span class="math inline">\((s_1)_i = \sum_j (M_1)_{ij}\)</span> and <span class="math inline">\((s_2)_i = \sum_j (M_2)_{ij}\)</span>. Subtract them to get the offset <span class="math inline">\(O\)</span>, then add <span class="math inline">\(O\)</span> to the ranks <span class="math inline">\(R\)</span> so tied values get different ranks in <span class="math inline">\(t\)</span>.</p>
 
 
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-ref23" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">F. H. Federico Mazzone Maarten Everts, <span>“Efficient ranking, order statistics, and sorting under CKKS.”</span> Available: <a href="https://www.usenix.org/system/files/conference/usenixsecurity25/sec25cycle1-prepub-165-mazzone.pdf">https://www.usenix.org/system/files/conference/usenixsecurity25/sec25cycle1-prepub-165-mazzone.pdf</a></div>
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
