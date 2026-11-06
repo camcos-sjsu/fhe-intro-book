@@ -689,7 +689,7 @@ window.Quarto = {
 <p>As stated in the introduction, numbers get worse in three ways as we compute on them: noise, level, and time.</p>
 <p>In this table,</p>
 <ul>
-<li><p><strong>precision</strong> refers to a way an encryption of a number “decays with time” (as all known fully homomorphic schemes do). The basic idea is that after an operation, the new reseult will have some added mathematical noise.</p>
+<li><p><strong>precision</strong> refers to a way an encryption of a number “decays with time” (as all known fully homomorphic schemes do). The basic idea is that after an operation, the new result will have some added mathematical noise.</p>
 <ul>
 <li><p>For example, adding <span class="math inline">\(Enc(r_*)\)</span> and <span class="math inline">\(Enc(s_*)\)</span> to get <span class="math inline">\(Enc(t_*)\)</span>, <span class="math inline">\(t_i=r_i+s_i+e_i\)</span> for some error <span class="math inline">\(e_i\)</span>, so it is good to always assume our numbers are possibly off by some “noise” which accumulates as more operations are done on them.</p></li>
 <li><p>This shouldn’t be too surprising (e.g.&nbsp;in Python, 0.1 + 0.3 is not exactly 0.4).</p></li>
