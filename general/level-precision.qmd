@@ -1,6 +1,6 @@
 ## Levels, Precision, and Time
 
-As stated in the [introduction](intro.qmd), numbers get worse in three ways as we compute on them: noise, level, and time.
+As stated in the [introduction](/setup.qmd), numbers get worse in three ways as we compute on them: noise, level, and time.
 
 In this table,
 
