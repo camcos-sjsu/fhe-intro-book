@@ -283,7 +283,7 @@ $$
 
 Evaluating this requires $k-1$ multiplications. This can be more efficient for small $k$, but is not efficient for larger $k$.
 
-### Example: Modular Multiplication for n = 4
+### Example: Construction and Contrasting of Modular Multiplication for n = 4
 
 Below are the two methods of polynomial interpolation on the multiplication table with $n = 4$.
 
@@ -300,13 +300,45 @@ P(u,v)=\frac14\bigl[&
 \end{aligned}
 $$
 
-$c=2$
+For the bivariate method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. There are also nine mixed terms $u^iv^j$ with $i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
+
+This method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
+
+
+With symmetry grouping, we have
+$$
+\begin{aligned}
+P(u,v)=\frac14\bigl[
+&1+(u+v)+(u^2+v^2)+(u^3+v^3)-iuv\\
+&-uv(u+v)+iuv(u^2+v^2)+(uv)^2\\
+&-(uv)^2(u+v)-i(uv)^3
+\bigr].
+\end{aligned}
+$$
+
+We can evaluate this in three multiplication layers:
+$$
+\begin{array}{c|l|c}
+\text{Layer} & \text{Values computed} & \text{Multiplications}\\
+\hline
+1 & u^2,\ v^2,\ uv & 3\\
+2 & u^3=u^2u,\ v^3=v^2v,\ (uv)^2,\ 
+    uv(u+v),\ uv(u^2+v^2) & 5\\
+3 & (uv)^2(u+v),\ (uv)^3=(uv)^2(uv) & 2
+\end{array}
+$$
+Thus, this evaluation uses $3+5+2=10$ multiplications and has multiplicative depth $3$.
+
+
+
+
+For the single-variable polynomial, let $c=2$.  Thus, 
 
 $$
 t(u,v)=u+v+2uv.
 $$
 
-Single variable encoding gives: $$
+$$
 \begin{aligned}
 Q(t)=1+\frac{1}{7072000}\bigl[&
 (12507520-191360i)t\\
@@ -321,18 +353,12 @@ Q(t)=1+\frac{1}{7072000}\bigl[&
 \bigr].
 \end{aligned}
 $$
+For the combined-input method, calculating $t=u+v+cuv$ takes one multiplication. Then, calculating $t^2,\ldots,t^9$ takes eight more. This method has multiplicative depth 5: One layer to calculate $t$, and four more to get all powers through $t^9$.
 
-### Comparing two methods
 
-For $n=4$, we can compare the number of multiplications needed to evaluate each polynomial.
+Overall, the bivariate method has lower multiplicative depth but a greater number of multiplications. 
 
-For our method, calculating $t=u+v+cuv$ takes one multiplication. Then, calculating $t^2,\ldots,t^9$ takes eight more.
-
-For their method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. There are also nine mixed terms $u^iv^j$ with $i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
-
-However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
-
-Thus, $$
+$$
 \begin{array}{c|ccc}
 & \text{Univariate}
 & \text{Bivariate}
@@ -343,4 +369,3 @@ Thus, $$
 \end{array}
 $$
 
-The combined-variable method uses fewer multiplications, while the bivariate method has less depth.
