@@ -77,7 +77,7 @@
     "href": "general/higher-moments.html",
     "title": "4  Higher Moments",
     "section": "",
-    "text": "Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.\nLet vector \\(\\vec{x}\\) be an encoded series of \\(n\\) sample measurements):\n\\[\\vec{x}=(x_1,x_2,\\ldots,x_n)\\]\nDefine the \\(k\\)-th (raw) moment to be the expectation of the \\(k^{th}\\) power of the random variable \\(X\\)\n\\[E[X^k]=\\frac{1}{n}(x_1^k+x_2^k+\\dots+x_n^k).\\]\nIn order to obtain the \\(k^{th}\\) moment, we must perform three actions:\n\nCompute \\((x_1^k,x_2^k,\\ldots,x_n^k)\\).\nCompute \\((x_1^k+x_2^k+\\ldots+x_n^k)\\).\n\nPerforming the intra-vector sum operation allows us to get the vector \\((x_1^k + \\cdots + x_n^k)\\cdot  (1,1, \\cdots, 1)\\) in \\(O(\\log(n))\\) additional operations.\n\nDivide by \\(n\\) (a known constant) by multiplying by the vector \\((1/n) \\cdot (1, 1, \\cdots, 1)\\).\n\nWe are naturally able to compute the following variations:\n\nCentral moment: The \\(k^{th}\\) central moment of \\(X\\) about mean \\(\\mu\\) is \\[E[(X-\\mu)^k]=E[(X-E[X])^k].\\] Note: The \\(2^{nd}\\) central moment is used to calculate the variance: \\[\\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\\mu^2.\\] We can expensively calculate \\(\\sqrt{\\mathtt{var}(X)} = \\sigma\\), the standard deviation, or pass this operation back to the user to help find the standardized moment. (see square roots later)\nStandardized moment: This is the same idea as the central moment but \\(X-\\mu\\) is scaled by the standard deviation \\(\\sigma\\) before exponentiation: \\[E\\left[\\left(\\frac{X-\\mu}{\\sigma}\\right)^k\\right].\\]",
+    "text": "Using the sum technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.\nLet vector \\(\\vec{x}\\) be an encoded series of \\(n\\) sample measurements):\n\\[\\vec{x}=(x_1,x_2,\\ldots,x_n)\\]\nDefine the \\(k^{th}\\) (raw) population moment to be the expectation of the \\(k^{th}\\) power of the random \\(X\\) and the \\(k^{th}\\) (raw) sample moment to be its estimator.\n\\[E[X^k]=\\mu'_k=E[m_k]\\] \\[m_k=\\frac{1}{n}(x_1^k+x_2^k+\\dots+x_{N/2}^k).\\]\nIn order to obtain the \\(k^{th}\\) sample moment, we must perform three actions:\n\nCompute \\((x_1^k,x_2^k,\\ldots,x_n^k)\\).\nCompute \\((x_1^k+x_2^k+\\ldots+x_n^k)\\).\n\nPerforming the intra-vector sum operation allows us to get the vector \\((x_1^k + \\cdots + x_{N/2}^k)\\cdot  (1,1, \\cdots, 1)\\) in \\(O(\\log(n))\\) additional operations.\n\nDivide by \\(n\\) (a known constant) by multiplying by the vector \\((1/n) \\cdot (1, 1, \\cdots, 1)\\).\n\nNaturally, the first sample moment only needs steps 2 and 3:\n\\[m_1=\\bar{x}=\\frac{1}{n}\\sum_{i=1}^nx_i\\]\nWe are then able to compute the following variations:\n\nCentral moment: The \\(k^{th}\\) population central moment of \\(X\\) about mean \\(\\mu\\) is \\[E[(X-\\mu)^k]=E[(X-E[X])^k].\\] The \\(k^{th}\\) sample central moment of \\(X\\) about mean \\(\\mu\\) is \\[m_k=\\frac{1}{n}\\sum_{i=1}^n(x_i-\\bar{x})^k\\]\n\nNote: The \\(2^{nd}\\) central moment is used to calculate the variance: \\[\\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\\mu^2.\\]\n\nStandardized moment: This is the population central moment but \\(X-\\mu\\) is scaled by the standard deviation \\(\\sigma\\) before exponentiation: \\[E\\left[\\left(\\frac{X-\\mu}{\\sigma}\\right)^k\\right].\\] The sample standardized moment is then \\[\\frac{m_k}{s^k}=\\frac{\\frac{1}{n}\\sum_{i=1}^n(x_i-\\bar{x})^k}{\\sqrt{\\frac{1}{n}\\sum_{i=1}^n(x_i-\\bar{x})^2}^k}\\]\n\n\n\n\n\n\n\nTipRemark\n\n\n\n\nWe can expensively calculate \\(\\sqrt{\\mathtt{var}(X)} = \\sigma\\), the standard deviation, or pass this operation back to the user to help find the standardized moment. (see square roots later)\nNote: You will see that ciphertext division is notably more difficult than scalar division, but we can also rely on user input/output when standardizing.",
     "crumbs": [
       "General Functions",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Higher Moments</span>"
@@ -336,11 +336,11 @@
   {
     "objectID": "correlation-related/intro.html",
     "href": "correlation-related/intro.html",
-    "title": "Correlation and Related Functions",
+    "title": "Statistics",
     "section": "",
-    "text": "This section constructs the correlation and regression coefficients, then extends to simple and multiple linear regression.",
+    "text": "This section constructs the correlation and regression coefficients, then extends to simple and multiple linear regression.\nIn a fully homomorphic environment, standard inference is thrown out of the window.",
     "crumbs": [
-      "Correlation and Related Functions"
+      "Statistics"
     ]
   },
   {
@@ -350,7 +350,7 @@
     "section": "",
     "text": "Given vectors \\(\\mathbf{x}\\) and \\(\\mathbf{y}\\), there are \\(2\\) closely related quantities:\nThese can be approached with the same general strategy:\nWith some more detail:\nGiven \\(x\\) and \\(y\\), we can compute vectors that contains their means: \\(x_m=(\\bar{x}, \\bar{x}, \\cdots)\\) and \\(y_m(\\bar{y},\\bar{y}, \\cdots)\\). Then we can subtract to obtain \\(\\begin{align}x'&=(x_1,x_2,\\dots,x_{N/2})+(\\bar{x})*(-1,-1,\\dots,-1) \\\\\n&=(x_1-\\bar{x}, x_2-\\bar{x},\\dots,x_{N/2}-\\bar{x})\\end{align}\\) and similarly \\(\\begin{align} y'=(y_1-\\bar{y}, y_2-\\bar{y},\\dots,y_{N/2}-\\bar{y})\\end{align}\\)\nOur task for \\(r\\) then (the work for the regression coefficient is similar) becomes computing \\[ r(x',y') =\\frac{\\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\\sqrt{\\sum_{i=1}^{N/2}(x_i')^2\\sum_{i=1}^{N/2}(y'_i)^2}} \\]",
     "crumbs": [
-      "Correlation and Related Functions",
+      "Statistics",
       "<span class='chapter-number'>18</span>  <span class='chapter-title'>Two Coefficients</span>"
     ]
   },
@@ -361,7 +361,7 @@
     "section": "",
     "text": "Correlation coefficient available from https://en.wikipedia.org/wiki/Correlation_coefficient↩︎\nCoefficient of determination available from https://en.wikipedia.org/wiki/Coefficient_of_determination↩︎\nLinear regression available from https://en.wikipedia.org/wiki/Linear_regression↩︎",
     "crumbs": [
-      "Correlation and Related Functions",
+      "Statistics",
       "<span class='chapter-number'>18</span>  <span class='chapter-title'>Two Coefficients</span>"
     ]
   },
@@ -372,7 +372,7 @@
     "section": "",
     "text": "19.0.1 Simple Linear Regression\nLinear regression aims to find the line of best fit for a given set of data points. We assume a simple protocol where: 1. Take as client input \\(x=(x_1, \\dots, x_n)\\) and \\(y=(y_1, \\dots, y_n)\\)\nThese are immediate from our work:",
     "crumbs": [
-      "Correlation and Related Functions",
+      "Statistics",
       "<span class='chapter-number'>19</span>  <span class='chapter-title'>Linear Regression</span>"
     ]
   },
@@ -383,7 +383,7 @@
     "section": "",
     "text": "Seunghu Kim, Seongbong Choi, Hyung Tae Lee; Improved Matrix Inversion with Packed Ciphertexts using Fully Homomorphic Encryption available from https://eprint.iacr.org/2025/1274.pdf↩︎",
     "crumbs": [
-      "Correlation and Related Functions",
+      "Statistics",
       "<span class='chapter-number'>19</span>  <span class='chapter-title'>Linear Regression</span>"
     ]
   },
