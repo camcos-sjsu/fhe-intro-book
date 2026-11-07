@@ -1,3 +1,5 @@
-# Correlation and Related Functions
+# Statistics
 
 This section constructs the correlation and regression coefficients, then extends to simple and multiple linear regression.
+
+In a fully homomorphic environment, standard inference is thrown out of the window. 

@@ -6,24 +6,39 @@ Let vector $\vec{x}$ be an encoded series of $n$ sample measurements):
 
 $$\vec{x}=(x_1,x_2,\ldots,x_n)$$
 
-Define the $k$-th **(raw) moment** to be the expectation of the $k^{th}$ power of the random variable $X$
+Define the $k^{th}$ **(raw) population moment** to be the expectation of the $k^{th}$ power of the random  $X$ and the $k^{th}$ **(raw) sample moment** to be its estimator.
 
-$$E[X^k]=\frac{1}{n}(x_1^k+x_2^k+\dots+x_n^k).$$
+$$E[X^k]=\mu'_k=E[m_k]$$
+$$m_k=\frac{1}{n}(x_1^k+x_2^k+\dots+x_{N/2}^k).$$
 
-In order to obtain the $k^{th}$ moment, we must perform three actions:
+In order to obtain the $k^{th}$ sample moment, we must perform three actions:
 
 1. Compute $(x_1^k,x_2^k,\ldots,x_n^k)$.
 
 2. Compute $(x_1^k+x_2^k+\ldots+x_n^k)$.
 
-Performing the [intra-vector sum](intravector-sums.qmd) operation allows us to get the vector $(x_1^k + \cdots + x_n^k)\cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ additional operations. 
+Performing the [intra-vector sum](intravector-sums.qmd) operation allows us to get the vector $(x_1^k + \cdots + x_{N/2}^k)\cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ additional operations. 
 
 3. Divide by $n$ (a known constant) by multiplying by the vector $(1/n) \cdot (1, 1, \cdots, 1)$.
 
-We are naturally able to compute the following variations:
+Naturally, the first sample moment only needs steps 2 and 3:
 
-1. **Central moment**: The $k^{th}$ central moment of $X$ about mean $\mu$ is $$E[(X-\mu)^k]=E[(X-E[X])^k].$$ Note: The $2^{nd}$ central moment is used to calculate the variance:
-$$\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.$$ We can expensively calculate $\sqrt{\mathtt{var}(X)} = \sigma$, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see **square roots** later)
+$$m_1=\bar{x}=\frac{1}{n}\sum_{i=1}^nx_i$$
 
-2. **Standardized moment**: This is the same idea as the central moment but $X-\mu$ is scaled by the standard deviation $\sigma$ before exponentiation:
-$$E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].$$
+
+We are then able to compute the following variations:
+
+1. **Central moment**: The $k^{th}$ population central moment of $X$ about mean $\mu$ is $$E[(X-\mu)^k]=E[(X-E[X])^k].$$ The $k^{th}$ sample central moment of $X$ about mean $\mu$ is $$m_k=\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^k$$
+
+Note: The $2^{nd}$ central moment is used to calculate the variance:
+$$\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.$$
+
+2. **Standardized moment**: This is the population central moment but $X-\mu$ is scaled by the standard deviation $\sigma$ before exponentiation:
+$$E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].$$ The sample standardized moment is then $$\frac{m_k}{s^k}=\frac{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^k}{\sqrt{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2}^k}$$
+
+
+::: {.callout-tip icon="false" title="**Remark**"}
+1. We can expensively calculate $\sqrt{\mathtt{var}(X)} = \sigma$, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see [**square roots**](general/sqrt-user-input.qmd) later)
+
+2. Note: You will see that ciphertext [division](/division/intro.qmd) is notably more difficult than scalar division, but we can also rely on user input/output when standardizing. 
+:::
