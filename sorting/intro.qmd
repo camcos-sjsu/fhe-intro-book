@@ -1,41 +1,19 @@
 ## Sorting
 
-Sorting an encrypted vector can provide useful information, including its minimum, maximum, median, and quartiles. But ordinary sorting algorithms often branch on comparison results or use encrypted values as memory indices, operations that are unavailable in FHE. We instead must attempt to sort using only arithmetic operations on encrypted values, which can be done in a couple of ways.
+Sorting an encrypted vector can provide useful information, including its minimum, maximum, median, and quartiles. But ordinary sorting algorithms often branch on comparison results or use encrypted values as memory indices, operations that are unavailable in FHE. We instead must attempt to sort using only arithmetic operations on encrypted values.
 
-### Comparison Based Sorting {#sec-comparison-based-sorting}
+We will compare methods by their total comparisons, sequential comparison layers, and arithmetic depth. The chapters develop these ideas in order: PairSort and bubble sort, parallel schedules, rank-based sorting, then maximum extraction. The discrete-model section gives a comparison construction for bounded integer inputs; here the focus is how sorting methods use comparisons.
 
-The first intuitive method is to utilize sorts that compare and swap values on a schedule irrelevant of the input of the data. Sorts such as merge and quicksort are not suitable for FHE because their branching depends on the results of the comparison. In FHE, comparisons can be expressed as an arithmetic operation using a polynomial approximation of the sign funciton. 
 
-For two encrypted values $x_i$ and $x_j$, let
-$$s = \mathtt{sign}(x_i-x_j),$$ 
-where the sign function is approximated by a polynomial and returns approximately $1$ when $x_i \geq x_j$ and $0$ when $x_i < x_j$. This replaces an ordinary conditional such as “if $x_i \geq x_j$, swap” with arithmetic selection:
+### Comparison Based Sorting
 
-$$
-\begin{aligned}
-y_{\min} &= s x_j + (1-s)x_i,\\
-y_{\max} &= s x_i + (1-s)x_j.
-\end{aligned}
-$$
+The first intuitive method is to utilize sorts that compare and order pairs of values on a schedule irrelevant of the input of the data. Sorts such as merge and quicksort are not suitable for FHE because their branching depends on the results of the comparison. In FHE, comparisons can be expressed as an arithmetic operation using a polynomial approximation of the sign function.
 
-::: {style="text-align: center;"}
-For $(x_i,x_j)$, the outputs are computed to be $(y_{\min}, y_{\max})$.
-
-$(x_i,x_j)=(7,3)$, $s\approx1$ so the output is $(3,7)$.
-
-$(x_i,x_j)=(3,7)$, $s\approx0$ so they remain $(3,7)$.
-:::
-
-The same operations run in both cases; no branch depends on encrypted data. The approximation is reliable only on its intended input range and away from the transition near equality.
-
-Using this, we can set up comparison based swaps in a structured manner. This can be used to emulate sorts prevalent in sorting networks, which allow for a fixed schedule of comparisons regardless of the results. This includes bubble sort, odd-even, and bitonic sort, among others. 
+We call this arithmetic operation on a pair of values PairSort, defined in the [bubble sort chapter](bubble.qmd#sec-pairsort). It can be used to emulate sorts prevalent in sorting networks, which allow for a fixed schedule of comparisons regardless of the results. 
 
 ### Rank and place
 
 A different strategy exists that avoids moving values through successive swaps. It compares each pair, counts how many values are smaller than each input, then places each value at its rank. This uses fewer independent comparisons, as all the comparisons are independent and can be computed in parallel. However, this requires for a ciphertext $n$, the ability to compute on a vector of size $n^2$. It can be preferable when the input suits the size constraint, as it can allow for less comparison depth than swap based methods. One can return all the ranks of the inputs as its own result, but taking this encrypted rank and using it to place the indexes in their sorted positions is also considered.
-
-### Comparing costs
-
-We will compare methods by their total comparisons, sequential comparison layers, and arithmetic depth. The chapters develop these ideas in order: pairwise compare-and-swap, bubble sort, parallel schedules, rank-based sorting, then maximum extraction. The discrete-model section gives a comparison construction for bounded integer inputs; here the focus is how sorting methods use comparisons.
 
 ### Maximum and minimum
 

@@ -4,6 +4,128 @@ Suppose we wanted the sums of the *entries* of a vector; we call this the **intr
 
 However, we can make this faster by noticing the following. Suppose we cycled by $1$ and added instead, then we would be able to get: $$\mathtt{enc}(z_1 + z_2, z_2 + z_3, z_3 + z_4, \cdots)$$ then cycling by $2$ and adding to itself would put $z_1 + z_2 + z_3 + z_4$ in the first position, but with only 2 additions instead of $3$. Extending this method, we can sum all the numbers with $\log({N/2})$ operations.
 
+
+@fig-rotate-add traces this for 8 slots. Each row adds a copy of the row above cycled by 1, 2 and then 4, and the arrows follow slot 1 as it collects one more block of neighbors at each step. Because the cycles wrap around, every slot ends with the full sum, not just the first.
+
+::: {#fig-rotate-add}
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 8
+#| fig-height: 3.6
+#| fig-align: center
+#| cache: true
+#| fig-alt: "Four rows of eight boxes. The first row holds z1 to z8; each later row adds the row above cycled by 1, 2 and 4, so the boxes hold two, four and finally all eight terms. Colored arrows show slot 1 combining with slots 2, 3 and 5."
+#| renderings: [light, dark]
+library(ggplot2)
+
+n     <- 8
+shift <- c(0, 1, 2, 4)                   # cycle amount added in each row
+width <- c(1, 2, 4, 8)                   # how many z's each slot holds after that row
+step_col <- c("#E69F00", "#56B4E9", "#009E73")
+cells <- do.call(rbind, lapply(1:4, function(r) {
+  j    <- 1:n
+  last <- (j + width[r] - 2) %% n + 1    # last index covered, wrapping around
+  lab  <- if (width[r] == 1) paste0("z[", j, "]")
+          else if (width[r] == 2) paste0("z[", j, "] + z[", last, "]")
+          else if (width[r] == 4) paste0("z[", j, "] + cdots + z[", last, "]")
+          else rep("\"all 8\"", n)
+  data.frame(row = r, x = j, y = 5 - r, label = lab)
+}))
+# arrows that follow slot 1: it adds itself and the slot `shift` places to its right
+arrows <- data.frame(step = 1:3,
+                     x0 = 1 + shift[2:4], y0 = 4:2 - 0.3,
+                     x1 = 1,              y1 = 3:1 + 0.3)
+
+draw <- function(dark) {
+  ink <- if (dark) "grey85" else "grey25"
+  bg  <- if (dark) "#222222" else "white"
+  box <- if (dark) "grey45" else "grey70"
+  ggplot() +
+    geom_tile(data = cells, aes(x, y), fill = NA, colour = box,
+              width = 0.92, height = 0.6) +
+    geom_text(data = cells, aes(x, y, label = label), parse = TRUE,
+              colour = ink, size = 3.4) +
+    geom_segment(data = arrows, aes(x = 1, y = y0, xend = 1, yend = y1),
+                 colour = step_col, linewidth = 0.8,
+                 arrow = arrow(length = unit(2, "mm"), type = "closed")) +
+    geom_curve(data = arrows, aes(x = x0, y = y0, xend = x1 + 0.15, yend = y1),
+               colour = step_col, linewidth = 0.8, curvature = -0.15,
+               arrow = arrow(length = unit(2, "mm"), type = "closed")) +
+    annotate("text", x = 0.35, y = 4:1, hjust = 1, size = 4,
+             label = c("start", "+ cycle by 1", "+ cycle by 2", "+ cycle by 4"),
+             colour = c(ink, step_col), fontface = c("plain", "bold", "bold", "bold")) +
+    coord_cartesian(xlim = c(-1.1, 8.5), ylim = c(0.6, 4.4), clip = "off") +
+    theme_void(base_size = 13) +
+    theme(plot.background = element_rect(fill = bg, colour = NA))
+}
+
+draw(FALSE)  # light theme (also used in the PDF)
+draw(TRUE)   # dark theme
+```
+
+Cycle-and-add on 8 slots.
+
+:::
+
+The savings grow quickly with the number of slots (@fig-cycle-cost). For $N = 2^{16}$ the full vector has $N/2 = 2^{15}$ slots, and the sum takes 15 cycles instead of 32,767.
+
+::: {#fig-cycle-cost}
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 7
+#| fig-height: 4.2
+#| fig-align: center
+#| cache: true
+#| fig-alt: "Log-log plot of cycles needed against the number of slots, from 2 to 2^15. Summing one at a time grows to 32,767 cycles; cycle-and-add grows only to 15."
+#| renderings: [light, dark]
+library(ggplot2)
+
+k <- 1:15                                 # n = 2^k slots, up to N/2 = 2^15
+cost <- rbind(
+  data.frame(n = 2^k, cycles = 2^k - 1, method = "one at a time"),
+  data.frame(n = 2^k, cycles = k,       method = "cycle-and-add")
+)
+
+draw <- function(dark) {
+  ink  <- if (dark) "grey85" else "grey25"
+  bg   <- if (dark) "#222222" else "white"
+  grid <- if (dark) "grey30" else "grey90"
+  pow2 <- function(b) parse(text = paste0("2^", log2(b)))
+  ggplot(cost, aes(n, cycles, colour = method)) +
+    geom_line(linewidth = 0.9) +
+    geom_point(size = 1.8) +
+    annotate("text", x = 2^9, y = 2^11, label = "'one at a time: '*n - 1", parse = TRUE,
+             colour = "#E69F00", size = 4.2, hjust = 1) +
+    annotate("text", x = 2^9, y = 2^5, label = "'cycle-and-add: '*log[2]~n", parse = TRUE,
+             colour = "#56B4E9", size = 4.2) +
+    annotate("text", x = 2^15, y = c(32767, 15), label = c("32767", "15"),
+             colour = ink, size = 3.6, hjust = 1.2, vjust = -0.6) +
+    scale_colour_manual(values = c("one at a time" = "#E69F00", "cycle-and-add" = "#56B4E9"),
+                        guide = "none") +
+    scale_x_continuous(trans = "log2", breaks = 2^seq(1, 15, by = 2), labels = pow2) +
+    scale_y_continuous(trans = "log2", breaks = 2^seq(0, 15, by = 3), labels = pow2) +
+    labs(x = "number of slots n", y = "cycles needed") +
+    theme_minimal(base_size = 13) +
+    theme(plot.background = element_rect(fill = bg, colour = NA),
+          text = element_text(colour = ink), axis.text = element_text(colour = ink),
+          panel.grid.major = element_line(colour = grid),
+          panel.grid.minor = element_blank())
+}
+
+draw(FALSE)  # light theme (also used in the PDF)
+draw(TRUE)   # dark theme
+```
+
+Cycles needed to sum $n$ slots.
+
+:::
+
 Here are a couple of general consequences of being able to sum: 
 
 1. **dot product**: given encrypted vectors of $c_*$ and $d_*$, we can multiply to get $\mathtt{enc}(c_1d_1, c_2d_2, \ldots)$, and then sum to get the dot product. 

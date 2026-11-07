@@ -3,7 +3,7 @@ title: "Lookup Tables"
 editor: visual
 ---
 
-Suppose that you want to perform an operation $f(a,b)$. Recall that $a,b \in \{0,...,n-1\}$ and that $a,b$ are stored as roots of unity $\zeta^a, \zeta^b$ where $\zeta = e^{2\pi i/n}$. The desired output may be a value in either root of unity form or as a regular encoded value.  
+Suppose that you want to perform an operation $f(a,b)$. Recall that $a,b \in \{0,...,n-1\}$ and that $a,b$ are stored as roots of unity $\zeta^a, \zeta^b$ where $\zeta = e^{2\pi i/n}$. The desired output may be a value in either root of unity form or as a regular encoded value.
 
 Since there are finitely many possible inputs, we could calculate every possible value of $f(a,b)$ beforehand, without encryption. Then, when we receive encrypted inputs, we would like to use this table to obtain the encrypted answer.
 
@@ -15,12 +15,11 @@ Chung, Kim, Kim, and Lee [@chung2024] use this approach with inputs encoded as r
 f(\zeta^a)=\zeta^{T(a)}.
 $$ There are $n$ interpolation points, so the polynomial has at most degree $n-1$.
 
-For operations with multiple inputs, we will consider two approaches. First, we will consider the approach which interpolates a polynomial in multiple variables while keeping inputs separate. Then, we will consider the approach which combines inputs into a single value and interpolates a single variable polynomial. 
+For operations with multiple inputs, we will consider two approaches. First, we will consider the approach which interpolates a polynomial in multiple variables while keeping inputs separate. Then, we will consider the approach which combines inputs into a single value and interpolates a single variable polynomial.
 
 ### Multivariable Interpolation
 
-Chung, Kim, Kim, and Lee [@chung2024] use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying 
-$$
+Chung, Kim, Kim, and Lee [@chung2024] use multivariable interpolation. For example, modular multiplication requires a polynomial satisfying $$
 f(\zeta^a,\zeta^b)=\zeta^{ab}.
 $$
 
@@ -32,8 +31,7 @@ $$ for every possible pair of inputs.
 
 Each input is a fourth root of unity.
 
-The lookup table has sixteen entries: 
-$$
+The lookup table has sixteen entries: $$
 \begin{array}{c|cccc}
  & v=1 & v=\zeta & v=\zeta^2 & v=\zeta^3\\
 \hline
@@ -44,24 +42,20 @@ u=\zeta^3 & d_{30} & d_{31} & d_{32} & d_{33}
 \end{array}
 $$
 
-First, hold the second input fixed at $v=\zeta^b$. We can interpolate a polynomial $p_b(u)$ satisfying
-$$
+First, hold the second input fixed at $v=\zeta^b$. We can interpolate a polynomial $p_b(u)$ satisfying $$
 p_b(\zeta^a)=d_{ab},
 \qquad a=0,1,2,3.
-$$ 
-
-Each $p_b$ has degree at most three. Doing this for every column gives four polynomials. 
 $$
+
+Each $p_b$ has degree at most three. Doing this for every column gives four polynomials. $$
 p_0(u),\quad p_1(u),\quad p_2(u),\quad p_3(u).
 $$
 
-Next, we need to select the correct column using $v$. Define the Lagrange polynomials 
-$$
+Next, we need to select the correct column using $v$. Define the Lagrange polynomials $$
 L_b(v)=
 \prod_{\substack{0\leq k\leq 3\\k\neq b}}
 \frac{v-\zeta^k}{\zeta^b-\zeta^k}.
-$$ 
-
+$$
 
 These satisfy
 
@@ -71,25 +65,19 @@ L_b(\zeta^k)=
 1,&k=b,\\
 0,&k\neq b.
 \end{cases}
-$$ 
-For example, 
-$$
+$$ For example, $$
 L_0(v)=
 \frac{(v-\zeta)(v-\zeta^2)(v-\zeta^3)}
 {(1-\zeta)(1-\zeta^2)(1-\zeta^3)}.
 $$
 
-We can now combine the column polynomials: 
-$$
+We can now combine the column polynomials: $$
 f(u,v)=
 p_0(u)L_0(v)+p_1(u)L_1(v)
 +p_2(u)L_2(v)+p_3(u)L_3(v).
-$$
-When $v=\zeta^b$, all terms go to 0 except $p_b(u)$. Thus, 
-$$
+$$ When $v=\zeta^b$, all terms go to 0 except $p_b(u)$. Thus, $$
 f(\zeta^a,\zeta^b)=p_b(\zeta^a)=d_{ab},
-$$ 
-as desired.
+$$ as desired.
 
 The column polynomials themselves can be written as $$
 p_b(u)=\sum_{a=0}^{3}d_{ab}L_a(u).
@@ -106,7 +94,6 @@ Each Lagrange polynomial has degree three, so $f$ has degree at most three in ea
 f(u,v)=\sum_{i=0}^{3}\sum_{j=0}^{3}A_{ij}u^iv^j.
 $$ There are sixteen coefficients, but the total degree is at most six, coming from the term $u^3v^3$.
 
-
 ### Combining Inputs
 
 Alternatively, we could encode a pair of elements as a single value, and then interpolate a polynomial in one variable. We can do all of this publicly beforehand, so only evaluating the polynomial needs to happen in an encrypted setting.
@@ -117,12 +104,43 @@ $$
 t(w,z)=nw+z.
 $$
 
-This distinguishes every ordered pair of $n$th roots of unity, and gives $n^2$ points to interpolate on.  Thus, the lookup table may be represented as polynomial of degree at most $n^2-1$.  Although the polynomial is higher degree, this method has a particular advantage with symmetric functions. 
-
+This distinguishes every ordered pair of $n$th roots of unity, and gives $n^2$ points to interpolate on. Thus, the lookup table may be represented as polynomial of degree at most $n^2-1$. Although the polynomial is higher degree, this method has a particular advantage with symmetric functions.
 
 ### Exploiting Symmetry
 
-Consider the case of modular multiplication.  This operation is symmetric.  That is, $f(a,b) = f(b,a)$.  It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.
+Consider the case of modular multiplication. This operation is symmetric. That is, $f(a,b) = f(b,a)$. It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.
+
+\begin{figure}[htbp]
+\centering
+$$
+\begin{array}{c|cccc}
+ & b=0 & b=1 & b=2 & b=3\\
+\hline
+a=0
+& d_{00}
+& \textcolor{blue}{d_{01}}
+& \textcolor{red}{d_{02}}
+& \textcolor{teal}{d_{03}}\\
+a=1
+& \textcolor{blue}{d_{10}}
+& d_{11}
+& \textcolor{violet}{d_{12}}
+& \textcolor{orange}{d_{13}}\\
+a=2
+& \textcolor{red}{d_{20}}
+& \textcolor{violet}{d_{21}}
+& d_{22}
+& \textcolor{brown}{d_{23}}\\
+a=3
+& \textcolor{teal}{d_{30}}
+& \textcolor{orange}{d_{31}}
+& \textcolor{brown}{d_{32}}
+& d_{33}
+\end{array}
+$$
+\caption{A symmetric lookup table for $n=4$.}
+\label{fig:symmetric-lookup}
+\end{figure}
 
 The current construction does not use the symmetry of the table, because $t(w,z)\neq t(z,w)$ when $w\neq z$. Ideally, they would be equal so that we can use fewer interpolation points and get a lower degree.
 
@@ -200,8 +218,7 @@ $$
 \end{array}
 $$
 
-
-There are six values in the middle column which are distinct, so we can interpolate a polynomial $q$ of degree at most $5$ with these inputs and outputs.  We also notice that values which aren't distinct have corresponding flipped $w$ and $z$ values. 
+There are six values in the middle column which are distinct, so we can interpolate a polynomial $q$ of degree at most $5$ with these inputs and outputs. We also notice that values which aren't distinct have corresponding flipped $w$ and $z$ values.
 
 Explicitly, label the interpolation points
 
@@ -236,47 +253,37 @@ We can construct $q$ publicly beforehand. Given encrypted inputs $w$ and $z$, we
 
 ### Exploiting Symmetry with Multivariate Interpolation
 
-We can also use symmetry to our advantage while keeping variables separate. Since our polynomial represents a symmetric function, (P(u,v)=P(v,u)). In the expanded form,
-$$
+We can also use symmetry to our advantage while keeping variables separate. Since our polynomial represents a symmetric function, $(P(u,v)=P(v,u))$. In the expanded form, $$
 P(u,v)=\sum_{i,j=0}^{n-1}A_{ij}u^iv^j,
-$$
-we therefore have (A_{ij}=A_{ji}). This lets us group terms with matching coefficients as follows.
-$$
+$$ we therefore have $(A_{ij}=A_{ji})$. This lets us group terms with matching coefficients as follows. $$
 P(u,v)
 =\sum_{i=0}^{n-1}A_{ii}(uv)^i
 +\sum_{0\le i<j\le n-1}
 A_{ij}(uv)^i\left(u^{j-i}+v^{j-i}\right).
-$$
-We can compute the powers of $(uv)$ and the sums $(u^k+v^k)$ instead of individually multiplying every term $u^iv^j$
+$$ We can compute the powers of $(uv)$ and the sums $(u^k+v^k)$ instead of individually multiplying every term $u^iv^j$
 
-
-To compute the $(u^k+v^k)$, we can use factorization.  For example, since $i^2=-1$,
-$$
+To compute the $(u^k+v^k)$, we can use factorization. For example, since $i^2=-1$, $$
 u^2+v^2=(u+iv)(u-iv).
-$$
-This requires only one multiplication, rather than the two needed to square $u$ and $v$ separately.
+$$ This requires only one multiplication, rather than the two needed to square $u$ and $v$ separately.
 
-We would like to generalize this for $k > 2$. We know that we can factor any polynomial using its complex roots.  It's less obvious how to do this for bivariate polynomials.  
+We would like to generalize this for $k > 2$. We know that we can factor any polynomial using its complex roots.
 
-$$
-x^k+1=\prod_{r^k=-1}(x-r).
-$$
+First, consider the single variate case: $$
+x^k+1=\prod_{i=1}^k(x-r_i).
+$$ Where $r_i$ is the $i$-th $k$-th root of $-1$ .
 
-
-For $v\neq 0$, substitute $x=u/v$ to get
-$$
+When $v = 0$ our problem is trivial. For $v\neq 0$, substitute $x=u/v$ to get $$
 \left(\frac{u}{v}\right)^k+1
-=\prod_{r^k=-1}\left(\frac{u}{v}-r\right).
+=\prod_{i=1}^k\left(\frac{u}{v}-r_i\right).
 $$
-Multiplying by $v^k$ and distributing gives
-$$
-u^k+v^k=\prod_{r^k=-1}(u-rv).
+
+Multiplying by $v^k$ and distributing gives $$
+u^k+v^k=\prod_{r=1}^k(u-r_iv).
 $$
 
 Evaluating this requires $k-1$ multiplications. This can be more efficient for small $k$, but is not efficient for larger $k$.
 
-
-### Example: Modular Multiplication for n = 4
+### Example: Construction and Contrasting of Modular Multiplication for n = 4
 
 Below are the two methods of polynomial interpolation on the multiplication table with $n = 4$.
 
@@ -293,35 +300,44 @@ P(u,v)=\frac14\bigl[&
 \end{aligned}
 $$
 
-$c=2$ 
+For the bivariate method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. There are also nine mixed terms $u^iv^j$ with $i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
+
+This method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
+
+
+With symmetry grouping, we have
+$$
+\begin{aligned}
+P(u,v)=\frac14\bigl[
+&1+(u+v)+(u^2+v^2)+(u^3+v^3)-iuv\\
+&-uv(u+v)+iuv(u^2+v^2)+(uv)^2\\
+&-(uv)^2(u+v)-i(uv)^3
+\bigr].
+\end{aligned}
+$$
+
+We can evaluate this in three multiplication layers:
+$$
+\begin{array}{c|l|c}
+\text{Layer} & \text{Values computed} & \text{Multiplications}\\
+\hline
+1 & u^2,\ v^2,\ uv & 3\\
+2 & u^3=u^2u,\ v^3=v^2v,\ (uv)^2,\ 
+    uv(u+v),\ uv(u^2+v^2) & 5\\
+3 & (uv)^2(u+v),\ (uv)^3=(uv)^2(uv) & 2
+\end{array}
+$$
+Thus, this evaluation uses $3+5+2=10$ multiplications and has multiplicative depth $3$.
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+For the single-variable polynomial, let $c=2$.  Thus, 
 
 $$
 t(u,v)=u+v+2uv.
 $$
 
-
-Single variable encoding gives:
 $$
 \begin{aligned}
 Q(t)=1+\frac{1}{7072000}\bigl[&
@@ -337,29 +353,19 @@ Q(t)=1+\frac{1}{7072000}\bigl[&
 \bigr].
 \end{aligned}
 $$
+For the combined-input method, calculating $t=u+v+cuv$ takes one multiplication. Then, calculating $t^2,\ldots,t^9$ takes eight more. This method has multiplicative depth 5: One layer to calculate $t$, and four more to get all powers through $t^9$.
 
-### Comparing two methods
 
-For $n=4$, we can compare the number of multiplications needed to evaluate each polynomial.
+Overall, the bivariate method has lower multiplicative depth but a greater number of multiplications. 
 
-For our method, calculating $t=u+v+cuv$ takes one multiplication. Then, calculating $t^2,\ldots,t^9$ takes eight more.
-
-For their method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. There are also nine mixed terms $u^iv^j$ with $i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
-
-However, their method allows more of these multiplications to happen at once. Our method has multiplicative depth 5: One layer to calculate $t$, and four more to get all powers through $t^9$. Their method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
-
-Thus, 
 $$
-\begin{array}{c|cc}
- & \text{Our method} & \text{Their method}\\
+\begin{array}{c|ccc}
+& \text{Univariate}
+& \text{Bivariate}
+& \text{Bivariate with symmetry}\\
 \hline
-\text{Encrypted multiplications} & 9 & 13\\
-\text{Multiplication depth} & 5 & 3
+\text{Encrypted multiplications} & 9 & 13 & 10\\
+\text{Multiplicative depth} & 5 & 3 & 3
 \end{array}
 $$
-
-Our method uses fewer multiplications, while theirs has less depth.
-
-
-
 

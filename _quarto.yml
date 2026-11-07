@@ -4,7 +4,7 @@ project:
 book:
   title: "fhe-intro-book"
   author: "camcos-sjsu"
-  date: today
+  date: last-modified
   date-format: iso
   chapters:
     - index.qmd
@@ -51,7 +51,7 @@ book:
       chapters:
         - discrete-model/roots-of-unity.qmd
         - discrete-model/lookup-tables.qmd
-        - discrete-model/modular-operations.qmd
+      #  - discrete-model/modular-operations.qmd
         - discrete-model/binary-approach.qmd
         - discrete-model/extended-binary-expansion.qmd
         - discrete-model/index-one-hot.qmd
