@@ -680,27 +680,24 @@ window.Quarto = {
 </header>
 
 
-<p>Using the <a href="general/intravector-sums.qmd">sum</a> technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.</p>
+<p>Using the <a href="../intravector-sums.qmd">sum</a> technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.</p>
 <p>Let vector <span class="math inline">\(\vec{x}\)</span> be an encoded series of <span class="math inline">\(n\)</span> sample measurements):</p>
 <p><span class="math display">\[\vec{x}=(x_1,x_2,\ldots,x_n)\]</span></p>
 <p>Define the <span class="math inline">\(k\)</span>-th <strong>(raw) moment</strong> to be the expectation of the <span class="math inline">\(k^{th}\)</span> power of the random variable <span class="math inline">\(X\)</span></p>
 <p><span class="math display">\[E[X^k]=\frac{1}{n}(x_1^k+x_2^k+\dots+x_n^k).\]</span></p>
 <p>In order to obtain the <span class="math inline">\(k^{th}\)</span> moment, we must perform three actions:</p>
 <ol type="1">
-<li>Compute <span class="math inline">\((x_1^k,x_2^k,\ldots,x_n^k)\)</span>.</li>
+<li><p>Compute <span class="math inline">\((x_1^k,x_2^k,\ldots,x_n^k)\)</span>.</p></li>
+<li><p>Compute <span class="math inline">\((x_1^k+x_2^k+\ldots+x_n^k)\)</span>.</p></li>
 </ol>
-<p>While we can naively obtain <span class="math inline">\((x_1^k, \ldots, x_n^k)\)</span> in <span class="math inline">\(O(k)\)</span> time by repeated multiplication, it is faster to compute via the “fast squaring trick”: <span class="math display">\[ X \rightarrow X*X \rightarrow \cdots \rightarrow X * \cdots * X (k \text{ times}) \]</span> in <span class="math inline">\(O(\log(k))\)</span> operations.</p>
-<ol start="2" type="1">
-<li>Compute <span class="math inline">\((x_1^k+x_2^k+\ldots+x_n^k)\)</span>.</li>
-</ol>
-<p>Performing the <a href="general/intravector-sum.qmd">intra-vector sum</a> operation allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_n^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p>
+<p>Performing the <a href="../general/intravector-sums.html">intra-vector sum</a> operation allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_n^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p>
 <ol start="3" type="1">
 <li>Divide by <span class="math inline">\(n\)</span> (a known constant) by multiplying by the vector <span class="math inline">\((1/n) \cdot (1, 1, \cdots, 1)\)</span>.</li>
 </ol>
 <p>We are naturally able to compute the following variations:</p>
 <ol type="1">
-<li><p><strong>central moment</strong>: The <span class="math inline">\(k^{th}\)</span> central moment of <span class="math inline">\(X\)</span> about mean <span class="math inline">\(\mu\)</span> is <span class="math display">\[E[(X-\mu)^k]=E[(X-E[X])^k].\]</span> Note: The <span class="math inline">\(2^{nd}\)</span> central moment is used to calculate the variance: <span class="math display">\[\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.\]</span> We can expensively calculate <span class="math inline">\(\sqrt{\mathtt{var}(X)} = \sigma\)</span>, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see <strong>square roots</strong> later)</p></li>
-<li><p><strong>standardized moment</strong>: This is the same idea as the central moment but <span class="math inline">\(X-\mu\)</span> is scaled by the standard deviation <span class="math inline">\(\sigma\)</span> before exponentiation: <span class="math display">\[E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].\]</span></p></li>
+<li><p><strong>Central moment</strong>: The <span class="math inline">\(k^{th}\)</span> central moment of <span class="math inline">\(X\)</span> about mean <span class="math inline">\(\mu\)</span> is <span class="math display">\[E[(X-\mu)^k]=E[(X-E[X])^k].\]</span> Note: The <span class="math inline">\(2^{nd}\)</span> central moment is used to calculate the variance: <span class="math display">\[\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.\]</span> We can expensively calculate <span class="math inline">\(\sqrt{\mathtt{var}(X)} = \sigma\)</span>, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see <strong>square roots</strong> later)</p></li>
+<li><p><strong>Standardized moment</strong>: This is the same idea as the central moment but <span class="math inline">\(X-\mu\)</span> is scaled by the standard deviation <span class="math inline">\(\sigma\)</span> before exponentiation: <span class="math display">\[E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].\]</span></p></li>
 </ol>
 
 
