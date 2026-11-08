@@ -6,21 +6,158 @@ However, if we *just* want the max function, we can do quite a bit better and ge
 
 Let $x = (x_1, \ldots, x_{n/2})$. We iterate on $i$, starting with $i = 0$.
 
-1. At the start of iteration $i$, construct constant binary vectors $c_L$ and $c_R$ which have a 1 at every index $k$ that satisfies  $k = 2^{i+1} - 2 \pmod {2^{k+1}}$ for $c_L$, and $k = 2^{i+1} -1 \pmod {2^{i+1}}$ for $c_R$,
+1. At the start of iteration $i$, construct constant binary vectors $c_L$ and $c_R$ which have a 1 at every index $k$ that satisfies  $k = 2^{i} - 1 \pmod {2^{i+1}}$ for $c_L$, and $k = 2^{i+1} -1 \pmod {2^{i+1}}$ for $c_R$,
     - On the first iteration $i=0$, we have $c_L = (1,0,1,0,\cdots)$ and $c_R = (0,1,0,1,\cdots)$.
-    - On subsequent iterations the $1$s are separated by double the distance per iteration. For example, for $i = 2$, the period will be $8$: $c_L = (1,0,0,0,0,0,0,0,1,\cdots)$.   
+    - On subsequent iterations the $1$s are separated by double the distance per iteration. For example, for $i = 2$, the period will be $8$: $c_L = (0,0,0,1,0,0,0,0,0,0,0,1,\cdots)$ and $c_R = (0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,\cdots)$ (indexed from $0$).   
     - The $c_L$ and $c_R$ will match up pairs of numbers, acting as a kind of simultaneous bubble.
 2. We now match up the bubbles by splitting the relevant entries into two vectors holding the two halves of the bubbles, and cycling the left half so it matches the right:
     - Construct vectors $L' = x * c_L$ and $R = x * c_R$.
-    - On iteration $i$, let $L := \mathtt{cyc}_{2^{i+1} - 1}(L')$.
+    - On iteration $i$, let $L := \mathtt{cyc}_{2^{i}}(L')$, where $\mathtt{cyc}_m$ moves every entry $m$ places to the right.
     - Compute $c = L - R$. This will give a vector populated by zeros, and $L_i - R_i$ in populated index positions $i$. 
     - In $c$, any positive values in c represent index positions where the $L$ value is larger, and vice-versa for negative values and $R$.
 3. We now create a vector with only the "winners" in their respective positions.
-    - Compute $e = L * \mathtt{sign}{(c)}$. This contains only $L$ values that were greater in their respective bubble comparisons.
-    - Similarly, computing $f = b * (0 - \mathtt{sign}{(c))}$ will return a vector of only $0$'s and $R$ values that were greater in their respective comparisons.
+    - Compute $e = L * \mathtt{sign}{(c)}$. Here, as in PairSort, $\mathtt{sign}$ returns $1$ when its input is nonnegative and $0$ otherwise, so ties go to $L$ and, since tied values are equal, nothing is lost. This contains only $L$ values that were greater in their respective bubble comparisons.
+    - Similarly, computing $f = R * (1 - \mathtt{sign}{(c)})$ will return a vector of only $0$'s and $R$ values that were greater in their respective comparisons.
     - $x' := e + f$ gives a vector with only the winners from each respective bubble. 
 4. Treating $x'$ as the new $x$, after $\log_2(n/2)$ iterations $x$ will only have the max of the original $x$, in the rightmost position.
-    - We note that after iteration $i-1$ and before iteration $i$, the new $x$ will have nonzero entries only in places (indexed starting at $0$) whose binary expansions have $i$ $0$s at the right. For example, after the first iteration only the even indices will have nonzero entries; the other "loser" entries have been eliminated.
+    - We note that after iteration $i-1$ and before iteration $i$, the new $x$ will have nonzero entries only in places (indexed starting at $0$) whose binary expansions have $i$ $1$s at the right. For example, after the first iteration only the odd indices will have nonzero entries; the other "loser" entries have been eliminated.
+
+@fig-max-tournament shows the vector after each round for eight slots, $x = (5, 2, 8, 1, 9, 3, 7, 4)$, numbered from $0$. In round $i$ the left slot of each pair is rotated onto its right partner and compared, and the larger value is kept in the right slot, so the number of live slots halves each round. Round 1 is shown in full, round 2 is elided, and after $\log_2(8) = 3$ rounds only slot $7$ is left, holding the max. The brackets mark the pairs compared next.
+
+```{r}
+#| label: fig-max-tournament
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 4.6
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "The max of eight slots, computed round by round, ends with 9 alone in slot 7."
+#| fig-alt: "Rows of eight slot boxes numbered 0 to 7. The first row, x, holds 5, 2, 8, 1, 9, 3, 7, 4, with brackets under the four neighboring pairs. An arrow labeled rotate 1, compare leads to the second row, after round 1, where only the odd slots hold values: 5, 8, 9, 7 in slots 1, 3, 5, 7. A row of vertical dots stands for round 2, labeled rotate 2, compare, which leaves 8 in slot 3 and 9 in slot 7. An arrow labeled rotate 4, compare leads to the last row, after round 3, where only slot 7 holds a value, 9. The value 9 is orange in every row."
+
+library(ggplot2)
+
+x <- c(5, 2, 8, 1, 9, 3, 7, 4)
+n <- length(x)
+neutral <- "grey50"
+highlight <- "#E69F00"
+winner <- max(x)
+
+# Run the book's algorithm with slots indexed from 0: in round i the right slots
+# are k = 2^(i+1) - 1 (mod 2^(i+1)) and the left slots sit 2^i places before them.
+states <- list(x)
+cur <- x
+for (i in 0:(log2(n) - 1)) {
+  half <- 2^i
+  R_slots <- which((0:(n - 1)) %% (2 * half) == 2 * half - 1) - 1
+  L <- cur[R_slots - half + 1]
+  R <- cur[R_slots + 1]
+  nxt <- rep(0, n)
+  nxt[R_slots + 1] <- pmax(L, R)
+  cur <- nxt
+  states[[length(states) + 1]] <- cur
+}
+stopifnot(cur[n] == max(x), sum(cur != 0) == 1)
+
+# Rows shown: input, round 1, an elided row for round 2, round 3.
+row_y <- c(x = 0, r1 = 2.2, dots = 4.5, r3 = 6.7)
+row_state <- list(x = states[[1]], r1 = states[[2]], r3 = states[[4]])
+cells <- do.call(rbind, lapply(names(row_state), function(nm) {
+  v <- row_state[[nm]]
+  data.frame(slot = 0:(n - 1), y = row_y[[nm]], val = v)
+}))
+cells$live <- cells$val != 0
+cells$top <- cells$val == winner
+
+row_labels <- data.frame(
+  y = row_y[c("x", "r1", "dots", "r3")],
+  label = c("ct = x", "ct after round 1", "", "ct after round 3")
+)
+steps <- data.frame(
+  y = c(1.1, 3.55, 5.7),
+  label = c("round 1: rotate 1, compare", "round 2: rotate 2, compare", "round 3: rotate 4, compare")
+)
+# Brackets under the pairs compared in round 1.
+# The same for round 2 under the "after round 1" row: slots 1 and 3, then 5 and 7.
+brk <- data.frame(
+  xmin = c(seq(0, n - 2, by = 2), 1, 5) - 0.32,
+  xmax = c(seq(1, n - 1, by = 2), 3, 7) + 0.32,
+  y = c(rep(row_y[["x"]], 4), rep(row_y[["r1"]], 2)) + 0.62,
+  top = c(FALSE, FALSE, TRUE, FALSE, FALSE, TRUE)
+)
+
+ggplot() +
+  geom_rect(
+    data = cells[cells$live, ],
+    aes(xmin = slot - 0.36, xmax = slot + 0.36, ymin = y - 0.36, ymax = y + 0.36, color = top),
+    fill = NA, linewidth = 0.9
+  ) +
+  geom_rect(
+    data = cells[!cells$live, ],
+    aes(xmin = slot - 0.36, xmax = slot + 0.36, ymin = y - 0.36, ymax = y + 0.36),
+    fill = NA, color = neutral, linewidth = 0.4, linetype = "dashed", alpha = 0.5
+  ) +
+  geom_text(
+    data = cells[cells$live, ],
+    aes(x = slot, y = y, label = val, color = top),
+    size = 5, fontface = "bold"
+  ) +
+  geom_text(
+    data = cells[!cells$live, ],
+    aes(x = slot, y = y, label = "0"),
+    color = neutral, size = 5, alpha = 0.45
+  ) +
+  geom_text(
+    data = data.frame(slot = 0:(n - 1)),
+    aes(x = slot, y = -0.85, label = slot),
+    color = neutral, size = 5, fontface = "bold"
+  ) +
+  annotate("text", x = -0.9, y = -0.85, label = "Slot", color = neutral,
+           size = 5, fontface = "bold", hjust = 1) +
+  geom_text(
+    data = row_labels,
+    aes(x = -0.9, y = y, label = label),
+    color = neutral, size = 5, fontface = "bold", hjust = 1
+  ) +
+  geom_segment(
+    data = brk,
+    aes(x = xmin, xend = xmax, y = y, yend = y, color = top),
+    linewidth = 0.9
+  ) +
+  geom_segment(
+    data = brk,
+    aes(x = xmin, xend = xmin, y = y, yend = y - 0.17, color = top),
+    linewidth = 0.9
+  ) +
+  geom_segment(
+    data = brk,
+    aes(x = xmax, xend = xmax, y = y, yend = y - 0.17, color = top),
+    linewidth = 0.9
+  ) +
+  annotate(
+    "segment", x = n - 0.1, xend = n - 0.1, y = c(0.9, 3.3, 5.45),
+    yend = c(1.4, 3.8, 5.95), color = neutral, linewidth = 0.9,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  geom_text(
+    data = steps,
+    aes(x = n + 0.1, y = y, label = label),
+    color = neutral, size = 4.2, hjust = 0
+  ) +
+  geom_point(
+    data = data.frame(x = -1.9, y = row_y[["dots"]] + c(-0.3, 0, 0.3)),
+    aes(x = x, y = y), color = neutral, size = 2
+  ) +
+  scale_color_manual(values = c(`TRUE` = highlight, `FALSE` = neutral), guide = "none") +
+  scale_y_reverse() +
+  coord_cartesian(xlim = c(-4.2, n + 4.2), clip = "off") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA)
+  )
+```
 
 :::{.callout-tip icon=false title="**Remark**"}
 An immediate "improvement" is that we do not actually need to make these different $C_L$ and $C_R$; 
