@@ -16,7 +16,7 @@ For instance, suppose we require an error of no greater than $10^{-10}$ for one 
 | 0.6340 |  1.577252912141  |   0.3660    |                23                 |
 | 1.3748 |  0.727355832051  |   −0.3748   |                23                 |
 
-Note the correlation of $1/z_i$ with the number of iterations required.
+Note the correlation of $1/z_i$ with the number of iterations required: the count grows with $|r|$, since the error after $n$ terms shrinks like $|r|^n$, and it blows up as $|r|$ approaches $1$.
 
 ```{r}
 #| echo: false
