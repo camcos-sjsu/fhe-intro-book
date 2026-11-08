@@ -5,6 +5,80 @@ Beyond our base moves, many functions which are of interest to us can be approxi
 We show the Taylor approximation of the **exponential function** as an illustrative example:
 $$e^z \approx \sum_{k=0}^{N} \frac{z^k}{k!} = 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \dots + \frac{z^N}{N!}$$
 
+@fig-taylor-exp compares these approximations with $e^z$. Each one is accurate near $z = 0$ and drifts away from it, and a larger $N$ stays accurate over a wider range.
+
+```{r}
+#| label: fig-taylor-exp
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 4.6
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "Taylor approximations of $e^z$ for $N = 2, 4, 6$ compared with $e^z$."
+#| fig-alt: "A line plot with z from negative 4 to 4 on the horizontal axis. The solid grey curve is e to the z. Dashed and dotted curves show the Taylor approximations for N equals 2, 4, and 6. All curves agree near z equals 0. Away from 0 the approximations separate from e to the z, with N equals 2 separating first and N equals 6 last."
+
+library(ggplot2)
+
+taylor <- function(z, N) sapply(z, function(v) sum(v^(0:N) / factorial(0:N)))
+
+z <- seq(-4, 4, length.out = 400)
+orders <- c(2, 4, 6)
+curves <- do.call(rbind, lapply(orders, function(N) {
+  data.frame(z = z, value = taylor(z, N), N = factor(N, levels = orders))
+}))
+
+neutral <- "grey50"
+accents <- c(`2` = "#E69F00", `4` = "#56B4E9", `6` = "#009E73")
+line_types <- c(`2` = "dashed", `4` = "dotdash", `6` = "dotted")
+
+# Each label sits in the open space next to its curve.
+labels <- data.frame(
+  N = factor(orders, levels = orders),
+  z = c(3.02, 2.08, -3.82),
+  value = c(6.7, 6.9, 1.9),
+  text = paste("N =", orders)
+)
+
+ggplot() +
+  geom_hline(yintercept = 0, color = neutral, linewidth = 0.4) +
+  geom_line(
+    data = data.frame(z = z, value = exp(z)),
+    aes(x = z, y = value),
+    color = neutral, linewidth = 0.9
+  ) +
+  geom_line(
+    data = curves,
+    aes(x = z, y = value, color = N, linetype = N),
+    linewidth = 0.9
+  ) +
+  geom_text(
+    data = labels,
+    aes(x = z, y = value, label = text, color = N),
+    hjust = 0, size = 5, fontface = "bold"
+  ) +
+  annotate(
+    "text",
+    x = 1.72, y = 6.2, label = "bold(e^z)", parse = TRUE,
+    hjust = 1, color = neutral, size = 5
+  ) +
+  scale_color_manual(values = accents, guide = "none") +
+  scale_linetype_manual(values = line_types, guide = "none") +
+  scale_x_continuous(breaks = -4:4) +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(-0.5, 8)) +
+  labs(x = "z", y = NULL) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(color = neutral, linewidth = 0.15),
+    axis.title = element_text(color = neutral),
+    axis.text = element_text(color = neutral)
+  )
+```
+
 Our main thoughts on Taylor approximation are:
 
 1. In a purely mathematical setting, a higher $N$ results in higher accuracy, yet in FHE, too large of an $N$ can result in lower accuracy as noise accumulates. We desire a middle-ground $N$ that produces a close approximation while mitigating cost and noise concerns.
