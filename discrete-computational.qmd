@@ -258,7 +258,7 @@ Perform this operation on pairs $(1,2),(2,3),\ldots,(m-1,m)$. These $m-1$ compar
 
 Repeat on the first $m-1$ entries, then the first $m-2$ entries, and so on. After $m(m-1)/2$ comparisons, the vector is sorted by the $a_i$s.
 
-The same comparison and swap operation can also be used in odd-even and bitonic sorting networks.
+The same [PairSort](sorting/bubble.qmd#sec-pairsort) operation can also be used in odd-even and bitonic sorting networks.
 
 ### Sorting by rank
 
