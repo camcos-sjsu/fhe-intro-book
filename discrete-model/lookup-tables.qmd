@@ -110,37 +110,36 @@ This distinguishes every ordered pair of $n$th roots of unity, and gives $n^2$ p
 
 Consider the case of modular multiplication. This operation is symmetric. That is, $f(a,b) = f(b,a)$. It seems reasonable that with symmetry, we should be able to simplify our lookup table in some way.
 
-\begin{figure}[htbp]
-\centering
+::: {#fig-symmetric-lookup}
 $$
 \begin{array}{c|cccc}
  & b=0 & b=1 & b=2 & b=3\\
 \hline
 a=0
 & d_{00}
-& \textcolor{blue}{d_{01}}
-& \textcolor{red}{d_{02}}
-& \textcolor{teal}{d_{03}}\\
+& \textcolor[RGB]{230,159,0}{d_{01}}
+& \textcolor[RGB]{86,180,233}{d_{02}}
+& \textcolor[RGB]{0,158,115}{d_{03}}\\
 a=1
-& \textcolor{blue}{d_{10}}
+& \textcolor[RGB]{230,159,0}{d_{10}}
 & d_{11}
-& \textcolor{violet}{d_{12}}
-& \textcolor{orange}{d_{13}}\\
+& \textcolor[RGB]{204,121,167}{d_{12}}
+& \textcolor[RGB]{213,94,0}{d_{13}}\\
 a=2
-& \textcolor{red}{d_{20}}
-& \textcolor{violet}{d_{21}}
+& \textcolor[RGB]{86,180,233}{d_{20}}
+& \textcolor[RGB]{204,121,167}{d_{21}}
 & d_{22}
-& \textcolor{brown}{d_{23}}\\
+& \textcolor[RGB]{0,114,178}{d_{23}}\\
 a=3
-& \textcolor{teal}{d_{30}}
-& \textcolor{orange}{d_{31}}
-& \textcolor{brown}{d_{32}}
+& \textcolor[RGB]{0,158,115}{d_{30}}
+& \textcolor[RGB]{213,94,0}{d_{31}}
+& \textcolor[RGB]{0,114,178}{d_{32}}
 & d_{33}
 \end{array}
 $$
-\caption{A symmetric lookup table for $n=4$.}
-\label{fig:symmetric-lookup}
-\end{figure}
+
+A symmetric lookup table for $n=4$.
+:::
 
 The current construction does not use the symmetry of the table, because $t(w,z)\neq t(z,w)$ when $w\neq z$. Ideally, they would be equal so that we can use fewer interpolation points and get a lower degree.
 
