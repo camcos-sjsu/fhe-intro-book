@@ -68,4 +68,13 @@ as $-0.4375$. For reference, the actual value is approximately
 $-0.4150$. We can get closer to the actual value of $x$ with a higher
 number of iterations, but recall that with more iterations, we naturally
 have performed more computations, so error accumulates.
+
+| $k$ | $u_{k-1}$ | $u_{k-1}^2$ | bit $b_k$ | $u_k$ |
+|:--:|:--:|:--:|:--:|:--:|
+| 1 | $1.5$ | $2.25$ | $1$ | $1.125$ |
+| 2 | $1.125$ | $1.265625$ | $0$ | $1.265625$ |
+| 3 | $1.265625$ | $1.601807$ | $0$ | $1.601807$ |
+| 4 | $1.601807$ | $2.565785$ | $1$ | $1.282892$ |
+
+The table lists the four iterations for $x=0.75$, starting from $u_0=m=1.5$, with $u_k$ the value after any renormalization.
 :::
