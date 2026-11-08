@@ -7,8 +7,7 @@ editor:
 ### Bubble Sort
 
 As a proof-of-concept, we choose to use **bubble sort**[^bubble-1] as a starting point for sorting.\
-It has the benefit of having local operations, only swaps, without more advanced logic such as dynamic memory allocation (that e.g. quicksort would need).
-It is a good candidate for FHE prototyping despite being a well-known "slow" sorting algorithm.
+Despite being a well-known "slow" sorting algorithm, it is a good candidate for FHE prototyping because its operations are local: only swaps, with no dynamic memory allocation (which e.g. quicksort would need).
 Each of its steps is one operation on a pair of positions, so we define that operation first.
 
 [^bubble-1]: **Bubble sort** available from https://en.wikipedia.org/wiki/Bubble_sort
@@ -46,6 +45,11 @@ $(x_i,x_j)=(3,7)$, $s\approx0$ so they remain $(3,7)$.
 :::
 
 The same operations run in both cases; no branch depends on encrypted data. The approximation is reliable only on its intended input range and away from the transition near equality.
+
+We treat PairSort as an abstraction that we assume we have.
+The construction above is only a suggested implementation, since its approximate comparison runs into floating point issues.
+The sorts in these chapters are therefore proofs of concept that show what a reliable PairSort would make possible.
+We expect this to be an implementation problem, not a fundamental barrier.
 
 It's a bit tricky to actually implement this with vector-wide operations without being wasteful.\
 Here is one draft:
@@ -183,3 +187,87 @@ knitr::include_graphics("sorting_visualizer.gif")
 
 $O(n^2)$ total comparisons (with $O(n)$ per pass) will entirely sort $x$.
 However, this gets fairly costly and noisy due to the multiplications in the approximated comparisons.
+
+@fig-bubble-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.^[Each layer (a column of arrows) is one batched sign evaluation, a single SIMD step, so the number of layers is the number of sequential comparison steps. Every layer holds a single PairSort, so this network needs 28 sequential comparison steps for 8 inputs.]
+
+```{r}
+#| label: fig-bubble-network
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 4.6
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "The bubble sort network for eight inputs, with 7 passes, 28 layers, and 28 PairSorts. Only one PairSort runs in each layer."
+#| fig-alt: "A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions, one per layer, grouped into seven numbered passes. Each pass moves from the top of the vector downward and stops one position earlier than the pass before it, forming a staircase. Pass 1 has seven arrows and pass 7 has one. Each arrow points to the higher position, which receives the larger value."
+
+library(ggplot2)
+
+n <- 8
+
+# Each row is one PairSort: the larger value moves to `to`.
+network <- do.call(rbind, lapply(1:(n - 1), function(p) {
+  data.frame(pass = p, from = 1:(n - p), to = 2:(n - p + 1))
+}))
+network$layer <- seq_len(nrow(network))
+
+# A small gap separates the passes.
+network$x <- network$layer + (network$pass - 1) * 0.7
+
+passes <- data.frame(
+  pass = 1:(n - 1),
+  xmin = tapply(network$x, network$pass, min) - 0.45,
+  xmax = tapply(network$x, network$pass, max) + 0.45
+)
+
+neutral <- "grey50"
+line_start <- min(network$x) - 0.9
+line_end <- max(network$x) + 0.9
+
+ggplot() +
+  geom_rect(
+    data = passes,
+    aes(xmin = xmin, xmax = xmax, ymin = 0.55, ymax = n + 0.45),
+    fill = neutral, alpha = 0.12
+  ) +
+  geom_text(
+    data = passes,
+    aes(x = (xmin + xmax) / 2, y = 0.2, label = pass),
+    color = neutral, size = 5, fontface = "bold"
+  ) +
+  annotate(
+    "text",
+    x = line_start - 0.6, y = 0.2, label = "Pass",
+    color = neutral, size = 5, fontface = "bold"
+  ) +
+  annotate(
+    "segment",
+    x = line_start, xend = line_end, y = 1:n, yend = 1:n,
+    color = neutral, linewidth = 0.4
+  ) +
+  annotate(
+    "text",
+    x = line_start - 0.6, y = 1:n, label = 1:n,
+    color = neutral, size = 5, fontface = "bold"
+  ) +
+  geom_segment(
+    data = network,
+    aes(x = x, xend = x, y = from, yend = to),
+    color = neutral, linewidth = 0.9,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  geom_point(
+    data = network,
+    aes(x = x, y = from),
+    color = neutral, size = 2
+  ) +
+  scale_y_reverse() +
+  coord_cartesian(clip = "off") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA)
+  )
+```
+
