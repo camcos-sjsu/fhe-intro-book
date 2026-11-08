@@ -60,7 +60,7 @@ $$
 
 Those three layers merge one bitonic sequence of length eight. Bitonic sort constructs larger bitonic sequences from smaller ones, then applies these merges. For $N$ a power of two, its network has $\frac{\log_2 N(\log_2 N+1)}{2}$ layers [@ref15].
 
-@fig-bitonic-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.
+@fig-bitonic-network shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.^[Each layer (a column of arrows, drawn side by side when arrows would otherwise overlap) is one batched sign evaluation, a single SIMD step, so the number of layers is the number of sequential comparison steps. This network has 6 layers, so it needs 6 sequential comparison steps for 8 inputs.]
 
 ```{r}
 #| label: fig-bitonic-network
@@ -143,6 +143,7 @@ ggplot() +
     panel.background = element_rect(fill = "transparent", color = NA)
   )
 ```
+
 
 
 #### How much does this save?
