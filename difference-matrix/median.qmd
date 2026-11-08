@@ -18,6 +18,50 @@ $$
 
 though unlike $D$ from earlier, $\delta_{i,j} \in \{-1, 1\}$. We assume the diagonals are assigned $0$ here.[^median-1]
 
+The example below works through $z = (7, 2, 9, 4, 5)$, with the row of the median in orange.
+
+```{=latex}
+\newcommand{\medrow}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+```
+
+::: {.content-visible when-format="html"}
+::: {.hidden}
+$$
+\newcommand{\medrow}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+$$
+:::
+:::
+
+$$
+\overset{\displaystyle D}{\begin{bmatrix}
+0 & 1 & -1 & 1 & 1 \\
+-1 & 0 & -1 & -1 & -1 \\
+1 & 1 & 0 & 1 & 1 \\
+-1 & 1 & -1 & 0 & -1 \\
+\medrow{-1} & \medrow{1} & \medrow{-1} & \medrow{1} & \medrow{0}
+\end{bmatrix}}
+\xrightarrow{\text{row sums}}
+\overset{\displaystyle s}{\begin{bmatrix}
+2 \\
+-4 \\
+4 \\
+-2 \\
+\medrow{0}
+\end{bmatrix}}
+\xrightarrow{== 0}
+\overset{\displaystyle m}{\begin{bmatrix}
+0 \\
+0 \\
+0 \\
+0 \\
+\medrow{1}
+\end{bmatrix}}
+$$
+
+**Step 1.** Build $D_{ij} = \mathtt{sign}(z_i - z_j)$ with $0$ on the diagonal, so row $i$ counts $+1$ for each value below $z_i$ and $-1$ for each value above it.
+
+**Step 2.** Summing each row gives $s = (2, -4, 4, -2, 0)$, and only the row of $z_5 = 5$ sums to $0$, so $m = (0, 0, 0, 0, 1)$ and $\mathtt{sum}(m * z) = 5$, the median.
+
 [^median-1]: Landon Hurley; **Completing and studentising Spearman’s correlation in the presence of ties** available from https://arxiv.org/pdf/2512.23993
 
 2.  Now, if $z_i$ were the median, then it would have an equal number of $-1$s and $1$s in its row, which is equivalent with having row sum $0$ (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).
