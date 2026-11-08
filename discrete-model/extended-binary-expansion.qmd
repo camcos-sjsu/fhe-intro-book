@@ -33,6 +33,40 @@ $$
 \right).
 $$
 
+To see the formula decide a comparison, take $x = 1011_2 = 11$ and $y = 0110_2 = 6$. The orange digit is the most significant nonzero digit of the difference, which is the one that decides the sign.
+
+```{=latex}
+\newcommand{\ebeTop}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+```
+
+::: {.content-visible when-format="html"}
+::: {.hidden}
+$$
+\newcommand{\ebeTop}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+$$
+:::
+:::
+
+$$
+\begin{array}{l|cccc|c}
+ & i=3 & i=2 & i=1 & i=0 & \text{value}\\
+\hline
+x & 1 & 0 & 1 & 1 & 11\\
+y & 0 & 1 & 1 & 0 & 6\\
+x-y & \ebeTop{1} & -1 & 0 & 1 & 5\\
+\mathbf{1}(d_i=1)\prod_{i'>i}\mathbf{1}(d_{i'}=0) & \ebeTop{1} & 0 & 0 & 0 & \mathbf{1}_{x>y}=1\\
+\hline
+y-x & -1 & 1 & 0 & -1 & -5\\
+\mathbf{1}(d_i=1)\prod_{i'>i}\mathbf{1}(d_{i'}=0) & 0 & 0 & 0 & 0 & \mathbf{1}_{y>x}=0
+\end{array}
+$$
+
+**Step 1.** The digits of $x-y$ are $d_i = x_i - y_i$, so $(d_3,d_2,d_1,d_0)=(1,-1,0,1)$, and indeed $8-4+0+1=5$.
+
+**Step 2.** The term for $i=3$ is $1\cdot 1 = 1$, because no higher digit exists, so the OR is $1$ no matter what the lower digits do. The lower terms are $0$ because each has a nonzero digit above it, so $x>y$.
+
+**Step 3.** Swapping gives digits $(-1,1,0,-1)$. The digit $d_2=1$ is blocked by $d_3=-1\neq 0$, so every term is $0$ and $y>x$ is false.
+
 The logical AND and OR operations can themselves be written as polynomials on Boolean values:
 
 $$
