@@ -13,3 +13,95 @@ if (knitr::is_html_output()) {
 } else {
 }
 ```
+
+@fig-hybrid-error compares the three approaches for $d = 11$. The horizontal axis counts the ciphertext multiplications each approach has spent, which is the expensive operation in CKKS, and the vertical axis shows how many decimal digits of error remain (each step down is a factor of 10 smaller).
+
+```{r}
+#| label: fig-hybrid-error
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 4.6
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "Plaintext error of $1/11$ against the number of multiplications spent for the geometric series, Newton's method from the universal start $10^{-10}$, and the hybrid that starts Newton from the first geometric term $1/16$. Cost basis: Newton costs 2 multiplications per step ($dx_n$, then $x_n(2 - dx_n)$); the partial sum through $r^n$ with $r = 5/16$ costs $n+1$ (one for $r$, $n-1$ for the powers, one to scale by $1/16$); the first term $1/16$ is a constant and costs 0. Errors below $10^{-13}$ are drawn at $10^{-13}$."
+#| fig-alt: "A line plot of log base 10 of the absolute error against multiplications from 0 to 70, with a horizontal target line at 10 to the minus 10. The blue dot-dash Newton line from the start 1e-10 stays near log error minus 1 until about 55 multiplications and then drops to the target between 68 and 70 multiplications. The orange dashed geometric series line falls steadily and crosses the target near 18 multiplications. The green solid hybrid line starts at about minus 1.5 and drops fastest, crossing the target between 8 and 10 multiplications and reaching the 1e-13 floor at 10."
+
+library(ggplot2)
+
+neutral <- "grey50"
+book_theme <- function() {
+  theme_minimal(base_size = 14) +
+    theme(
+      plot.background = element_rect(fill = "transparent", color = NA),
+      panel.background = element_rect(fill = "transparent", color = NA),
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_line(color = "grey50", linewidth = 0.15),
+      axis.title = element_text(color = "grey50"),
+      axis.text = element_text(color = "grey50")
+    )
+}
+
+d <- 11
+target <- 1 / d
+a <- 1 / 16                      # first geometric term, as in the chapter figure
+r <- 1 - d * a                   # = 5/16
+
+newton_step <- function(x) 2 * x - d * x^2
+
+# Errors |approx - 1/d| against multiplications used.
+# Newton costs 2 multiplications per step (d * x, then x * (2 - d x)).
+run_newton <- function(x0, mult0, label) {
+  x <- x0
+  out <- data.frame(mult = mult0, err = abs(x - target), method = label)
+  for (i in 1:60) {
+    x <- newton_step(x)
+    out <- rbind(out, data.frame(mult = mult0 + 2 * i, err = abs(x - target), method = label))
+    if (abs(x - target) < 1e-13) break
+  }
+  out
+}
+
+# Geometric partial sum through r^n: a * sum r^k.
+# n + 1 multiplications: one for r = 1 - d a, n - 1 for r^2..r^n, one to scale by a.
+geo <- data.frame(n = 0:60)
+geo$err <- abs(a * cumsum(r^geo$n) - target)
+geo$mult <- ifelse(geo$n == 0, 0, geo$n + 1)
+geo <- geo[seq_len(min(which(geo$err < 1e-13))), ]
+geo <- data.frame(mult = geo$mult, err = geo$err, method = "Geometric series")
+
+# Hybrid: one geometric term (S_0 = a, 0 multiplications), then Newton.
+hybrid <- run_newton(a, 0, "Hybrid")
+# Newton alone from the universal start 1e-10.
+newton <- run_newton(1e-10, 0, "Newton")
+
+sim <- rbind(geo, newton, hybrid)
+sim$log_err <- log10(sim$err)
+
+# Errors under 1e-13 are at double-precision rounding; draw them at 1e-13.
+floor_err <- 1e-13
+sim$log_err <- log10(pmax(sim$err, floor_err))
+sim$method <- factor(sim$method, levels = c("Geometric series", "Newton", "Hybrid"))
+cols <- c(`Geometric series` = "#E69F00", Newton = "#56B4E9", Hybrid = "#009E73")
+ltys <- c(`Geometric series` = "dashed", Newton = "dotdash", Hybrid = "solid")
+
+ggplot(sim, aes(mult, log_err, color = method, linetype = method)) +
+  geom_hline(yintercept = -10, color = neutral, linewidth = 0.4) +
+  annotate("text", x = 30, y = -9.3, label = "target~10^{-10}", parse = TRUE,
+           color = neutral, size = 4.5, hjust = 0) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2) +
+  annotate("text", x = 12.5, y = -4.5, label = "Hybrid", color = cols[["Hybrid"]],
+           size = 5, fontface = "bold", hjust = 0) +
+  annotate("text", x = 15.5, y = -7.8, label = "Geometric series",
+           color = cols[["Geometric series"]], size = 5, fontface = "bold", hjust = 0) +
+  annotate("text", x = 30, y = -3, label = "Newton from 1e-10",
+           color = cols[["Newton"]], size = 5, fontface = "bold", hjust = 0) +
+  scale_color_manual(values = cols) +
+  scale_linetype_manual(values = ltys) +
+  scale_x_continuous(breaks = seq(0, 70, 10), limits = c(0, 72)) +
+  guides(color = "none", linetype = "none") +
+  labs(x = "Multiplications spent (count)", y = "log10 |error|  (-10 = error of 1e-10)") +
+  book_theme()
+```
