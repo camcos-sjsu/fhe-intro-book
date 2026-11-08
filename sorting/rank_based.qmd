@@ -47,11 +47,75 @@ To determine the rank of a vector:
 
 5.  $R = R + 1$ by adding 1 to each element in R, we will end with a vector of ranks 1 to n
 
+The example below works through $x = [30, 10, 40, 20]$, following the value $30$ in orange.
+
+```{=latex}
+\newcommand{\focus}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+```
+
+::: {.content-visible when-format="html"}
+::: {.hidden}
+$$
+\newcommand{\focus}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+$$
+:::
+:::
+
+$$
+\overset{\displaystyle A}{\begin{bmatrix}
+\focus{30} & 10 & 40 & 20 \\
+\focus{30} & 10 & 40 & 20 \\
+\focus{30} & 10 & 40 & 20 \\
+\focus{30} & 10 & 40 & 20
+\end{bmatrix}}
+-
+\overset{\displaystyle A^T}{\begin{bmatrix}
+\focus{30} & \focus{30} & \focus{30} & \focus{30} \\
+10 & 10 & 10 & 10 \\
+40 & 40 & 40 & 40 \\
+20 & 20 & 20 & 20
+\end{bmatrix}}
+=
+\overset{\displaystyle M}{\begin{bmatrix}
+\focus{0} & -20 & 10 & -10 \\
+\focus{20} & 0 & 30 & 10 \\
+\focus{-10} & -30 & 0 & -20 \\
+\focus{10} & -10 & 20 & 0
+\end{bmatrix}}
+$$
+
+**Step 1.** Replicate $x$ into the rows of $A$, so $A_{ij} = x_j$ and $A^T_{ij} = x_i$. Subtracting gives $M_{ij} = x_j - x_i$.
+
+$$
+\overset{\displaystyle \mathrm{sign}(M)}{\begin{bmatrix}
+\focus{0} & 0 & 1 & 0 \\
+\focus{1} & 0 & 1 & 1 \\
+\focus{0} & 0 & 0 & 0 \\
+\focus{1} & 0 & 1 & 0
+\end{bmatrix}}
+\xrightarrow{\text{SUM}}
+\overset{\displaystyle R}{\begin{bmatrix}
+\focus{2} \\
+0 \\
+3 \\
+1
+\end{bmatrix}}
+\xrightarrow{+1}
+\overset{\displaystyle R + 1}{\begin{bmatrix}
+\focus{3} \\
+1 \\
+4 \\
+2
+\end{bmatrix}}
+$$
+
+**Step 2.** Keep only the positive entries, so the entry is 1 if $M_{ij} > 0$ and 0 otherwise. Column $j$ now marks the values smaller than $x_j$, so summing each column gives ranks from 0 to $n - 1$. Adding 1 gives ranks from 1 to $n$, and $30$ has rank $3$.
+
 ### Rank-Based Sort
 
 To sort a vector of degree n, we need the following:
 
--   A matrix of replicated rows of our input
+-   A matrix of replicated rows of our input (Matrix X)
 
 -   A matrix of replicated rank row vectors (Matrix A)
 
@@ -60,9 +124,69 @@ To sort a vector of degree n, we need the following:
 The process goes as follows:
 
 1.  $C = IND( A - B )$ to set all elements that are 0 to value 1 with rest being 0
-2.  Take the product of our replicated matrix and the indicator matrix $P = C * A$
-3.  Sum the columns $f = SUM(P)$
+2.  Take the product of our replicated matrix and the indicator matrix $P = C * X$
+3.  Sum the rows $f = SUM(P)$
 4.  By transposing our final matrix, we will then end with a sorted row vector $f$
+
+The example below continues $x = [30, 10, 40, 20]$ with the ranks $[3, 1, 4, 2]$ found above, following the value $30$ in orange. Here the matrix of replicated ranks plays the role of $A$ in step 1, $B$ has row $i$ filled with $i$, and the replicated input is the $A$ of step 2, written $X$ to keep them apart.
+
+$$
+\overset{\displaystyle A}{\begin{bmatrix}
+\focus{3} & 1 & 4 & 2 \\
+\focus{3} & 1 & 4 & 2 \\
+\focus{3} & 1 & 4 & 2 \\
+\focus{3} & 1 & 4 & 2
+\end{bmatrix}}
+-
+\overset{\displaystyle B}{\begin{bmatrix}
+1 & 1 & 1 & 1 \\
+2 & 2 & 2 & 2 \\
+3 & 3 & 3 & 3 \\
+4 & 4 & 4 & 4
+\end{bmatrix}}
+\xrightarrow{\text{IND}}
+\overset{\displaystyle C}{\begin{bmatrix}
+\focus{0} & 1 & 0 & 0 \\
+\focus{0} & 0 & 0 & 1 \\
+\focus{1} & 0 & 0 & 0 \\
+\focus{0} & 0 & 1 & 0
+\end{bmatrix}}
+$$
+
+**Step 1.** Subtracting $B$ from $A$ gives $0$ exactly where the rank in column $j$ equals the row number $i$, and $\mathrm{IND}$ turns those zeros into $1$s. Each row of $C$ marks the one input whose rank is that row number, and $30$ (rank $3$) is marked in row $3$.
+
+$$
+\overset{\displaystyle C}{\begin{bmatrix}
+\focus{0} & 1 & 0 & 0 \\
+\focus{0} & 0 & 0 & 1 \\
+\focus{1} & 0 & 0 & 0 \\
+\focus{0} & 0 & 1 & 0
+\end{bmatrix}}
+*
+\overset{\displaystyle X}{\begin{bmatrix}
+\focus{30} & 10 & 40 & 20 \\
+\focus{30} & 10 & 40 & 20 \\
+\focus{30} & 10 & 40 & 20 \\
+\focus{30} & 10 & 40 & 20
+\end{bmatrix}}
+=
+\overset{\displaystyle P}{\begin{bmatrix}
+\focus{0} & 10 & 0 & 0 \\
+\focus{0} & 0 & 0 & 20 \\
+\focus{30} & 0 & 0 & 0 \\
+\focus{0} & 0 & 40 & 0
+\end{bmatrix}}
+\xrightarrow{\text{SUM}}
+\overset{\displaystyle f}{\begin{bmatrix}
+10 \\
+20 \\
+\focus{30} \\
+40
+\end{bmatrix}}
+$$
+
+**Step 2.** The entrywise product $P = C * X$ keeps one input per row. Summing each row of $P$ gives $f = [10, 20, 30, 40]$, and transposing it gives the sorted row vector, with $30$ landing in position $3$, its rank.
+
 
 ### Ties
 
@@ -107,21 +231,21 @@ $$
 ::::
 
 $$
-\overset{A}{\begin{bmatrix}
+\overset{\displaystyle A}{\begin{bmatrix}
 30 & \tied{10} & \tied{10} & 20 \\
 30 & \tied{10} & \tied{10} & 20 \\
 30 & \tied{10} & \tied{10} & 20 \\
 30 & \tied{10} & \tied{10} & 20
 \end{bmatrix}}
 ==
-\overset{A^T}{\begin{bmatrix}
+\overset{\displaystyle A^T}{\begin{bmatrix}
 30 & 30 & 30 & 30 \\
 \tied{10} & \tied{10} & \tied{10} & \tied{10} \\
 \tied{10} & \tied{10} & \tied{10} & \tied{10} \\
 20 & 20 & 20 & 20
 \end{bmatrix}}
 =
-\overset{M_1}{\begin{bmatrix}
+\overset{\displaystyle M_1}{\begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & \tied{1} & \tied{1} & 0 \\
 0 & \tied{1} & \tied{1} & 0 \\
@@ -132,21 +256,21 @@ $$
 **Step 1.** Replicate $x$ into the rows of $A$, so $A_{ij} = x_j$ and $A^T_{ij} = x_i$. Then compare the two entry by entry: $(M_1)_{ij} = 1$ if $A_{ij} = A^T_{ij}$, and 0 otherwise.
 
 $$
-\overset{M_1}{\begin{bmatrix}
+\overset{\displaystyle M_1}{\begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & \tied{1} & \tied{1} & 0 \\
 0 & \tied{1} & \tied{1} & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}}
 \odot
-\overset{U}{\begin{bmatrix}
+\overset{\displaystyle U}{\begin{bmatrix}
 1 & 1 & 1 & 1 \\
 0 & \tied{1} & \tied{1} & 1 \\
 0 & \tied{0} & \tied{1} & 1 \\
 0 & 0 & 0 & 1
 \end{bmatrix}}
 =
-\overset{M_2}{\begin{bmatrix}
+\overset{\displaystyle M_2}{\begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & \tied{1} & \tied{1} & 0 \\
 0 & \tied{0} & \tied{1} & 0 \\
@@ -157,42 +281,42 @@ $$
 **Step 2.** Multiply $M_1$ entry by entry with an upper triangular matrix of ones, where $U_{ij} = 1$ if $i \le j$ and 0 otherwise. This gives $(M_2)_{ij} = (M_1)_{ij} \, U_{ij}$, which drops the matches below the diagonal.
 
 $$
-\overset{s_1}{\begin{bmatrix}
+\overset{\displaystyle s_1}{\begin{bmatrix}
 1 \\
 \tied{2} \\
 \tied{2} \\
 1
 \end{bmatrix}}
 -
-\overset{s_2}{\begin{bmatrix}
+\overset{\displaystyle s_2}{\begin{bmatrix}
 1 \\
 \tied{2} \\
 \tied{1} \\
 1
 \end{bmatrix}}
 =
-\overset{O}{\begin{bmatrix}
+\overset{\displaystyle O}{\begin{bmatrix}
 0 \\
 \tied{0} \\
 \tied{1} \\
 0
 \end{bmatrix}}
 \qquad\qquad
-\overset{R}{\begin{bmatrix}
+\overset{\displaystyle R}{\begin{bmatrix}
 4 \\
 \tied{1} \\
 \tied{1} \\
 3
 \end{bmatrix}}
 +
-\overset{O}{\begin{bmatrix}
+\overset{\displaystyle O}{\begin{bmatrix}
 0 \\
 \tied{0} \\
 \tied{1} \\
 0
 \end{bmatrix}}
 =
-\overset{t}{\begin{bmatrix}
+\overset{\displaystyle t}{\begin{bmatrix}
 4 \\
 \tied{1} \\
 \tied{2} \\
