@@ -684,31 +684,46 @@ window.Quarto = {
 <p>However, if we <em>just</em> want the max function, we can do quite a bit better and get it in <span class="math inline">\(O(\log(n))\)</span> time. The idea is to separate the vector into <span class="math inline">\(n/4\)</span> bubbles, and on each turn act in a way that moves the max into the “better half” of the remaining “contenders for the max”, like a tournament. This is similar to using our bubbles <span class="math inline">\((i,j)\)</span> encoded by <span class="math inline">\(c_i\)</span> and <span class="math inline">\(c_j\)</span>, but instead of using <span class="math inline">\(1\)</span>-hot vectors, we will generalize <span class="math inline">\(c_*\)</span> to be <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vectors to do more comparisons at the same time.</p>
 <p>Let <span class="math inline">\(x = (x_1, \ldots, x_{n/2})\)</span>. We iterate on <span class="math inline">\(i\)</span>, starting with <span class="math inline">\(i = 0\)</span>.</p>
 <ol type="1">
-<li>At the start of iteration <span class="math inline">\(i\)</span>, construct constant binary vectors <span class="math inline">\(c_L\)</span> and <span class="math inline">\(c_R\)</span> which have a 1 at every index <span class="math inline">\(k\)</span> that satisfies <span class="math inline">\(k = 2^{i+1} - 2 \pmod {2^{k+1}}\)</span> for <span class="math inline">\(c_L\)</span>, and <span class="math inline">\(k = 2^{i+1} -1 \pmod {2^{i+1}}\)</span> for <span class="math inline">\(c_R\)</span>,
+<li>At the start of iteration <span class="math inline">\(i\)</span>, construct constant binary vectors <span class="math inline">\(c_L\)</span> and <span class="math inline">\(c_R\)</span> which have a 1 at every index <span class="math inline">\(k\)</span> that satisfies <span class="math inline">\(k = 2^{i} - 1 \pmod {2^{i+1}}\)</span> for <span class="math inline">\(c_L\)</span>, and <span class="math inline">\(k = 2^{i+1} -1 \pmod {2^{i+1}}\)</span> for <span class="math inline">\(c_R\)</span>,
 <ul>
 <li>On the first iteration <span class="math inline">\(i=0\)</span>, we have <span class="math inline">\(c_L = (1,0,1,0,\cdots)\)</span> and <span class="math inline">\(c_R = (0,1,0,1,\cdots)\)</span>.</li>
-<li>On subsequent iterations the <span class="math inline">\(1\)</span>s are separated by double the distance per iteration. For example, for <span class="math inline">\(i = 2\)</span>, the period will be <span class="math inline">\(8\)</span>: <span class="math inline">\(c_L = (1,0,0,0,0,0,0,0,1,\cdots)\)</span>.<br>
+<li>On subsequent iterations the <span class="math inline">\(1\)</span>s are separated by double the distance per iteration. For example, for <span class="math inline">\(i = 2\)</span>, the period will be <span class="math inline">\(8\)</span>: <span class="math inline">\(c_L = (0,0,0,1,0,0,0,0,0,0,0,1,\cdots)\)</span> and <span class="math inline">\(c_R = (0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,\cdots)\)</span> (indexed from <span class="math inline">\(0\)</span>).<br>
 </li>
 <li>The <span class="math inline">\(c_L\)</span> and <span class="math inline">\(c_R\)</span> will match up pairs of numbers, acting as a kind of simultaneous bubble.</li>
 </ul></li>
 <li>We now match up the bubbles by splitting the relevant entries into two vectors holding the two halves of the bubbles, and cycling the left half so it matches the right:
 <ul>
 <li>Construct vectors <span class="math inline">\(L' = x * c_L\)</span> and <span class="math inline">\(R = x * c_R\)</span>.</li>
-<li>On iteration <span class="math inline">\(i\)</span>, let <span class="math inline">\(L := \mathtt{cyc}_{2^{i+1} - 1}(L')\)</span>.</li>
+<li>On iteration <span class="math inline">\(i\)</span>, let <span class="math inline">\(L := \mathtt{cyc}_{2^{i}}(L')\)</span>, where <span class="math inline">\(\mathtt{cyc}_m\)</span> moves every entry <span class="math inline">\(m\)</span> places to the right.</li>
 <li>Compute <span class="math inline">\(c = L - R\)</span>. This will give a vector populated by zeros, and <span class="math inline">\(L_i - R_i\)</span> in populated index positions <span class="math inline">\(i\)</span>.</li>
 <li>In <span class="math inline">\(c\)</span>, any positive values in c represent index positions where the <span class="math inline">\(L\)</span> value is larger, and vice-versa for negative values and <span class="math inline">\(R\)</span>.</li>
 </ul></li>
 <li>We now create a vector with only the “winners” in their respective positions.
 <ul>
-<li>Compute <span class="math inline">\(e = L * \mathtt{sign}{(c)}\)</span>. This contains only <span class="math inline">\(L\)</span> values that were greater in their respective bubble comparisons.</li>
-<li>Similarly, computing <span class="math inline">\(f = b * (0 - \mathtt{sign}{(c))}\)</span> will return a vector of only <span class="math inline">\(0\)</span>’s and <span class="math inline">\(R\)</span> values that were greater in their respective comparisons.</li>
+<li>Compute <span class="math inline">\(e = L * \mathtt{sign}{(c)}\)</span>. Here, as in PairSort, <span class="math inline">\(\mathtt{sign}\)</span> returns <span class="math inline">\(1\)</span> when its input is nonnegative and <span class="math inline">\(0\)</span> otherwise, so ties go to <span class="math inline">\(L\)</span> and, since tied values are equal, nothing is lost. This contains only <span class="math inline">\(L\)</span> values that were greater in their respective bubble comparisons.</li>
+<li>Similarly, computing <span class="math inline">\(f = R * (1 - \mathtt{sign}{(c)})\)</span> will return a vector of only <span class="math inline">\(0\)</span>’s and <span class="math inline">\(R\)</span> values that were greater in their respective comparisons.</li>
 <li><span class="math inline">\(x' := e + f\)</span> gives a vector with only the winners from each respective bubble.</li>
 </ul></li>
 <li>Treating <span class="math inline">\(x'\)</span> as the new <span class="math inline">\(x\)</span>, after <span class="math inline">\(\log_2(n/2)\)</span> iterations <span class="math inline">\(x\)</span> will only have the max of the original <span class="math inline">\(x\)</span>, in the rightmost position.
 <ul>
-<li>We note that after iteration <span class="math inline">\(i-1\)</span> and before iteration <span class="math inline">\(i\)</span>, the new <span class="math inline">\(x\)</span> will have nonzero entries only in places (indexed starting at <span class="math inline">\(0\)</span>) whose binary expansions have <span class="math inline">\(i\)</span> <span class="math inline">\(0\)</span>s at the right. For example, after the first iteration only the even indices will have nonzero entries; the other “loser” entries have been eliminated.</li>
+<li>We note that after iteration <span class="math inline">\(i-1\)</span> and before iteration <span class="math inline">\(i\)</span>, the new <span class="math inline">\(x\)</span> will have nonzero entries only in places (indexed starting at <span class="math inline">\(0\)</span>) whose binary expansions have <span class="math inline">\(i\)</span> <span class="math inline">\(1\)</span>s at the right. For example, after the first iteration only the odd indices will have nonzero entries; the other “loser” entries have been eliminated.</li>
 </ul></li>
 </ol>
+<p><a href="#fig-max-tournament" class="quarto-xref">Figure&nbsp;<span>24.1</span></a> shows the vector after each round for eight slots, <span class="math inline">\(x = (5, 2, 8, 1, 9, 3, 7, 4)\)</span>, numbered from <span class="math inline">\(0\)</span>. In round <span class="math inline">\(i\)</span> the left slot of each pair is rotated onto its right partner and compared, and the larger value is kept in the right slot, so the number of live slots halves each round. Round 1 is shown in full, round 2 is elided, and after <span class="math inline">\(\log_2(8) = 3\)</span> rounds only slot <span class="math inline">\(7\)</span> is left, holding the max. The brackets mark the pairs compared next.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-max-tournament" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Rows of eight slot boxes numbered 0 to 7. The first row, x, holds 5, 2, 8, 1, 9, 3, 7, 4, with brackets under the four neighboring pairs. An arrow labeled rotate 1, compare leads to the second row, after round 1, where only the odd slots hold values: 5, 8, 9, 7 in slots 1, 3, 5, 7. A row of vertical dots stands for round 2, labeled rotate 2, compare, which leaves 8 in slot 3 and 9 in slot 7. An arrow labeled rotate 4, compare leads to the last row, after round 3, where only slot 7 holds a value, 9. The value 9 is orange in every row." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-max-tournament-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="max_files/figure-html/fig-max-tournament-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Rows of eight slot boxes numbered 0 to 7. The first row, x, holds 5, 2, 8, 1, 9, 3, 7, 4, with brackets under the four neighboring pairs. An arrow labeled rotate 1, compare leads to the second row, after round 1, where only the odd slots hold values: 5, 8, 9, 7 in slots 1, 3, 5, 7. A row of vertical dots stands for round 2, labeled rotate 2, compare, which leaves 8 in slot 3 and 9 in slot 7. An arrow labeled rotate 4, compare leads to the last row, after round 3, where only slot 7 holds a value, 9. The value 9 is orange in every row." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-max-tournament-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;24.1: The max of eight slots, computed round by round, ends with 9 alone in slot 7.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">

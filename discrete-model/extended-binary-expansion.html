@@ -718,6 +718,28 @@ a_i = 1 \quad\text{and}\quad a_{i'} = 0 \text{ for all } i' &gt; i. \]</span> In
 \bigwedge_{i' &gt; i} \mathbf{1}({a_{i'}=0})
 \right).
 \]</span></p>
+<p>To see the formula decide a comparison, take <span class="math inline">\(x = 1011_2 = 11\)</span> and <span class="math inline">\(y = 0110_2 = 6\)</span>. The orange digit is the most significant nonzero digit of the difference, which is the one that decides the sign.</p>
+<div class="hidden">
+<p><span class="math display">\[
+\newcommand{\ebeTop}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+\]</span></p>
+</div>
+<p><span class="math display">\[
+\begin{array}{l|cccc|c}
+&amp; i=3 &amp; i=2 &amp; i=1 &amp; i=0 &amp; \text{value}\\
+\hline
+x &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 11\\
+y &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 6\\
+x-y &amp; \ebeTop{1} &amp; -1 &amp; 0 &amp; 1 &amp; 5\\
+\mathbf{1}(d_i=1)\prod_{i'&gt;i}\mathbf{1}(d_{i'}=0) &amp; \ebeTop{1} &amp; 0 &amp; 0 &amp; 0 &amp; \mathbf{1}_{x&gt;y}=1\\
+\hline
+y-x &amp; -1 &amp; 1 &amp; 0 &amp; -1 &amp; -5\\
+\mathbf{1}(d_i=1)\prod_{i'&gt;i}\mathbf{1}(d_{i'}=0) &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; \mathbf{1}_{y&gt;x}=0
+\end{array}
+\]</span></p>
+<p><strong>Step 1.</strong> The digits of <span class="math inline">\(x-y\)</span> are <span class="math inline">\(d_i = x_i - y_i\)</span>, so <span class="math inline">\((d_3,d_2,d_1,d_0)=(1,-1,0,1)\)</span>, and indeed <span class="math inline">\(8-4+0+1=5\)</span>.</p>
+<p><strong>Step 2.</strong> The term for <span class="math inline">\(i=3\)</span> is <span class="math inline">\(1\cdot 1 = 1\)</span>, because no higher digit exists, so the OR is <span class="math inline">\(1\)</span> no matter what the lower digits do. The lower terms are <span class="math inline">\(0\)</span> because each has a nonzero digit above it, so <span class="math inline">\(x&gt;y\)</span>.</p>
+<p><strong>Step 3.</strong> Swapping gives digits <span class="math inline">\((-1,1,0,-1)\)</span>. The digit <span class="math inline">\(d_2=1\)</span> is blocked by <span class="math inline">\(d_3=-1\neq 0\)</span>, so every term is <span class="math inline">\(0\)</span> and <span class="math inline">\(y&gt;x\)</span> is false.</p>
 <p>The logical AND and OR operations can themselves be written as polynomials on Boolean values:</p>
 <p><span class="math display">\[
 A \wedge B = AB,

@@ -739,10 +739,10 @@ window.Quarto = {
 (\pairA{1},\pairA{2},\pairB{3},\pairB{4},\pairC{5},\pairC{6},\pairD{7},\pairD{8}).
 \]</span></p>
 <p>Those three layers merge one bitonic sequence of length eight. Bitonic sort constructs larger bitonic sequences from smaller ones, then applies these merges. For <span class="math inline">\(N\)</span> a power of two, its network has <span class="math inline">\(\frac{\log_2 N(\log_2 N+1)}{2}\)</span> layers <span class="citation" data-cites="ref15"><a href="../references.html#ref-ref15" role="doc-biblioref">[1]</a></span>.</p>
-<p><a href="#fig-bitonic-network" class="quarto-xref">Figure&nbsp;<span>22.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.</p>
+<p><a href="#fig-bitonic-network" class="quarto-xref">Figure&nbsp;<span>22.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-bitonic-network" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations in six layers, grouped into three stages. The first stage has one layer comparing adjacent pairs. The second has two layers that merge to length four, comparing positions two apart and then adjacent positions. The third has three layers that merge to length eight, comparing positions four apart, then two apart, then adjacent positions. Arrows point to the position that receives the larger value." data-fig-align="center">
+<div id="fig-bitonic-network" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations in six layers, grouped into three stages. The first stage has one layer comparing adjacent pairs. The second has two layers that merge to length four, comparing positions two apart and then adjacent positions. The third has three layers that merge to length eight, comparing positions four apart, then two apart, then adjacent positions. Arrows point to the position that receives the larger value.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-bitonic-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="bitonic_files/figure-html/fig-bitonic-network-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations in six layers, grouped into three stages. The first stage has one layer comparing adjacent pairs. The second has two layers that merge to length four, comparing positions two apart and then adjacent positions. The third has three layers that merge to length eight, comparing positions four apart, then two apart, then adjacent positions. Arrows point to the position that receives the larger value." width="864">
@@ -766,6 +766,12 @@ Figure&nbsp;22.1: The bitonic sorting network for eight inputs, with 6 layers an
 <div class="csl-left-margin">[1] </div><div class="csl-right-inline">K. E. Batcher, <span>“Sorting networks and their applications,”</span> in <em>Proceedings of the AFIPS spring joint computer conference</em>, 1968, pp. 307–314. doi: <a href="https://doi.org/10.1145/1468075.1468121">10.1145/1468075.1468121</a>.</div>
 </div>
 </div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Each layer (a column of arrows, drawn side by side when arrows would otherwise overlap) is one batched sign evaluation, a single SIMD step, so the number of layers is the number of sequential comparison steps. This network has 6 layers, so it needs 6 sequential comparison steps for 8 inputs.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->

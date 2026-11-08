@@ -681,11 +681,16 @@ window.Quarto = {
 
 
 <p>A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don’t have. We introduce what we call the <strong>difference matrix method</strong> which will allow us to implement both statistics in a similar way (though still requiring tools from the <a href="../sign/intro.html">Discrete Math</a> section, especially Equality and Max).</p>
+<p>The tech tree below shows how the difference matrix method fits together, read from left to right. The basic moves build the difference matrix and sign. Sign gives equality and max, and the difference matrix and equality then combine into the median and the mode, with max also feeding the mode.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hackmd.io/_uploads/rkgUFSP-ze.png" class="img-fluid figure-img"></p>
-<figcaption>median-mode.drawio (1)</figcaption>
+<p><img src="intro_files/figure-html/dm-tech-tree-1.png" class="img-fluid figure-img" alt="A flowchart read from left to right. A grey band labeled basic moves holds component-wise multiplication, addition, and cycle. All three feed into both the difference matrix and sign. Sign feeds into both equality and max. The difference matrix and equality both feed into median and mode, and max feeds into mode." width="864"></p>
+<figcaption>The tech tree for this section. The basic moves in the grey band build up to the difference matrix method, shown in bold orange.</figcaption>
 </figure>
+</div>
+</div>
 </div>
 <p>The method is as follows:</p>
 <p>Given a vector <span class="math inline">\(z = (z_1, \ldots, z_{N/2})\)</span>, we construct an <span class="math inline">\((N/2) \times (N/2)\)</span> matrix <span class="math inline">\(D\)</span> where <span class="math inline">\(D_{i,j} = z_i - z_j\)</span>. We will call our matrix the <strong>difference matrix.</strong></p>

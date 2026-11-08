@@ -704,11 +704,20 @@ window.Quarto = {
 </div>
 </div>
 <p>This allows us to approximate <span class="math inline">\(1/x\)</span> in a chain of <span class="math inline">\(2n\)</span> multiplications and <span class="math inline">\(n\)</span> additions. We can do a simple test of approximating <span class="math inline">\(\frac{1}{48}\)</span> with Newton’s method versus a geometric series as follows:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://hackmd.io/_uploads/BJfxYcF5Zg.png" class="img-fluid figure-img"></p>
-<figcaption>convergence_digits(1)</figcaption>
+<p><a href="#fig-newton-digits" class="quarto-xref">Figure&nbsp;<span>9.1</span></a> measures accuracy by the number of correct decimal digits, defined as <span class="math inline">\(-\log_{10}|\text{error}|\)</span>: an error of <span class="math inline">\(10^{-4}\)</span> is 4 correct digits. Both methods start from <span class="math inline">\(x_0 = 1/64\)</span> and are plotted after each iteration.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-newton-digits" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A line plot of correct decimal digits against integer iteration count from 0 to 13. Both lines start at about 2.3 digits at iteration 0. The orange dashed Newton line climbs steeply to about 11.3 digits at iteration 4, crossing the 10 digit line there. The blue dot-dash geometric series line rises steadily and reaches 10 digits at iteration 13.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-newton-digits-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="newtons-method_files/figure-html/fig-newton-digits-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A line plot of correct decimal digits against integer iteration count from 0 to 13. Both lines start at about 2.3 digits at iteration 0. The orange dashed Newton line climbs steeply to about 11.3 digits at iteration 4, crossing the 10 digit line there. The blue dot-dash geometric series line rises steadily and reaches 10 digits at iteration 13." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-newton-digits-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.1: Correct decimal digits, <span class="math inline">\(-\log_{10}|x_n - 1/48|\)</span>, after each iteration for Newton’s method and a scaled geometric series approximating <span class="math inline">\(1/48\)</span>, both started from <span class="math inline">\(x_0 = 1/64\)</span> (plaintext).
+</figcaption>
 </figure>
+</div>
+</div>
 </div>
 <p>The one catch with Newton’s method is that in order to be effective, it has to initially guess reasonably close to the root.</p>
 <section id="guessing-a-starting-point" class="level3" data-number="9.0.1">
@@ -758,6 +767,21 @@ window.Quarto = {
 <li>To guarantee convergence we can simply pick the closest number to zero that does not get eliminated by rounding, maybe <span class="math inline">\(\approx 10^{-10}\)</span> or <span class="math inline">\(-(10^{-10})\)</span>, depending on the sign of <span class="math inline">\(\frac{1}{x}\)</span> (which needs to be known), every time.</li>
 <li>If we want to account for the sign and have a Sign function, we would be able to capture it with something like <span class="math inline">\((x&lt;0)*(x_0=-(10^{-10}))+(x&gt;0)*(x_0=10^{-10})\)</span>. See Section IV for similar methods.</li>
 </ol>
+<p><a href="#fig-newton-cobweb" class="quarto-xref">Figure&nbsp;<span>9.2</span></a> shows the iteration <span class="math inline">\(g(x) = 2x - dx^2\)</span> for <span class="math inline">\(d = 11\)</span> as a staircase between the curve and the line <span class="math inline">\(y = x\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-newton-cobweb" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A plot of the parabola g of x equals 2x minus 11 x squared as a solid grey curve and the line y equals x as a dashed grey line. An orange staircase starts at x equals 0.01 on the horizontal axis, steps up to the parabola and across to the line, and climbs toward the point where the curves meet at x equal to 1 over 11, about 0.0909. The steps shrink as they approach that fixed point, which sits at the top of the parabola.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-newton-cobweb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="newtons-method_files/figure-html/fig-newton-cobweb-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A plot of the parabola g of x equals 2x minus 11 x squared as a solid grey curve and the line y equals x as a dashed grey line. An orange staircase starts at x equals 0.01 on the horizontal axis, steps up to the parabola and across to the line, and climbs toward the point where the curves meet at x equal to 1 over 11, about 0.0909. The steps shrink as they approach that fixed point, which sits at the top of the parabola." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-newton-cobweb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9.2: Cobweb diagram of the Newton iteration <span class="math inline">\(x_{n+1} = g(x_n) = 2x_n - dx_n^2\)</span> for <span class="math inline">\(d = 11\)</span> (plaintext), started at <span class="math inline">\(x_0 = 0.01\)</span>. The iterates climb to the fixed point <span class="math inline">\(1/d = 1/11\)</span>, where the parabola peaks and crosses <span class="math inline">\(y = x\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hackmd.io/_uploads/BkpSix5bzl.gif" class="img-fluid figure-img"></p>

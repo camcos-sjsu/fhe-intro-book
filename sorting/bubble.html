@@ -688,7 +688,7 @@ window.Quarto = {
 
 
 <p>As a proof-of-concept, we choose to use <strong>bubble sort</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> as a starting point for sorting.<br>
-It has the benefit of having local operations, only swaps, without more advanced logic such as dynamic memory allocation (that e.g.&nbsp;quicksort would need). It is a good candidate for FHE prototyping despite being a well-known “slow” sorting algorithm. Each of its steps is one operation on a pair of positions, so we define that operation first.</p>
+Despite being a well-known “slow” sorting algorithm, it is a good candidate for FHE prototyping because its operations are local: only swaps, with no dynamic memory allocation (which e.g.&nbsp;quicksort would need). Each of its steps is one operation on a pair of positions, so we define that operation first.</p>
 <section id="sec-pairsort" class="level3" data-number="20.0.1">
 <h3 data-number="20.0.1" class="anchored" data-anchor-id="sec-pairsort"><span class="header-section-number">20.0.1</span> PairSort</h3>
 <p>Given an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(x\)</span>, the following move will return an <span class="math inline">\(n\)</span>-length vector <span class="math inline">\(y\)</span> that is equal to <span class="math inline">\(x\)</span> in every coordinate except possibly <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span>.<br>
@@ -713,6 +713,7 @@ y_j &amp;= s x_i + (1-s)x_j.
 <p><span class="math inline">\((x_i,x_j)=(3,7)\)</span>, <span class="math inline">\(s\approx0\)</span> so they remain <span class="math inline">\((3,7)\)</span>.</p>
 </div>
 <p>The same operations run in both cases; no branch depends on encrypted data. The approximation is reliable only on its intended input range and away from the transition near equality.</p>
+<p>We treat PairSort as an abstraction that we assume we have. The construction above is only a suggested implementation, since its approximate comparison runs into floating point issues. The sorts in these chapters are therefore proofs of concept that show what a reliable PairSort would make possible. We expect this to be an implementation problem, not a fundamental barrier.</p>
 <p>It’s a bit tricky to actually implement this with vector-wide operations without being wasteful.<br>
 Here is one draft:</p>
 <ol type="1">
@@ -747,6 +748,21 @@ Here is one draft:</p>
 </div>
 </div>
 <p><span class="math inline">\(O(n^2)\)</span> total comparisons (with <span class="math inline">\(O(n)\)</span> per pass) will entirely sort <span class="math inline">\(x\)</span>. However, this gets fairly costly and noisy due to the multiplications in the approximated comparisons.</p>
+<p><a href="#fig-bubble-network" class="quarto-xref">Figure&nbsp;<span>20.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-bubble-network" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions, one per layer, grouped into seven numbered passes. Each pass moves from the top of the vector downward and stops one position earlier than the pass before it, forming a staircase. Pass 1 has seven arrows and pass 7 has one. Each arrow points to the higher position, which receives the larger value." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-bubble-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="bubble_files/figure-html/fig-bubble-network-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions, one per layer, grouped into seven numbered passes. Each pass moves from the top of the vector downward and stops one position earlier than the pass before it, forming a staircase. Pass 1 has seven arrows and pass 7 has one. Each arrow points to the higher position, which receives the larger value." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-bubble-network-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;20.1: The bubble sort network for eight inputs, with 7 passes, 28 layers, and 28 PairSorts. Only one PairSort runs in each layer.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
@@ -754,6 +770,7 @@ Here is one draft:</p>
 <hr>
 <ol>
 <li id="fn1"><p><strong>Bubble sort</strong> available from https://en.wikipedia.org/wiki/Bubble_sort<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Each layer (a column of arrows) is one batched sign evaluation, a single SIMD step, so the number of layers is the number of sequential comparison steps. Every layer holds a single PairSort, so this network needs 28 sequential comparison steps for 8 inputs.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

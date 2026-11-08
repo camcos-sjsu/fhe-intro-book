@@ -706,6 +706,48 @@ window.Quarto = {
 <p>We work through some explicit initial iterations as an illustrative practice. Take <span class="math inline">\(x=0.75\)</span>. We aim to obtain an approximation of <span class="math inline">\(\log_2(0.75)\)</span>. Rewriting <span class="math inline">\(x\)</span> in the desired form <span class="math inline">\(x = m * 2^n\)</span>, we see that <span class="math inline">\(n = -1\)</span> and <span class="math inline">\(m = 1.5\)</span>.</p>
 <p>In the first iteration, squaring <span class="math inline">\(m\)</span> gives <span class="math inline">\(2.25&gt;2\)</span> hence the first bit is <span class="math inline">\(1\)</span>, and we must renormalize, dividing <span class="math inline">\(2.25\)</span> by <span class="math inline">\(2\)</span> resulting in <span class="math inline">\(1.125=u_1\)</span>. For the second iteration, squaring <span class="math inline">\(1.125\)</span> we get <span class="math inline">\(1.265625&lt;2\)</span> so our next bit is <span class="math inline">\(0\)</span> and we do not need to renormalize.</p>
 <p>If we continue iterating twice more we would obtain the binary digits <span class="math inline">\(1001\)</span>, which we interpret as the fractional part of a binary number, corresponding to the value <span class="math inline">\(0.5625\)</span>. This is our approximation for <span class="math inline">\(\log_2(m)\)</span>. We now add <span class="math inline">\(n= -1\)</span> to give an initial approximation for <span class="math inline">\(x\)</span> as <span class="math inline">\(-0.4375\)</span>. For reference, the actual value is approximately <span class="math inline">\(-0.4150\)</span>. We can get closer to the actual value of <span class="math inline">\(x\)</span> with a higher number of iterations, but recall that with more iterations, we naturally have performed more computations, so error accumulates.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(k\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(u_{k-1}\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(u_{k-1}^2\)</span></th>
+<th style="text-align: center;">bit <span class="math inline">\(b_k\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(u_k\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(1.5\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.25\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.125\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(1.125\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.265625\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.265625\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;"><span class="math inline">\(1.265625\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.601807\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(0\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.601807\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;"><span class="math inline">\(1.601807\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2.565785\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1.282892\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The table lists the four iterations for <span class="math inline">\(x=0.75\)</span>, starting from <span class="math inline">\(u_0=m=1.5\)</span>, with <span class="math inline">\(u_k\)</span> the value after any renormalization.</p>
 </div>
 </div>
 

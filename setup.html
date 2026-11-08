@@ -692,34 +692,74 @@ window.Quarto = {
 <ul>
 <li><strong>addition</strong>: given ciphertext <span class="math inline">\(\mathsf{ct}_1 = \mathtt{enc}(r_*)\)</span>, <span class="math inline">\(\mathsf{ct}_2 = \mathtt{enc}(s_*)\)</span>, (where each <span class="math inline">\(r_j, s_j \in \mathbb{C}\)</span>) we can generate a ciphertext <span class="math display">\[\mathsf{ct'} = \mathtt{enc}(r_1 + s_1, r_2 + s_2, \cdots, r_{N/2} + s_{N/2}).\]</span></li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/addition_example.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Addition Example" width="591"></p>
+<p>Slot by slot, <a href="#fig-addition-example" class="quarto-xref">Figure&nbsp;<span>1.1</span></a> shows this.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-addition-example" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Three rows of five boxes. The first row, labeled ct1, holds r1, r2, r3, an ellipsis, and r N over 2. The second row, labeled ct2, holds s1, s2, s3, an ellipsis, and s N over 2. A plus sign sits between the first two rows in each column, and an equals sign between the second and third. The third row, labeled ct prime, holds r1 plus s1, r2 plus s2, r3 plus s3, an ellipsis, and r N over 2 plus s N over 2.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-addition-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="setup_files/figure-html/fig-addition-example-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Three rows of five boxes. The first row, labeled ct1, holds r1, r2, r3, an ellipsis, and r N over 2. The second row, labeled ct2, holds s1, s2, s3, an ellipsis, and s N over 2. A plus sign sits between the first two rows in each column, and an equals sign between the second and third. The third row, labeled ct prime, holds r1 plus s1, r2 plus s2, r3 plus s3, an ellipsis, and r N over 2 plus s N over 2." width="489">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-addition-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.1: Slot-wise addition of two ciphertexts.
+</figcaption>
 </figure>
+</div>
+</div>
 </div>
 <ul>
 <li>(element-wise) <strong>multiplication</strong>: given ciphertext <span class="math inline">\(\mathsf{ct}_1 = \mathtt{enc}(r_*)\)</span>, <span class="math inline">\(\mathsf{ct}_2 = \mathtt{enc}(s_*)\)</span>, we can generate a ciphertext <span class="math display">\[\mathsf{ct'} = \mathtt{enc}(r_1 s_1, r_2 s_2, \cdots, r_{N/2} s_{N/2}).\]</span></li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/multiplication_example.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Multiplication Example" width="591"></p>
+<p><a href="#fig-multiplication-example" class="quarto-xref">Figure&nbsp;<span>1.2</span></a> shows the same layout with products.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-multiplication-example" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Three rows of five boxes laid out like the addition figure. The first row, labeled ct1, holds r1, r2, r3, an ellipsis, and r N over 2. The second row, labeled ct2, holds s1, s2, s3, an ellipsis, and s N over 2. A multiplication sign sits between the first two rows in each column, and an equals sign between the second and third. The third row, labeled ct prime, holds the products r1 s1, r2 s2, r3 s3, an ellipsis, and r N over 2 times s N over 2.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-multiplication-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="setup_files/figure-html/fig-multiplication-example-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Three rows of five boxes laid out like the addition figure. The first row, labeled ct1, holds r1, r2, r3, an ellipsis, and r N over 2. The second row, labeled ct2, holds s1, s2, s3, an ellipsis, and s N over 2. A multiplication sign sits between the first two rows in each column, and an equals sign between the second and third. The third row, labeled ct prime, holds the products r1 s1, r2 s2, r3 s3, an ellipsis, and r N over 2 times s N over 2." width="489">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-multiplication-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.2: Slot-wise multiplication of two ciphertexts.
+</figcaption>
 </figure>
+</div>
+</div>
 </div>
 <ul>
 <li><strong>complex conjugation</strong>: given ciphertext <span class="math inline">\(\mathsf{ct} = \mathtt{enc}(z_*)\)</span>, we can generate a ciphertext <span class="math display">\[\mathsf{ct}' = \mathtt{enc}(\overline{z_1}, \ldots, \overline{z_{N/2}}).\]</span> Recall that <span class="math inline">\(\overline{x+iy} = x-iy\)</span> for real numbers <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>.</li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/conjugation_example.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Conjugation_Example" width="591"></p>
+<p>In <a href="#fig-conjugation-example" class="quarto-xref">Figure&nbsp;<span>1.3</span></a>, each slot <span class="math inline">\(z_j = a_j + b_j i\)</span> keeps its real part and flips the sign of its imaginary part (orange).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-conjugation-example" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Two rows of four boxes. The first row, labeled ct, holds a1 plus b1 i, a2 plus b2 i, a3 plus b3 i, and an ellipsis. The second row, labeled ct prime, holds the same entries with the sign of the imaginary part flipped to minus, and that minus and imaginary part are orange in every slot.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-conjugation-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="setup_files/figure-html/fig-conjugation-example-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two rows of four boxes. The first row, labeled ct, holds a1 plus b1 i, a2 plus b2 i, a3 plus b3 i, and an ellipsis. The second row, labeled ct prime, holds the same entries with the sign of the imaginary part flipped to minus, and that minus and imaginary part are orange in every slot." width="441">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-conjugation-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.3: Complex conjugation of a ciphertext, slot by slot.
+</figcaption>
 </figure>
+</div>
+</div>
 </div>
 <ul>
 <li><strong>cycle</strong>: given a ciphertext <span class="math inline">\(\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2})\)</span>, we can, for any <span class="math inline">\(k \in \{1, 2, \dots, N/2\}\)</span>, create a ciphertext <span class="math display">\[\mathsf{ct}' = \mathtt{enc}(z_k, \ldots, z_{N/2}, z_1, \ldots, z_{k-1}).\]</span></li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/cycle_example.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="591"></p>
+<p><a href="#fig-cycle-example" class="quarto-xref">Figure&nbsp;<span>1.4</span></a> shows cycle with <span class="math inline">\(k = 3\)</span> on eight slots: the vector now starts at <span class="math inline">\(z_3\)</span>, and the first two entries, <span class="math inline">\(z_1\)</span> and <span class="math inline">\(z_2\)</span> (orange), wrap around to the end.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-cycle-example" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Two rows of eight boxes. The top row, labeled ct, holds z1 through z8. The bottom row, labeled cycle of ct with k equal to 3, holds z3 through z8, then z1 and z2. The boxes for z1 and z2 have orange borders and text in both rows. A thin grey arrow just above the bottom row points left from its z8 box to its z3 box, showing that block pushed forward. Two curved orange arrows, one per wrapped entry, run from z1 and z2 in the top row to the last two slots of the bottom row.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cycle-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="setup_files/figure-html/fig-cycle-example-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two rows of eight boxes. The top row, labeled ct, holds z1 through z8. The bottom row, labeled cycle of ct with k equal to 3, holds z3 through z8, then z1 and z2. The boxes for z1 and z2 have orange borders and text in both rows. A thin grey arrow just above the bottom row points left from its z8 box to its z3 box, showing that block pushed forward. Two curved orange arrows, one per wrapped entry, run from z1 and z2 in the top row to the last two slots of the bottom row." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cycle-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1.4: Cycle with <span class="math inline">\(k = 3\)</span> on eight slots.
+</figcaption>
 </figure>
+</div>
+</div>
 </div>
 <p>This is not an exhaustive list of moves and part of open research is determining what other techniques are possible in CKKS. For the scope of our doc, we will assume this is the complete list of moves. We note two practical things that we will mostly ignore for the rest of our work:</p>
 <ol type="1">

@@ -688,6 +688,21 @@ window.Quarto = {
 <figcaption>hybrid_animation</figcaption>
 </figure>
 </div>
+<p><a href="#fig-hybrid-error" class="quarto-xref">Figure&nbsp;<span>10.1</span></a> compares the three approaches for <span class="math inline">\(d = 11\)</span>. The horizontal axis counts the ciphertext multiplications each approach has spent, which is the expensive operation in CKKS, and the vertical axis shows how many decimal digits of error remain (each step down is a factor of 10 smaller).</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-hybrid-error" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A line plot of log base 10 of the absolute error against multiplications from 0 to 70, with a horizontal target line at 10 to the minus 10. The blue dot-dash Newton line from the start 1e-10 stays near log error minus 1 until about 55 multiplications and then drops to the target between 68 and 70 multiplications. The orange dashed geometric series line falls steadily and crosses the target near 18 multiplications. The green solid hybrid line starts at about minus 1.5 and drops fastest, crossing the target between 8 and 10 multiplications and reaching the 1e-13 floor at 10.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-hybrid-error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="hybrid-approach_files/figure-html/fig-hybrid-error-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A line plot of log base 10 of the absolute error against multiplications from 0 to 70, with a horizontal target line at 10 to the minus 10. The blue dot-dash Newton line from the start 1e-10 stays near log error minus 1 until about 55 multiplications and then drops to the target between 68 and 70 multiplications. The orange dashed geometric series line falls steadily and crosses the target near 18 multiplications. The green solid hybrid line starts at about minus 1.5 and drops fastest, crossing the target between 8 and 10 multiplications and reaching the 1e-13 floor at 10." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-hybrid-error-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;10.1: Plaintext error of <span class="math inline">\(1/11\)</span> against the number of multiplications spent for the geometric series, Newton’s method from the universal start <span class="math inline">\(10^{-10}\)</span>, and the hybrid that starts Newton from the first geometric term <span class="math inline">\(1/16\)</span>. Cost basis: Newton costs 2 multiplications per step (<span class="math inline">\(dx_n\)</span>, then <span class="math inline">\(x_n(2 - dx_n)\)</span>); the partial sum through <span class="math inline">\(r^n\)</span> with <span class="math inline">\(r = 5/16\)</span> costs <span class="math inline">\(n+1\)</span> (one for <span class="math inline">\(r\)</span>, <span class="math inline">\(n-1\)</span> for the powers, one to scale by <span class="math inline">\(1/16\)</span>); the first term <span class="math inline">\(1/16\)</span> is a constant and costs 0. Errors below <span class="math inline">\(10^{-13}\)</span> are drawn at <span class="math inline">\(10^{-13}\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
 

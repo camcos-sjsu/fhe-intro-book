@@ -682,6 +682,21 @@ window.Quarto = {
 
 <p>Beyond our base moves, many functions which are of interest to us can be approximated with <strong>Taylor approximation</strong>: approximate a function by the first few terms of its power series. This is fairly straightforward in CKKS, involving only a combination of basic moves: additions, powers (multiplications), and scalar divisions.</p>
 <p>We show the Taylor approximation of the <strong>exponential function</strong> as an illustrative example: <span class="math display">\[e^z \approx \sum_{k=0}^{N} \frac{z^k}{k!} = 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \dots + \frac{z^N}{N!}\]</span></p>
+<p><a href="#fig-taylor-exp" class="quarto-xref">Figure&nbsp;<span>5.1</span></a> compares these approximations with <span class="math inline">\(e^z\)</span>. Each one is accurate near <span class="math inline">\(z = 0\)</span> and drifts away from it, and a larger <span class="math inline">\(N\)</span> stays accurate over a wider range.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-taylor-exp" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A line plot with z from negative 4 to 4 on the horizontal axis. The solid grey curve is e to the z. Dashed and dotted curves show the Taylor approximations for N equals 2, 4, and 6. All curves agree near z equals 0. Away from 0 the approximations separate from e to the z, with N equals 2 separating first and N equals 6 last.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-taylor-exp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="taylor-approx_files/figure-html/fig-taylor-exp-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A line plot with z from negative 4 to 4 on the horizontal axis. The solid grey curve is e to the z. Dashed and dotted curves show the Taylor approximations for N equals 2, 4, and 6. All curves agree near z equals 0. Away from 0 the approximations separate from e to the z, with N equals 2 separating first and N equals 6 last." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-taylor-exp-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5.1: Taylor approximations of <span class="math inline">\(e^z\)</span> for <span class="math inline">\(N = 2, 4, 6\)</span> compared with <span class="math inline">\(e^z\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Our main thoughts on Taylor approximation are:</p>
 <ol type="1">
 <li><p>In a purely mathematical setting, a higher <span class="math inline">\(N\)</span> results in higher accuracy, yet in FHE, too large of an <span class="math inline">\(N\)</span> can result in lower accuracy as noise accumulates. We desire a middle-ground <span class="math inline">\(N\)</span> that produces a close approximation while mitigating cost and noise concerns.</p></li>

@@ -651,7 +651,7 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>In this section we study some “discrete” operations involving comparisons and sorting. At the basis of everything, we need <a href="sign/intro.qmd"><strong>sign</strong></a>, <strong>equality</strong>, and <strong>inequality</strong> functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it’s essentially the same as inequality.</p>
+<p>In this section we study some “discrete” operations involving comparisons and sorting. At the basis of everything, we need <a href="../sign/intro.html"><strong>sign</strong></a>, <strong>equality</strong>, and <strong>inequality</strong> functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it’s essentially the same as inequality.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -668,14 +668,18 @@ ul.task-list li input[type="checkbox"] {
 <p>With this disclaimer, we perform the following explorations:</p>
 <ol type="1">
 <li><p>We try to use series approximations for sign anyway, and quantify how close the approximations are (we suspect it would be usable for very small-scale work, but not beyond that).</p></li>
-<li><p>Assuming an “idealized sign”, we use a “local swap” / “bubble” as a building block for <strong>sorting</strong> (and as a bonus, computing <strong>max</strong>/min type of summary statistics). The functions we will implement are represented in the following “tech tree”.</p></li>
+<li><p>Assuming an “idealized sign”, we use <a href="../sorting/bubble.html#sec-pairsort">PairSort</a> (a “local swap” / “bubble”) as a building block for <strong>sorting</strong> (and as a bonus, computing <strong>max</strong>/min type of summary statistics). The functions we will implement are represented in the following “tech tree”.</p></li>
 <li><p>We provide a <a href="../discrete-model/binary-approach.html">speculative approach</a> to sign / inequality type of functions with binary arithmetic later on.</p></li>
 </ol>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://hackmd.io/_uploads/BJubYSw-ze.png" class="img-fluid figure-img"></p>
-<figcaption>Discrete Tech Tree Flowchart</figcaption>
+<p><img src="discrete-math_files/figure-html/discrete-tech-tree-1.png" class="img-fluid figure-img" alt="A flowchart read from left to right. A grey band labeled basic moves holds component-wise multiplication, addition, and cycle. All three feed into sign, which feeds into inequality. Inequality feeds into both equality and PairSort, and PairSort feeds into both sort and max." width="864"></p>
+<figcaption>The tech tree for this section. The basic moves in the grey band build up to the functions we implement, shown in bold orange.</figcaption>
 </figure>
+</div>
+</div>
 </div>
 
 

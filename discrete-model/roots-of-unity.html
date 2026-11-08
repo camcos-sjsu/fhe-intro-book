@@ -685,6 +685,21 @@ window.Quarto = {
 <p><span class="math display">\[
 (\zeta^k)(\zeta^l) = \zeta^{k+l}.
 \]</span></p>
+<p><a href="#fig-roots-of-unity" class="quarto-xref">Figure&nbsp;<span>25.1</span></a> shows this for <span class="math inline">\(N = 7\)</span>. Each <span class="math inline">\(\zeta^a\)</span> is a point on the unit circle, and multiplying two points adds their angles, so going past <span class="math inline">\(\zeta^0\)</span> wraps the exponent around mod <span class="math inline">\(N\)</span>. Here, <span class="math inline">\(\zeta^4 \cdot \zeta^5 = \zeta^9 = \zeta^2\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-roots-of-unity" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A unit circle with seven evenly spaced points labeled zeta to the 0 through zeta to the 6, counterclockwise from the right. An orange arc rotates four steps from zeta to the 0 to zeta to the 4. A blue arc continues five more steps, passing zeta to the 0 again, and ends at the angle of zeta to the 2, which is marked in green." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-roots-of-unity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="roots-of-unity_files/figure-html/fig-roots-of-unity-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A unit circle with seven evenly spaced points labeled zeta to the 0 through zeta to the 6, counterclockwise from the right. An orange arc rotates four steps from zeta to the 0 to zeta to the 4. A blue arc continues five more steps, passing zeta to the 0 again, and ends at the angle of zeta to the 2, which is marked in green." width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-roots-of-unity-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;25.1: Modular addition on the unit circle for <span class="math inline">\(N = 7\)</span>. Rotating by <span class="math inline">\(4\)</span> steps (orange) and then <span class="math inline">\(5\)</span> steps (blue) lands on <span class="math inline">\(\zeta^2\)</span> (green), since <span class="math inline">\(4 + 5 \equiv 2 \pmod 7\)</span>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>However, <strong>modular multiplication</strong> becomes much more difficult.</p>
 <p>An option is to interpolate a bivariate polynomial such that <span class="math inline">\(P(\xi^a,\xi^b) = \xi^{ab}\)</span>. Since <span class="math inline">\(n\)</span> is finite, the Cayley table of <span class="math inline">\(\mathbb{Z}/n\mathbb{Z}\)</span> is also finite. Thus, we should be able to interpolate a polynomial which functions as a lookup table</p>
 

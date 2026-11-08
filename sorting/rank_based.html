@@ -745,22 +745,128 @@ window.Quarto = {
 <li><p><span class="math inline">\(R = SUM(M)\)</span> by summing either the columns or rows depending on the initial difference matrix, we will have a final output of the statistic rank from 0 to n-1</p></li>
 <li><p><span class="math inline">\(R = R + 1\)</span> by adding 1 to each element in R, we will end with a vector of ranks 1 to n</p></li>
 </ol>
+<p>The example below works through <span class="math inline">\(x = [30, 10, 40, 20]\)</span>, following the value <span class="math inline">\(30\)</span> in orange.</p>
+<div class="hidden">
+<p><span class="math display">\[
+\newcommand{\focus}[1]{\textcolor[RGB]{230,159,0}{\mathbf{#1}}}
+\]</span></p>
+</div>
+<p><span class="math display">\[
+\overset{\displaystyle A}{\begin{bmatrix}
+\focus{30} &amp; 10 &amp; 40 &amp; 20 \\
+\focus{30} &amp; 10 &amp; 40 &amp; 20 \\
+\focus{30} &amp; 10 &amp; 40 &amp; 20 \\
+\focus{30} &amp; 10 &amp; 40 &amp; 20
+\end{bmatrix}}
+-
+\overset{\displaystyle A^T}{\begin{bmatrix}
+\focus{30} &amp; \focus{30} &amp; \focus{30} &amp; \focus{30} \\
+10 &amp; 10 &amp; 10 &amp; 10 \\
+40 &amp; 40 &amp; 40 &amp; 40 \\
+20 &amp; 20 &amp; 20 &amp; 20
+\end{bmatrix}}
+=
+\overset{\displaystyle M}{\begin{bmatrix}
+\focus{0} &amp; -20 &amp; 10 &amp; -10 \\
+\focus{20} &amp; 0 &amp; 30 &amp; 10 \\
+\focus{-10} &amp; -30 &amp; 0 &amp; -20 \\
+\focus{10} &amp; -10 &amp; 20 &amp; 0
+\end{bmatrix}}
+\]</span></p>
+<p><strong>Step 1.</strong> Replicate <span class="math inline">\(x\)</span> into the rows of <span class="math inline">\(A\)</span>, so <span class="math inline">\(A_{ij} = x_j\)</span> and <span class="math inline">\(A^T_{ij} = x_i\)</span>. Subtracting gives <span class="math inline">\(M_{ij} = x_j - x_i\)</span>.</p>
+<p><span class="math display">\[
+\overset{\displaystyle \mathrm{sign}(M)}{\begin{bmatrix}
+\focus{0} &amp; 0 &amp; 1 &amp; 0 \\
+\focus{1} &amp; 0 &amp; 1 &amp; 1 \\
+\focus{0} &amp; 0 &amp; 0 &amp; 0 \\
+\focus{1} &amp; 0 &amp; 1 &amp; 0
+\end{bmatrix}}
+\xrightarrow{\text{SUM}}
+\overset{\displaystyle R}{\begin{bmatrix}
+\focus{2} \\
+0 \\
+3 \\
+1
+\end{bmatrix}}
+\xrightarrow{+1}
+\overset{\displaystyle R + 1}{\begin{bmatrix}
+\focus{3} \\
+1 \\
+4 \\
+2
+\end{bmatrix}}
+\]</span></p>
+<p><strong>Step 2.</strong> Keep only the positive entries, so the entry is 1 if <span class="math inline">\(M_{ij} &gt; 0\)</span> and 0 otherwise. Column <span class="math inline">\(j\)</span> now marks the values smaller than <span class="math inline">\(x_j\)</span>, so summing each column gives ranks from 0 to <span class="math inline">\(n - 1\)</span>. Adding 1 gives ranks from 1 to <span class="math inline">\(n\)</span>, and <span class="math inline">\(30\)</span> has rank <span class="math inline">\(3\)</span>.</p>
 </section>
 <section id="rank-based-sort" class="level3" data-number="23.0.4">
 <h3 data-number="23.0.4" class="anchored" data-anchor-id="rank-based-sort"><span class="header-section-number">23.0.4</span> Rank-Based Sort</h3>
 <p>To sort a vector of degree n, we need the following:</p>
 <ul>
-<li><p>A matrix of replicated rows of our input</p></li>
+<li><p>A matrix of replicated rows of our input (Matrix X)</p></li>
 <li><p>A matrix of replicated rank row vectors (Matrix A)</p></li>
 <li><p>A plain text constant matrix with all elements in each row being one singular number from 1 to n (Matrix B)</p></li>
 </ul>
 <p>The process goes as follows:</p>
 <ol type="1">
 <li><span class="math inline">\(C = IND( A - B )\)</span> to set all elements that are 0 to value 1 with rest being 0</li>
-<li>Take the product of our replicated matrix and the indicator matrix <span class="math inline">\(P = C * A\)</span></li>
-<li>Sum the columns <span class="math inline">\(f = SUM(P)\)</span></li>
+<li>Take the product of our replicated matrix and the indicator matrix <span class="math inline">\(P = C * X\)</span></li>
+<li>Sum the rows <span class="math inline">\(f = SUM(P)\)</span></li>
 <li>By transposing our final matrix, we will then end with a sorted row vector <span class="math inline">\(f\)</span></li>
 </ol>
+<p>The example below continues <span class="math inline">\(x = [30, 10, 40, 20]\)</span> with the ranks <span class="math inline">\([3, 1, 4, 2]\)</span> found above, following the value <span class="math inline">\(30\)</span> in orange. Here the matrix of replicated ranks plays the role of <span class="math inline">\(A\)</span> in step 1, <span class="math inline">\(B\)</span> has row <span class="math inline">\(i\)</span> filled with <span class="math inline">\(i\)</span>, and the replicated input is the <span class="math inline">\(A\)</span> of step 2, written <span class="math inline">\(X\)</span> to keep them apart.</p>
+<p><span class="math display">\[
+\overset{\displaystyle A}{\begin{bmatrix}
+\focus{3} &amp; 1 &amp; 4 &amp; 2 \\
+\focus{3} &amp; 1 &amp; 4 &amp; 2 \\
+\focus{3} &amp; 1 &amp; 4 &amp; 2 \\
+\focus{3} &amp; 1 &amp; 4 &amp; 2
+\end{bmatrix}}
+-
+\overset{\displaystyle B}{\begin{bmatrix}
+1 &amp; 1 &amp; 1 &amp; 1 \\
+2 &amp; 2 &amp; 2 &amp; 2 \\
+3 &amp; 3 &amp; 3 &amp; 3 \\
+4 &amp; 4 &amp; 4 &amp; 4
+\end{bmatrix}}
+\xrightarrow{\text{IND}}
+\overset{\displaystyle C}{\begin{bmatrix}
+\focus{0} &amp; 1 &amp; 0 &amp; 0 \\
+\focus{0} &amp; 0 &amp; 0 &amp; 1 \\
+\focus{1} &amp; 0 &amp; 0 &amp; 0 \\
+\focus{0} &amp; 0 &amp; 1 &amp; 0
+\end{bmatrix}}
+\]</span></p>
+<p><strong>Step 1.</strong> Subtracting <span class="math inline">\(B\)</span> from <span class="math inline">\(A\)</span> gives <span class="math inline">\(0\)</span> exactly where the rank in column <span class="math inline">\(j\)</span> equals the row number <span class="math inline">\(i\)</span>, and <span class="math inline">\(\mathrm{IND}\)</span> turns those zeros into <span class="math inline">\(1\)</span>s. Each row of <span class="math inline">\(C\)</span> marks the one input whose rank is that row number, and <span class="math inline">\(30\)</span> (rank <span class="math inline">\(3\)</span>) is marked in row <span class="math inline">\(3\)</span>.</p>
+<p><span class="math display">\[
+\overset{\displaystyle C}{\begin{bmatrix}
+\focus{0} &amp; 1 &amp; 0 &amp; 0 \\
+\focus{0} &amp; 0 &amp; 0 &amp; 1 \\
+\focus{1} &amp; 0 &amp; 0 &amp; 0 \\
+\focus{0} &amp; 0 &amp; 1 &amp; 0
+\end{bmatrix}}
+*
+\overset{\displaystyle X}{\begin{bmatrix}
+\focus{30} &amp; 10 &amp; 40 &amp; 20 \\
+\focus{30} &amp; 10 &amp; 40 &amp; 20 \\
+\focus{30} &amp; 10 &amp; 40 &amp; 20 \\
+\focus{30} &amp; 10 &amp; 40 &amp; 20
+\end{bmatrix}}
+=
+\overset{\displaystyle P}{\begin{bmatrix}
+\focus{0} &amp; 10 &amp; 0 &amp; 0 \\
+\focus{0} &amp; 0 &amp; 0 &amp; 20 \\
+\focus{30} &amp; 0 &amp; 0 &amp; 0 \\
+\focus{0} &amp; 0 &amp; 40 &amp; 0
+\end{bmatrix}}
+\xrightarrow{\text{SUM}}
+\overset{\displaystyle f}{\begin{bmatrix}
+10 \\
+20 \\
+\focus{30} \\
+40
+\end{bmatrix}}
+\]</span></p>
+<p><strong>Step 2.</strong> The entrywise product <span class="math inline">\(P = C * X\)</span> keeps one input per row. Summing each row of <span class="math inline">\(P\)</span> gives <span class="math inline">\(f = [10, 20, 30, 40]\)</span>, and transposing it gives the sorted row vector, with <span class="math inline">\(30\)</span> landing in position <span class="math inline">\(3\)</span>, its rank.</p>
 </section>
 <section id="ties" class="level3" data-number="23.0.5">
 <h3 data-number="23.0.5" class="anchored" data-anchor-id="ties"><span class="header-section-number">23.0.5</span> Ties</h3>
@@ -790,21 +896,21 @@ window.Quarto = {
 \]</span></p>
 </div>
 <p><span class="math display">\[
-\overset{A}{\begin{bmatrix}
+\overset{\displaystyle A}{\begin{bmatrix}
 30 &amp; \tied{10} &amp; \tied{10} &amp; 20 \\
 30 &amp; \tied{10} &amp; \tied{10} &amp; 20 \\
 30 &amp; \tied{10} &amp; \tied{10} &amp; 20 \\
 30 &amp; \tied{10} &amp; \tied{10} &amp; 20
 \end{bmatrix}}
 ==
-\overset{A^T}{\begin{bmatrix}
+\overset{\displaystyle A^T}{\begin{bmatrix}
 30 &amp; 30 &amp; 30 &amp; 30 \\
 \tied{10} &amp; \tied{10} &amp; \tied{10} &amp; \tied{10} \\
 \tied{10} &amp; \tied{10} &amp; \tied{10} &amp; \tied{10} \\
 20 &amp; 20 &amp; 20 &amp; 20
 \end{bmatrix}}
 =
-\overset{M_1}{\begin{bmatrix}
+\overset{\displaystyle M_1}{\begin{bmatrix}
 1 &amp; 0 &amp; 0 &amp; 0 \\
 0 &amp; \tied{1} &amp; \tied{1} &amp; 0 \\
 0 &amp; \tied{1} &amp; \tied{1} &amp; 0 \\
@@ -813,21 +919,21 @@ window.Quarto = {
 \]</span></p>
 <p><strong>Step 1.</strong> Replicate <span class="math inline">\(x\)</span> into the rows of <span class="math inline">\(A\)</span>, so <span class="math inline">\(A_{ij} = x_j\)</span> and <span class="math inline">\(A^T_{ij} = x_i\)</span>. Then compare the two entry by entry: <span class="math inline">\((M_1)_{ij} = 1\)</span> if <span class="math inline">\(A_{ij} = A^T_{ij}\)</span>, and 0 otherwise.</p>
 <p><span class="math display">\[
-\overset{M_1}{\begin{bmatrix}
+\overset{\displaystyle M_1}{\begin{bmatrix}
 1 &amp; 0 &amp; 0 &amp; 0 \\
 0 &amp; \tied{1} &amp; \tied{1} &amp; 0 \\
 0 &amp; \tied{1} &amp; \tied{1} &amp; 0 \\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}}
 \odot
-\overset{U}{\begin{bmatrix}
+\overset{\displaystyle U}{\begin{bmatrix}
 1 &amp; 1 &amp; 1 &amp; 1 \\
 0 &amp; \tied{1} &amp; \tied{1} &amp; 1 \\
 0 &amp; \tied{0} &amp; \tied{1} &amp; 1 \\
 0 &amp; 0 &amp; 0 &amp; 1
 \end{bmatrix}}
 =
-\overset{M_2}{\begin{bmatrix}
+\overset{\displaystyle M_2}{\begin{bmatrix}
 1 &amp; 0 &amp; 0 &amp; 0 \\
 0 &amp; \tied{1} &amp; \tied{1} &amp; 0 \\
 0 &amp; \tied{0} &amp; \tied{1} &amp; 0 \\
@@ -836,42 +942,42 @@ window.Quarto = {
 \]</span></p>
 <p><strong>Step 2.</strong> Multiply <span class="math inline">\(M_1\)</span> entry by entry with an upper triangular matrix of ones, where <span class="math inline">\(U_{ij} = 1\)</span> if <span class="math inline">\(i \le j\)</span> and 0 otherwise. This gives <span class="math inline">\((M_2)_{ij} = (M_1)_{ij} \, U_{ij}\)</span>, which drops the matches below the diagonal.</p>
 <p><span class="math display">\[
-\overset{s_1}{\begin{bmatrix}
+\overset{\displaystyle s_1}{\begin{bmatrix}
 1 \\
 \tied{2} \\
 \tied{2} \\
 1
 \end{bmatrix}}
 -
-\overset{s_2}{\begin{bmatrix}
+\overset{\displaystyle s_2}{\begin{bmatrix}
 1 \\
 \tied{2} \\
 \tied{1} \\
 1
 \end{bmatrix}}
 =
-\overset{O}{\begin{bmatrix}
+\overset{\displaystyle O}{\begin{bmatrix}
 0 \\
 \tied{0} \\
 \tied{1} \\
 0
 \end{bmatrix}}
 \qquad\qquad
-\overset{R}{\begin{bmatrix}
+\overset{\displaystyle R}{\begin{bmatrix}
 4 \\
 \tied{1} \\
 \tied{1} \\
 3
 \end{bmatrix}}
 +
-\overset{O}{\begin{bmatrix}
+\overset{\displaystyle O}{\begin{bmatrix}
 0 \\
 \tied{0} \\
 \tied{1} \\
 0
 \end{bmatrix}}
 =
-\overset{t}{\begin{bmatrix}
+\overset{\displaystyle t}{\begin{bmatrix}
 4 \\
 \tied{1} \\
 \tied{2} \\
