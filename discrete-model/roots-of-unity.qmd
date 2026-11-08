@@ -9,6 +9,97 @@ $$
 (\zeta^k)(\zeta^l) = \zeta^{k+l}.
 $$
 
+@fig-roots-of-unity shows this for $N = 7$. Each $\zeta^a$ is a point on the unit circle, and multiplying two points adds their angles, so going past $\zeta^0$ wraps the exponent around mod $N$. Here, $\zeta^4 \cdot \zeta^5 = \zeta^9 = \zeta^2$.
+
+```{r}
+#| label: fig-roots-of-unity
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 4.6
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "Modular addition on the unit circle for $N = 7$. Rotating by $4$ steps (orange) and then $5$ steps (blue) lands on $\\zeta^2$ (green), since $4 + 5 \\equiv 2 \\pmod 7$."
+#| fig-alt: "A unit circle with seven evenly spaced points labeled zeta to the 0 through zeta to the 6, counterclockwise from the right. An orange arc rotates four steps from zeta to the 0 to zeta to the 4. A blue arc continues five more steps, passing zeta to the 0 again, and ends at the angle of zeta to the 2, which is marked in green."
+
+library(ggplot2)
+
+N <- 7
+k <- 4
+l <- 5
+result <- (k + l) %% N
+stopifnot(Mod(exp(2i * pi * k / N) * exp(2i * pi * l / N) - exp(2i * pi * result / N)) < 1e-12)
+
+angle <- function(step) 2 * pi * step / N
+arc <- function(from, to, r) {
+  a <- seq(angle(from), angle(to), length.out = 200)
+  data.frame(x = r * cos(a), y = r * sin(a))
+}
+
+neutral <- "grey50"
+colors <- c(neutral = neutral, k = "#E69F00", l = "#56B4E9", result = "#009E73")
+
+points <- data.frame(step = 0:(N - 1), role = "neutral")
+points$role[points$step == k] <- "k"
+points$role[points$step == l] <- "l"
+points$role[points$step == result] <- "result"
+points$x <- cos(angle(points$step))
+points$y <- sin(angle(points$step))
+points$label <- ifelse(
+  points$role == "neutral",
+  paste0("zeta^", points$step),
+  paste0("bold(zeta^", points$step, ")")
+)
+
+circle <- arc(0, N, 1)
+arc_k <- arc(0, k, 0.8)
+arc_l <- arc(k, k + l, 0.62)
+
+ggplot() +
+  geom_path(data = circle, aes(x = x, y = y), color = neutral, linewidth = 0.4) +
+  geom_segment(
+    aes(
+      x = 0.62 * cos(angle(result)), y = 0.62 * sin(angle(result)),
+      xend = cos(angle(result)), yend = sin(angle(result))
+    ),
+    color = colors[["result"]], linewidth = 0.6, linetype = "dashed"
+  ) +
+  geom_path(
+    data = arc_k, aes(x = x, y = y),
+    color = colors[["k"]], linewidth = 0.9,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  geom_path(
+    data = arc_l, aes(x = x, y = y),
+    color = colors[["l"]], linewidth = 0.9,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  geom_point(data = points, aes(x = x, y = y, color = role), size = 3) +
+  geom_text(
+    data = points,
+    aes(x = 1.2 * x, y = 1.2 * y, label = label, color = role),
+    parse = TRUE, size = 7
+  ) +
+  annotate(
+    "text",
+    x = 0, y = 0.12, label = "4 steps",
+    color = colors[["k"]], size = 5, fontface = "bold"
+  ) +
+  annotate(
+    "text",
+    x = 0, y = -0.12, label = "5 steps",
+    color = colors[["l"]], size = 5, fontface = "bold"
+  ) +
+  scale_color_manual(values = colors, guide = "none") +
+  coord_fixed(xlim = c(-1.3, 1.3), ylim = c(-1.25, 1.25), clip = "off") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA)
+  )
+```
+
 However, **modular multiplication** becomes much more difficult.
 
 An option is to interpolate a bivariate polynomial such that $P(\xi^a,\xi^b) = \xi^{ab}$. Since $n$ is finite, the Cayley table of $\mathbb{Z}/n\mathbb{Z}$ is also finite. Thus, we should be able to interpolate a polynomial which functions as a lookup table
