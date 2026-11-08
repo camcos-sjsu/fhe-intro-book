@@ -15,19 +15,235 @@ Any further operations on $\mathsf{ct}$ are considered difficult by default, and
 
 -   **addition**: given ciphertext $\mathsf{ct}_1 = \mathtt{enc}(r_*)$, $\mathsf{ct}_2 = \mathtt{enc}(s_*)$, (where each $r_j, s_j \in \mathbb{C}$) we can generate a ciphertext $$\mathsf{ct'} = \mathtt{enc}(r_1 + s_1, r_2 + s_2, \cdots, r_{N/2} + s_{N/2}).$$
 
-![](images/addition_example.png){fig-alt="Addition Example" fig-align="center" width="591"}
+```{r}
+#| include: false
+library(ggplot2)
+
+# Shared style for the ciphertext figures in this section: a ciphertext is a row of
+# slot boxes (1.1 x 0.7, grey50 outline) with its name on the left.
+neutral <- "grey50"
+orange <- "#E69F00"
+sp <- 1.2          # horizontal spacing between slot centers
+box_w <- 1.1
+box_h <- 0.7
+
+# Slot positions: columns 1..n at x = sp * column.
+# `labels` are plotmath, one per column; "'...'" is the ellipsis slot.
+slot_row <- function(y, labels, fill = NA, size = 5, hot = FALSE) {
+  d <- data.frame(x = sp * seq_along(labels), y = y, label = labels)
+  d$fill <- rep_len(fill, nrow(d))
+  d$fill[d$label == "'...'"] <- NA
+  d$hot <- rep_len(hot, nrow(d))
+  # A highlighted slot gets a faint orange fill, a thicker orange border and orange text.
+  d$fill[d$hot] <- alpha(orange, 0.15)
+  d$border <- ifelse(d$hot, orange, neutral)
+  d$lw <- ifelse(d$hot, 1, 0.4)
+  d$txt <- ifelse(d$hot, orange, ifelse(is.na(d$fill), neutral, "black"))
+  list(
+    geom_tile(
+      data = d, aes(x = x, y = y, fill = I(fill), color = I(border), linewidth = I(lw)),
+      width = box_w, height = box_h
+    ),
+    geom_text(
+      data = d, aes(x = x, y = y, label = label, color = I(txt)),
+      parse = TRUE, size = size
+    )
+  )
+}
+
+row_label <- function(y, label) {
+  annotate(
+    "text", x = sp - box_w / 2 - 0.2, y = y, label = label, parse = TRUE,
+    color = neutral, size = 5, fontface = "bold", hjust = 1
+  )
+}
+
+op_label <- function(y, label, cols) {
+  annotate(
+    "text", x = sp * cols, y = y, label = label,
+    color = neutral, size = 7, fontface = "bold"
+  )
+}
+
+slot_theme <- function() {
+  theme_void() +
+    theme(
+      plot.background = element_rect(fill = "transparent", color = NA),
+      panel.background = element_rect(fill = "transparent", color = NA)
+    )
+}
+
+slot_coord <- function(ncols, ymax, left = 2.9, top = 0.5) {
+  coord_fixed(
+    xlim = c(sp - left, sp * ncols + 0.7), ylim = c(ymax + 0.5, -top), clip = "off"
+  )
+}
+
+# Three slots, an ellipsis, then slot N/2.
+idx3 <- c("1", "2", "3", "dots", "N/2")
+slot_names <- function(expr) {
+  # expr uses `#` as the placeholder for the slot index
+  vapply(idx3, function(i) {
+    if (i == "dots") "'...'" else gsub("#", i, expr, fixed = TRUE)
+  }, character(1), USE.NAMES = FALSE)
+}
+
+# ct1 and ct2 combined slot by slot into ct'; all grey.
+binary_figure <- function(op) {
+  cols <- c(1:3, 5)
+  ggplot() +
+    slot_row(0, slot_names("r[#]")) +
+    slot_row(1.2, slot_names("s[#]")) +
+    slot_row(2.4, slot_names(paste0("r[#]", op, "s[#]")), size = 4) +
+    row_label(0, "ct[1]") +
+    row_label(1.2, "ct[2]") +
+    row_label(2.4, "ct*minute") +
+    op_label(0.6, if (op == "*") "×" else op, cols) +
+    op_label(1.8, "=", cols) +
+    scale_y_reverse() +
+    slot_coord(5, 2.4, left = 1.4) +
+    slot_theme()
+}
+```
+
+Slot by slot, @fig-addition-example shows this.
+
+```{r}
+#| label: fig-addition-example
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 5.1
+#| fig-height: 3.2
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "Slot-wise addition of two ciphertexts."
+#| fig-alt: "Three rows of five boxes. The first row, labeled ct1, holds r1, r2, r3, an ellipsis, and r N over 2. The second row, labeled ct2, holds s1, s2, s3, an ellipsis, and s N over 2. A plus sign sits between the first two rows in each column, and an equals sign between the second and third. The third row, labeled ct prime, holds r1 plus s1, r2 plus s2, r3 plus s3, an ellipsis, and r N over 2 plus s N over 2."
+
+binary_figure("+")
+```
 
 -   (element-wise) **multiplication**: given ciphertext $\mathsf{ct}_1 = \mathtt{enc}(r_*)$, $\mathsf{ct}_2 = \mathtt{enc}(s_*)$, we can generate a ciphertext $$\mathsf{ct'} = \mathtt{enc}(r_1 s_1, r_2 s_2, \cdots, r_{N/2} s_{N/2}).$$
 
-![](images/multiplication_example.png){fig-alt="Multiplication Example" fig-align="center" width="591"}
+@fig-multiplication-example shows the same layout with products.
+
+```{r}
+#| label: fig-multiplication-example
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 5.1
+#| fig-height: 3.2
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "Slot-wise multiplication of two ciphertexts."
+#| fig-alt: "Three rows of five boxes laid out like the addition figure. The first row, labeled ct1, holds r1, r2, r3, an ellipsis, and r N over 2. The second row, labeled ct2, holds s1, s2, s3, an ellipsis, and s N over 2. A multiplication sign sits between the first two rows in each column, and an equals sign between the second and third. The third row, labeled ct prime, holds the products r1 s1, r2 s2, r3 s3, an ellipsis, and r N over 2 times s N over 2."
+
+binary_figure("*")
+```
 
 -   **complex conjugation**: given ciphertext $\mathsf{ct} = \mathtt{enc}(z_*)$, we can generate a ciphertext $$\mathsf{ct}' = \mathtt{enc}(\overline{z_1}, \ldots, \overline{z_{N/2}}).$$ Recall that $\overline{x+iy} = x-iy$ for real numbers $x$ and $y$.
 
-![](images/conjugation_example.png){fig-alt="Conjugation_Example" fig-align="center" width="591"}
+In @fig-conjugation-example, each slot $z_j = a_j + b_j i$ keeps its real part and flips the sign of its imaginary part (orange).
+
+```{r}
+#| label: fig-conjugation-example
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 4.6
+#| fig-height: 2.1
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "Complex conjugation of a ciphertext, slot by slot."
+#| fig-alt: "Two rows of four boxes. The first row, labeled ct, holds a1 plus b1 i, a2 plus b2 i, a3 plus b3 i, and an ellipsis. The second row, labeled ct prime, holds the same entries with the sign of the imaginary part flipped to minus, and that minus and imaginary part are orange in every slot."
+
+cols <- 1:3
+cn <- c("1", "2", "3")
+# The real part sits left of each box center, the imaginary part right of it.
+conj_text <- function(y, sign, color) {
+  x <- sp * cols
+  list(
+    geom_text(
+      data = data.frame(x = x - 0.1, y = y, label = paste0("a[", cn, "]")),
+      aes(x = x, y = y, label = label), parse = TRUE, size = 4, color = neutral, hjust = 1
+    ),
+    geom_text(
+      data = data.frame(x = x - 0.04, y = y, label = paste0("'", sign, "'~b[", cn, "]*i")),
+      aes(x = x, y = y, label = label), parse = TRUE, size = 4, color = color, hjust = 0
+    )
+  )
+}
+
+ggplot() +
+  slot_row(0, c(rep("''", 3), "'...'")) +
+  slot_row(1.4, c(rep("''", 3), "'...'")) +
+  conj_text(0, "+", neutral) +
+  conj_text(1.4, "\u2212", orange) +
+  row_label(0, "ct") +
+  row_label(1.4, "conj(ct)") +
+  scale_y_reverse() +
+  slot_coord(4, 1.4, left = 2.1) +
+  slot_theme()
+```
 
 -   **cycle**: given a ciphertext $\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2})$, we can, for any $k \in \{1, 2, \dots, N/2\}$, create a ciphertext $$\mathsf{ct}' = \mathtt{enc}(z_k, \ldots, z_{N/2}, z_1, \ldots, z_{k-1}).$$
 
-![](images/cycle_example.png){fig-align="center" width="591"}
+@fig-cycle-example shows cycle with $k = 3$ on eight slots: the vector now starts at $z_3$, and the first two entries, $z_1$ and $z_2$ (orange), wrap around to the end.
+
+```{r}
+#| label: fig-cycle-example
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 3
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "Cycle with $k = 3$ on eight slots."
+#| fig-alt: "Two rows of eight boxes. The top row, labeled ct, holds z1 through z8. The bottom row, labeled cycle of ct with k equal to 3, holds z3 through z8, then z1 and z2. The boxes for z1 and z2 have orange borders and text in both rows. A thin grey arrow just above the bottom row points left from its z8 box to its z3 box, showing that block pushed forward. Two curved orange arrows, one per wrapped entry, run from z1 and z2 in the top row to the last two slots of the bottom row."
+
+n_slots <- 8
+k <- 3
+top <- 1:n_slots
+bottom <- (top - 1 + (k - 1)) %% n_slots + 1  # cycle k starts at z_k
+dst <- (top - 1 - (k - 1)) %% n_slots + 1     # z_j moves to this slot
+stopifnot(bottom[1] == k, all(bottom[dst] == top))
+wrapped <- which(top < k)
+
+
+# Cubic curve leaving the top slot straight down and entering the bottom slot straight down.
+y_top <- 0.45
+y_bot <- 2.55
+wrap_paths <- do.call(rbind, lapply(wrapped, function(j) {
+  t <- seq(0, 1, length.out = 100)
+  x0 <- sp * j
+  x1 <- sp * dst[j]
+  d <- 0.8 * (y_bot - y_top)
+  p <- function(a, b, c, e) (1 - t)^3 * a + 3 * (1 - t)^2 * t * b + 3 * (1 - t) * t^2 * c + t^3 * e
+  data.frame(id = j, x = p(x0, x0, x1, x1), y = p(y_top, y_top + d, y_bot - d, y_bot))
+}))
+
+ggplot() +
+  slot_row(0, paste0("z[", top, "]"), hot = top < k) +
+  slot_row(3, paste0("z[", bottom, "]"), hot = bottom < k) +
+  annotate(
+    "segment", x = sp * 6, xend = sp * 1, y = 2.48, yend = 2.48,
+    color = neutral, linewidth = 0.4,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  geom_path(
+    data = wrap_paths, aes(x = x, y = y, group = id),
+    color = orange, linewidth = 0.9,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  row_label(0, "ct") +
+  row_label(3, "cycle(ct, 3)") +
+  scale_y_reverse() +
+  slot_coord(n_slots, 3) +
+  slot_theme()
+```
+
 
 This is not an exhaustive list of moves and part of open research is determining what other techniques are possible in CKKS. For the scope of our doc, we will assume this is the complete list of moves. We note two practical things that we will mostly ignore for the rest of our work:
 
