@@ -1,6 +1,6 @@
 # Discrete Math
 
-In this section we study some "discrete" operations involving comparisons and sorting. At the basis of everything, we need [**sign**](sign/intro.qmd), **equality**, and **inequality** functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it's essentially the same as inequality.
+In this section we study some "discrete" operations involving comparisons and sorting. At the basis of everything, we need [**sign**](intro.qmd), **equality**, and **inequality** functions. The sign function seems the most fundamental since it can be used to produce the other two naturally, though it's essentially the same as inequality.
 
 ::: {.callout-tip icon="false" title="**Disclaimer**"}
 Taylor approximations for sign run into many (unavoidable) issues, and can only be used if we have a very tight understanding of the domain of the function. We stress that what we do in the remainder of this section (and other parts of our work that rely on sign functions) is speculative because everything rests on an idealized sign function, which we do not quite have in practice. Conservatively, we should interpret our following work as an exploration of what we can unlock if we have an idealized sign function.
@@ -10,8 +10,96 @@ With this disclaimer, we perform the following explorations:
 
 1. We try to use series approximations for sign anyway, and quantify how close the approximations are (we suspect it would be usable for very small-scale work, but not beyond that). 
 
-2. Assuming an "idealized sign", we use a "local swap" / "bubble" as a building block for **sorting** (and as a bonus, computing **max**/min type of summary statistics). The functions we will implement are represented in the following "tech tree". 
+2. Assuming an "idealized sign", we use [PairSort](../sorting/bubble.qmd#sec-pairsort) (a "local swap" / "bubble") as a building block for **sorting** (and as a bonus, computing **max**/min type of summary statistics). The functions we will implement are represented in the following "tech tree". 
 
 3. We provide a [speculative approach](/discrete-model/binary-approach.qmd) to sign / inequality type of functions with binary arithmetic later on.
 
-![Discrete Tech Tree Flowchart](https://hackmd.io/_uploads/BJubYSw-ze.png)
+```{r}
+#| label: discrete-tech-tree
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 3.6
+#| dev.args: !expr list(bg = "transparent")
+#| fig-cap: "The tech tree for this section. The basic moves in the grey band build up to the functions we implement, shown in bold orange."
+#| fig-alt: "A flowchart read from left to right. A grey band labeled basic moves holds component-wise multiplication, addition, and cycle. All three feed into sign, which feeds into inequality. Inequality feeds into both equality and PairSort, and PairSort feeds into both sort and max."
+
+library(ggplot2)
+
+boxes <- data.frame(
+  label = c("Component-wise\nMultiplication", "Addition", "Cycle",
+            "Sign", "Inequality", "Equality", "PairSort", "Sort", "Max"),
+  x = c(1.2, 1.2, 1.2, 3.8, 5.8, 7.8, 7.8, 9.8, 9.8),
+  y = c(2.4, 1.2, 0, 1.2, 1.2, 2.4, 1.2, 1.2, 0),
+  basic = c(TRUE, TRUE, TRUE, rep(FALSE, 6))
+)
+half_w <- ifelse(boxes$basic, 0.95, 0.72)
+boxes$xmin <- boxes$x - half_w
+boxes$xmax <- boxes$x + half_w
+boxes$ymin <- boxes$y - 0.4
+boxes$ymax <- boxes$y + 0.4
+
+# Plain connector pieces, followed by the arrows that end at a box.
+lines <- data.frame(
+  x    = c(2.15, 2.15, 2.15, 2.5, 6.8, 8.8),
+  xend = c(2.5, 2.5, 2.5, 2.5, 6.8, 8.8),
+  y    = c(2.4, 1.2, 0, 0, 1.2, 1.2),
+  yend = c(2.4, 1.2, 0, 2.4, 2.4, 0)
+)
+arrows <- data.frame(
+  x    = c(2.5, 4.52, 6.52, 6.8, 8.52, 8.8),
+  xend = c(3.08, 5.08, 7.08, 7.08, 9.08, 9.08),
+  y    = c(1.2, 1.2, 1.2, 2.4, 1.2, 0),
+  yend = c(1.2, 1.2, 1.2, 2.4, 1.2, 0)
+)
+
+neutral <- "grey50"
+highlight <- "#E69F00"
+
+ggplot() +
+  annotate(
+    "rect",
+    xmin = 0.05, xmax = 2.35, ymin = -0.55, ymax = 2.95,
+    fill = neutral, alpha = 0.12
+  ) +
+  annotate(
+    "text",
+    x = 1.2, y = -0.85, label = "Basic moves",
+    color = neutral, size = 5, fontface = "bold"
+  ) +
+  geom_segment(
+    data = lines,
+    aes(x = x, xend = xend, y = y, yend = yend),
+    color = neutral, linewidth = 0.9
+  ) +
+  geom_segment(
+    data = arrows,
+    aes(x = x, xend = xend, y = y, yend = yend),
+    color = neutral, linewidth = 0.9,
+    arrow = arrow(length = unit(0.1, "inches"), type = "closed")
+  ) +
+  geom_rect(
+    data = boxes,
+    aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, color = basic),
+    fill = NA, linewidth = 0.9
+  ) +
+  geom_text(
+    data = boxes[boxes$basic, ],
+    aes(x = x, y = y, label = label),
+    color = neutral, size = 4.2, fontface = "bold", lineheight = 0.9
+  ) +
+  geom_text(
+    data = boxes[!boxes$basic, ],
+    aes(x = x, y = y, label = label),
+    color = highlight, size = 5, fontface = "bold"
+  ) +
+  scale_color_manual(values = c(`TRUE` = neutral, `FALSE` = highlight), guide = "none") +
+  coord_fixed(clip = "off") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = "transparent", color = NA)
+  )
+```
