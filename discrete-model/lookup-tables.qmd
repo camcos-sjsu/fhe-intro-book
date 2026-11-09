@@ -282,6 +282,13 @@ $$
 
 Evaluating this requires $k-1$ multiplications. This can be more efficient for small $k$, but is not efficient for larger $k$.
 
+Alternatively, we can use the identity
+$$
+u^{2k}+v^{2k}=(u^k+v^k)^2-2(uv)^k.
+$$
+If $(uv)^k$ and $ u^k+v^k$ are already available, this requires
+just one ciphertext-ciphertext multiplication.
+
 ### Example: Construction and Contrasting of Modular Multiplication for n = 4
 
 Below are the two methods of polynomial interpolation on the multiplication table with $n = 4$.
