@@ -1,0 +1,25 @@
+[^inferati]: https://faculty.kfupm.edu.sa/coe/mfelemban/SEC595/References/Introduction%20to%20the%20CKKS-HEAAN%20FHE%20Scheme.pdf?
+
+[^ckks]: https://eprint.iacr.org/2016/421.pdf
+ 
+For a reader desiring to take an "under the hood" look at CKKS, we provide an accelerated review here.  We refer to the original CKKS paper: "Homomorphic Encryption for Arithmetic of Approximate Numbers"[^ckks] as well as Inferati Inc.'s article "Introduction to the CKKS/HEAAN FHE Scheme"[^inferati].  In particular, we may ask, what exactly is a CKKS **ciphertext** as a mathematical object? 
+ 
+Inferati describes the "main idea" of CKKS/HEAAN as combining a message/"**payload**" $\mu$ with the associated **noise**/error $e$, together generating the **plaintext** to be encryped, $\mu + e$.  Importantly, we can't separate the two to their exact values after encrypting.  The payload information ($\mu$, $e$, and payload/noise **budget** $q - (\mu + e)$ where $q$ is the "**ciphertext coefficient modulus**") is contained in a polynomial.  One additional polynomial is used for decryption.  For convenience, the polynomials are initially assumed to be of degree zero here.  So, structurally (in highly simplified terms): **a ciphertext in CKKS is** (typically) **a pair of polynomials**.
+ 
+Both polynomials' coefficients are bounded by $q$:  as we compute on ciphertexts, the plaintext magnitude grows– we can perform computations until its coefficient values reach the specified bound.  In other words, CKKS ciphertext arithmetic is performed mod $q$ in a polynomial ring.  We choose a sufficiently large $q$ as to avoid "wraparound"/ output which may not make sense/be accurate to a client.  Essentially, we don't want magnitude to grow too large relative to the modulus $q$. 
+
+Let's examine the plaintext and ciphertext spaces (which are nearly the same) with more specificity.  These spaces include elements of the polynomial ring $R_q = \mathbb{Z}_q[x]/f(x)$ where $q$ is as above and $f(x)$ now is the **polynomial modulus**.  Elements of $R_q$ are polynomials with integer coefficients bounded by $q$ as described, and with degrees bounded by the degree of $f(x)$.  The most common choice for $f(x)$ is $x^n + 1$ with $n$, the "**ring dimension**", a power of $2$.  Why is this a nice choice?
+ 
+This such $f(x)$ is the $2n$-th **cyclotomic polynomial** with roots being the **primitive** $2n$-th **roots of unity** (review below).  The polynomial then defines a power of two **cyclotomic ring**.  We ask ourselves, if CKKS works with polynomials, but we want to encrypt vectors with values $\in \mathbb{C}$, how do we connect those two representations?  In highly simplified terms, by evaluating polynomials at the aforementioned roots $\zeta_1, \dots, \zeta_n$ of $x^n + 1$, we are able to convert polynomials into vectors.  The CKKS authors introduce this concept as the **canonical embedding**.
+
+::: info
+**Definition:** A complex number $\zeta$ is an $n$-th root of unity if $\zeta^n=1$. It is called a **primitive** $n$-th **root of unity** if $n$ is the smallest positive integer such that $\zeta^n=1$.
+
+**Definition:** The $n$-th **cyclotomic polynomial** is defined by
+$$
+\Phi_n(x)=\prod_{\substack{1\leq k\leq n\\ \gcd(k,n)=1}}\left(x-e^{2\pi i k/n}\right).
+$$
+So, its roots are the primitive $n$-th roots of unity.
+:::
+
+Referring to section 2.2 of the original CKKS paper: "The Cyclotomic Ring and Canonical Embedding"– first, let's note that the canonical embedding is defined prior to reducing coefficients mod $q$, also, the authors work with a real polynomial ring in their setup.  Hence we consider the ring $S = \mathbb{R}[x]/f(x)$.  Elements of $S$ can be represented as polynomials $a(X)=\sum^{N-1}_{j=0}a_jX^j$ with corresponding coefficient vector $(a_0, \dots, a_{N-1}) \in \mathbb{R}^N$.  The authors then define the canonical embedding as $\sigma(a) = (a(\zeta^{j}_{M}))_{j \in \mathbb{Z}^{*}_{M}} \in \mathbb{C}^N$.  This $\sigma$ maps a polynomial $a(X) \in S$ to the vector of its evaluations at the $n$ distinct roots of $x^n + 1$.  Also defined is the **canonical embedding norm** $\|a\|^{\text{can}}_{\infty} = \|\sigma(a)\|_{\infty}$ which has some useful properties the authors identify.  The first property, submultiplicativity, appears particularly relevant: $\forall a, b \in S, \|a \cdot b\|^{\text{can}}_{\infty} \le \|a\|^{\text{can}}_{\infty} \cdot \|b\|^{\text{can}}_{\infty}$.  This property allows us to bound the magnitude of polynomial products, helping us keep track of plaintext magnitude growth during CKKS computations.

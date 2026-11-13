@@ -65,6 +65,7 @@ book:
         
 
   appendices:
+    - ckks-under-the-hood.qmd
     - references.qmd
 
 bibliography: references.bib
