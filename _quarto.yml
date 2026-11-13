@@ -15,7 +15,6 @@ book:
       chapters:
         - general/level-precision.qmd
         - general/intravector-sums.qmd
-        - general/higher-moments.qmd
         - general/taylor-approx.qmd
         - general/sqrt-user-input.qmd
         - general/logarithm.qmd
@@ -31,14 +30,14 @@ book:
         - sign/logistic.qmd
         - sign/tanh.qmd
         - sign/applicability.qmd
-    - part: difference-matrix/intro.qmd
+    - part: statistics/intro.qmd
       chapters:
-        - difference-matrix/mode.qmd
-        - difference-matrix/median.qmd
-    - part: correlation-related/intro.qmd
-      chapters:
-        - correlation-related/two-coeff.qmd
-        - correlation-related/linear-regression.qmd
+        - statistics/higher-moments.qmd
+        - statistics/difference-matrix.qmd
+        - statistics/mode.qmd
+        - statistics/median.qmd
+        - statistics/two-coeff.qmd
+        - statistics/linear-regression.qmd
     - part: sorting/intro.qmd
       chapters:
         - sorting/bubble.qmd

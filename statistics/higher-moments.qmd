@@ -41,4 +41,6 @@ $$E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].$$ The sample standardized m
 1. We can expensively calculate $\sqrt{\mathtt{var}(X)} = \sigma$, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see [**square roots**](general/sqrt-user-input.qmd) later)
 
 2. Note: You will see that ciphertext [division](/division/intro.qmd) is notably more difficult than scalar division, but we can also rely on user input/output when standardizing. 
+
+3. With this section, we can use the method of moments to find hidden distribution parameters.
 :::
