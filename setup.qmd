@@ -7,7 +7,7 @@ Our simplified CKKS setup is as follows:
 2.  The users provide ciphertext $\mathsf{ct}$ with each such ciphertext encrypting $N/2$ complex numbers. In other words, $$\mathsf{ct} = \mathtt{enc}(z_1, \ldots, z_{N/2}).$$
 
 3.  As a default bound on the numbers involved, suppose the complex numbers have form\
-    $z_j = x_j + iy_j$ where $x_j, y_j \in \mathbb{R}$. We can assume the $x_j$ and $y_j$ are bounded above by $10^6$ and have precision $10^{-10}$.
+    $z_j = a_j + b_j i$ where $a_j, b_j \in \mathbb{R}$. We can assume the $a_j$ and $b_j$ are bounded above by $10^6$ and have precision $10^{-10}$.
 
 As $\mathsf{ct}$ is just encrypting some data, we are allowed to make copies of $\mathsf{ct}$, save them, etc. **NOTE:** We are allowed to self-encrypt data which will be useful in further
 
@@ -142,7 +142,7 @@ binary_figure("+")
 binary_figure("*")
 ```
 
--   **complex conjugation**: given ciphertext $\mathsf{ct} = \mathtt{enc}(z_*)$, we can generate a ciphertext $$\mathsf{ct}' = \mathtt{enc}(\overline{z_1}, \ldots, \overline{z_{N/2}}).$$ Recall that $\overline{x+iy} = x-iy$ for real numbers $x$ and $y$.
+-   **complex conjugation**: given ciphertext $\mathsf{ct} = \mathtt{enc}(z_*)$, we can generate a ciphertext $$\mathsf{ct}' = \mathtt{enc}(\overline{z_1}, \ldots, \overline{z_{N/2}}).$$ Recall that $\overline{a+bi} = a-bi$ for real numbers $a$ and $b$.
 
 In @fig-conjugation-example, each slot $z_j = a_j + b_j i$ keeps its real part and flips the sign of its imaginary part (orange).
 
