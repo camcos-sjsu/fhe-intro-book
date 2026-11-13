@@ -4,12 +4,7 @@ In this section, we change the computational model. So far, each slot of a ciphe
 
 In the case that our domain has finite discrete values, any function on that domain can be represented by a polynomial. Since there are a finite number of inputs, we can interpolate a polynomial that agrees with the function at every one of them.
 
-For example, on the three-point set $\{-1, 0, 1\}$, the polynomial
-$$
-\frac{x^2 + x}{2}
-$$
-
-takes the values $0, 0, 1$ at $x = -1, 0, 1$ respectively. On this set, it agrees *exactly* with the indicator of $x > 0$. Unlike the sign approximations in Discrete Math, the polynomial only needs to be correct at the three allowed inputs, so it never has to jump: it just has to go from $0$ at $x = 0$ to $1$ at $x = 1$, a whole unit away (compare with the accuracy windows in [Sign Applicability](/sign/applicability.qmd)). CKKS arithmetic is still approximate, so the computed values will be close to $0$ or $1$ rather than exactly equal, with errors on the order of the precision from [Setup](/setup.qmd).
+For example, the indicator of $x > 0$, which we could only approximate with series earlier, can be matched *exactly* by a low-degree polynomial when $x$ only takes a few integer values; we will see this in [Extended Binary Numbers](extended-binary-expansion.qmd). CKKS arithmetic is still approximate, so the computed values will be close to $0$ or $1$ rather than exactly equal, with errors on the order of the precision from [Setup](/setup.qmd).
 
 ::: {.callout-tip icon="false" title="**Remark**"}
 Of course, this depends on the user supplying their data in a discrete form. Since users encrypt their own inputs, they can supply not only $x$ but also its binary digits or its root-of-unity form (much like supplying inverses in [Division](/division/intro.qmd)). The catch is that not every operation preserves this form: adding binary digits requires carrying, and multiplying numbers stored as roots of unity calls for a lookup table. So each choice of form makes certain things easier and other things harder.
