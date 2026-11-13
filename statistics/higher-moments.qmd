@@ -1,6 +1,6 @@
 ## Higher Moments 
 
-Using the [sum](/intravector-sums.qmd) technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.
+Using the [sum](/general/intravector-sums.qmd) technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.
 
 Let vector $\vec{x}$ be an encoded series of $n$ sample measurements):
 
@@ -17,7 +17,7 @@ In order to obtain the $k^{th}$ sample moment, we must perform three actions:
 
 2. Compute $(x_1^k+x_2^k+\ldots+x_n^k)$.
 
-Performing the [intra-vector sum](intravector-sums.qmd) operation allows us to get the vector $(x_1^k + \cdots + x_{N/2}^k)\cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ additional operations. 
+Performing the [intra-vector sum](/general/intravector-sums.qmd) operation allows us to get the vector $(x_1^k + \cdots + x_{N/2}^k)\cdot  (1,1, \cdots, 1)$ in $O(\log(n))$ additional operations. 
 
 3. Divide by $n$ (a known constant) by multiplying by the vector $(1/n) \cdot (1, 1, \cdots, 1)$.
 
@@ -38,7 +38,7 @@ $$E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].$$ The sample standardized m
 
 
 ::: {.callout-tip icon="false" title="**Remark**"}
-1. We can expensively calculate $\sqrt{\mathtt{var}(X)} = \sigma$, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see [**square roots**](general/sqrt-user-input.qmd) later)
+1. We can expensively calculate $\sqrt{\mathtt{var}(X)} = \sigma$, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see [**square roots**](/general/sqrt-user-input.qmd) later)
 
 2. Note: You will see that ciphertext [division](/division/intro.qmd) is notably more difficult than scalar division, but we can also rely on user input/output when standardizing. 
 

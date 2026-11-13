@@ -1,5 +1,5 @@
 # Statistics
 
-This section constructs the correlation and regression coefficients, then extends to simple and multiple linear regression.
+This section introduces the application of statistical functions, first through moments and the sample mean. We introduce the idea of the difference matrix, which builds into our implementation of median and mode. We then move to the correlation and regression coefficients, which then extends to simple and multiple linear regression.
 
-In a fully homomorphic environment, standard inference is thrown out of the window. 
+In a fully homomorphic environment, standard inference is thrown out of the window. It is important to note that in FHE, computations accumulate [noise](/general/level-precision.qmd) simply from being performed in an FHE environment. It is also notable that many of the methods in this section depend on stable implementations of [square root](/general/sqrt-user-input.qmd) and [division](/division/intro.qmd). Both of these are implemented through the use of floating point estimation, which suffer from additional errors.
