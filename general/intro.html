@@ -685,7 +685,7 @@ window.Quarto = {
 </header>
 
 
-<p>In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums / higher moments - exponentiation - square root - log</p>
+<p>In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums - exponentiation - square root - log</p>
 <p>We will also be using these functions as examples to show <strong>techniques</strong> that would be useful in other scenarios. Specifically:</p>
 <ol type="1">
 <li><p>Exponentiation shows the power of <strong>Taylor series</strong>.</p></li>
@@ -703,12 +703,12 @@ window.Quarto = {
 <p>Suppose we wanted to obtain <span class="math inline">\(ct_{x^k}=enc(x_1^k, \ldots, x_{N/2}^k)\)</span>.</p>
 <p>While we can naively obtain <span class="math inline">\((x_1^k, \ldots, x_{N/2}^k)\)</span> in <span class="math inline">\(O(k)\)</span> time by repeated multiplication, it is faster to compute via the “fast squaring trick”:</p>
 <p>Let X be a ciphertext vector of length N/2.</p>
-<p><span class="math display">\[X^2=X*X\]</span> (one operation)</p>
-<p><span class="math display">\[X^3=X^2*X\]</span> (two operations)</p>
-<p><span class="math display">\[X^4=X^2*X^2\]</span> (two operations)</p>
-<p><span class="math display">\[X^5=X^2*X^3\]</span> (three operations)</p>
-<p><span class="math display">\[X^6=X^3*X^3\]</span> (three operations) … and so on.</p>
-<p>Therefore, the <span class="math display">\[ X \rightarrow X*X \rightarrow \cdots \rightarrow X * \cdots * X (k \text{ times}) \]</span> in <span class="math inline">\(O(\log(k))\)</span> operations.</p>
+<p><span class="math inline">\(X^2=X*X\)</span> (one operation)</p>
+<p><span class="math inline">\(X^3=X^2*X\)</span> (two operations)</p>
+<p><span class="math inline">\(X^4=X^2*X^2\)</span> (two operations)</p>
+<p><span class="math inline">\(X^5=X^2*X^3\)</span> (three operations)</p>
+<p><span class="math inline">\(X^6=X^3*X^3\)</span> (three operations) … and so on.</p>
+<p>Therefore, we can obtain X to the <span class="math inline">\(k^{th}\)</span> exponent in <span class="math inline">\(O(\log(k))\)</span> operations.</p>
 
 
 </section>

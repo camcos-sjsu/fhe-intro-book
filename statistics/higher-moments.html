@@ -675,7 +675,7 @@ window.Quarto = {
 </header>
 
 
-<p>Using the <a href="../intravector-sums.qmd">sum</a> technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.</p>
+<p>Using the <a href="../general/intravector-sums.html">sum</a> technique and repeated squaring (on multiplication), we are able to compute higher moments fairly efficiently.</p>
 <p>Let vector <span class="math inline">\(\vec{x}\)</span> be an encoded series of <span class="math inline">\(n\)</span> sample measurements):</p>
 <p><span class="math display">\[\vec{x}=(x_1,x_2,\ldots,x_n)\]</span></p>
 <p>Define the <span class="math inline">\(k^{th}\)</span> <strong>(raw) population moment</strong> to be the expectation of the <span class="math inline">\(k^{th}\)</span> power of the random <span class="math inline">\(X\)</span> and the <span class="math inline">\(k^{th}\)</span> <strong>(raw) sample moment</strong> to be its estimator.</p>
@@ -685,7 +685,7 @@ window.Quarto = {
 <li><p>Compute <span class="math inline">\((x_1^k,x_2^k,\ldots,x_n^k)\)</span>.</p></li>
 <li><p>Compute <span class="math inline">\((x_1^k+x_2^k+\ldots+x_n^k)\)</span>.</p></li>
 </ol>
-<p>Performing the <a href="intravector-sums.qmd">intra-vector sum</a> operation allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_{N/2}^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p>
+<p>Performing the <a href="../general/intravector-sums.html">intra-vector sum</a> operation allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_{N/2}^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p>
 <ol start="3" type="1">
 <li>Divide by <span class="math inline">\(n\)</span> (a known constant) by multiplying by the vector <span class="math inline">\((1/n) \cdot (1, 1, \cdots, 1)\)</span>.</li>
 </ol>
@@ -710,7 +710,7 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ol type="1">
-<li><p>We can expensively calculate <span class="math inline">\(\sqrt{\mathtt{var}(X)} = \sigma\)</span>, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see <a href="general/sqrt-user-input.qmd"><strong>square roots</strong></a> later)</p></li>
+<li><p>We can expensively calculate <span class="math inline">\(\sqrt{\mathtt{var}(X)} = \sigma\)</span>, the standard deviation, or pass this operation back to the user to help find the standardized moment. (see <a href="../general/sqrt-user-input.html"><strong>square roots</strong></a> later)</p></li>
 <li><p>Note: You will see that ciphertext <a href="../division/intro.html">division</a> is notably more difficult than scalar division, but we can also rely on user input/output when standardizing.</p></li>
 <li><p>With this section, we can use the method of moments to find hidden distribution parameters.</p></li>
 </ol>
