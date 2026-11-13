@@ -13,8 +13,6 @@ To summarize,
 
 :::{.callout-tip icon=false title="**Remark**"}
 
-We also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See Section III (Division) for more information.
+We also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by $x$, which is expensive. See [Division](/division/intro.qmd) for more information.
 
 :::
-
-[^bab]: **Square root algorithms** available from https://en.wikipedia.org/wiki/Square_root_algorithms
