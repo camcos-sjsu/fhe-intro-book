@@ -2,21 +2,21 @@
 
 We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and $N/2$ is odd. 
 
-1. Create a matrix $D$ where $$D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).$$ We can just compute the same matrix and then run the sign function over every row. This looks like:
+1. Create a matrix $D^{\text{sign}}$ with entries $$d^{\text{sign}}_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).$$ We can just compute the same difference matrix $D$ and then run the sign function over every row, giving the rows $d^{\text{sign}}_i := \mathtt{sign_{-1, 1,0}}(d_i)$. This looks like:
 
 $$
 \begin{array}{c|ccccc}
-  & x_1 & x_2 & x_3 & \cdots & x_{N/2} \\
+  & z_1 & z_2 & z_3 & \cdots & z_{N/2} \\
 \hline
-x_1 & 0 & -1 & -1 & \cdots & -1 \\
-x_2 & 1 & 0 & -1 & \cdots & -1 \\
-x_3 & 1 & 1 & 0 & \cdots & -1 \\
+d^{\text{sign}}_1 & 0 & -1 & -1 & \cdots & -1 \\
+d^{\text{sign}}_2 & 1 & 0 & -1 & \cdots & -1 \\
+d^{\text{sign}}_3 & 1 & 1 & 0 & \cdots & -1 \\
 \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
-x_{N/2} & 1 & 1 & 1 & \cdots & 0
+d^{\text{sign}}_{N/2} & 1 & 1 & 1 & \cdots & 0
 \end{array}
 $$
 
-though unlike $D$ from earlier, $\delta_{i,j} \in \{-1, 1\}$. We assume the diagonals are assigned $0$ here.[^median-1]
+though unlike $D$ from earlier, $d^{\text{sign}}_{i,j} \in \{-1, 1\}$ off the diagonal.[^median-1]
 
 The example below works through $z = (7, 2, 9, 4, 5)$, with the row of the median in orange.
 
@@ -33,7 +33,7 @@ $$
 :::
 
 $$
-\overset{\displaystyle D}{\begin{bmatrix}
+\overset{\displaystyle D^{\text{sign}}}{\begin{bmatrix}
 0 & 1 & -1 & 1 & 1 \\
 -1 & 0 & -1 & -1 & -1 \\
 1 & 1 & 0 & 1 & 1 \\
@@ -58,7 +58,7 @@ $$
 \end{bmatrix}}
 $$
 
-**Step 1.** Build $D_{ij} = \mathtt{sign}(z_i - z_j)$ with $0$ on the diagonal, so row $i$ counts $+1$ for each value below $z_i$ and $-1$ for each value above it.
+**Step 1.** Build $d^{\text{sign}}_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j)$ with $0$ on the diagonal, so row $i$ counts $+1$ for each value below $z_i$ and $-1$ for each value above it.
 
 **Step 2.** Summing each row gives $s = (2, -4, 4, -2, 0)$, and only the row of $z_5 = 5$ sums to $0$, so $m = (0, 0, 0, 0, 1)$ and $\mathtt{sum}(m * z) = 5$, the median.
 
@@ -66,7 +66,7 @@ $$
 
 2.  Now, if $z_i$ were the median, then it would have an equal number of $-1$s and $1$s in its row, which is equivalent with having row sum $0$ (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).
 
-3.  Thus, we can get a vector of the sums of the $x_i$ and then compute equality with zero: $$m := ((x_1 + x_2 + \cdots + x_{N/2}) == 0)$$ to obtain a $0$-$1$ vector that points out which *index* the median falls in.
+3.  Thus, we can add the rows $d^{\text{sign}}_i$ element-wise and then compute equality with zero: $$m := ((d^{\text{sign}}_1 + d^{\text{sign}}_2 + \cdots + d^{\text{sign}}_{N/2}) == 0)$$ to obtain a $0$-$1$ vector that points out which *index* the median falls in.
 
 4.  If we are interested in the *value* of the median instead of the *index,* then we can just multiply $\mathtt{sum}(m * z)$. Note that this sum only works if exactly one element is the median: if, say, two elements are the median, then we would get twice the median if we sum.
 
