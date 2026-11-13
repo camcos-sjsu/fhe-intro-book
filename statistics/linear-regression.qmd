@@ -1,17 +1,17 @@
-
-
 ## Linear Regression
 
 ### Simple Linear Regression
 
-Linear regression aims to find the line of best fit for a given set of
-data points. We assume a simple protocol where: 
+Linear regression aims to find the line of best fit for a given set of data points. Recall the method of least squares,
+$$Y=\beta_0+\beta_1x+\epsilon$$
+where $\beta_0$ and $\beta_1$ are the regression coefficients of slope and intercept, Y is our response variable, x is our independent variable, and $\epsilon$ is our error, which now in FHE, includes additional computation error. 
+
+We assume a simple protocol where: 
+
 1. Take as client input
 $x=(x_1, \dots, x_n)$ and $y=(y_1, \dots, y_n)$ 
 
-2. Output weight and intercept scalars (as vectors) $w=(w, w,\dots, w)$ and
-$b=(b, b,\dots, b)$ such that $y \approx wx + b$ for all $(x_i, y_i)$
-with $i \in (1, n)$.
+2. Output a model $$\hat{y}=\hat{\beta_1}x+\hat{\beta_0}$$ that forms the line of best fit (slope and intercept) for our given client input and can additionally be input any new independent variable to generate predictions along the newly generated line.
 
 These are immediate from our work: 
 
@@ -19,37 +19,30 @@ These are immediate from our work:
 $\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i$, which we can do since they are
 **means**. 
 
-2. We can compute the weight scalar
-$$ w = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}$$
-since it is a **regression coefficient**. 3. The result is then easily
-used to find $$b = \bar{y} - w \bar{x}$$using a multiplication and a
+2. We can compute the slope coefficient
+$$ \hat{\beta_1} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}$$
+
+3. The result is then easily
+used to find the intercept $$\hat{\beta_0} = \bar{y} - \hat{\beta_1} \bar{x}$$ using a multiplication and a
 subtraction.
 
 ### (Sketch of) Multiple Linear Regression
 
 **Multiple linear regression** extends the prior one-dimensional context
 to allow for each data point to take multiple input features/
-predictors. A natural protocol is: 1. take as client input $n$ vectors
-$x^{(1)}, \dots, x^{(n)}$ with each
-$x^{(i)}=(x^{(i)}_1, \dots, x^{(i)}_m)$ and vector
-$y=(y_1, \dots, y_n)$. 2. output a weight vector $w=(w_1, \dots, w_m)$
-and $m$-length scalar intercept $b = (b, b, \dots, b)$ such that
-$y_i \approx w \cdot x^{(i)} + b$ for all $i \in \{1, \dots, n\}$ where
-$w \cdot x^{(i)}$ is the **dot product**.
+predictors. Recall the model for multiple linear regression: $$\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\boldsymbol{\epsilon}$$
 
-We sketch an approach to this problem below: 
 
-1. Our desired weight
-vector $w$ can be computed with
-$$ w^T = (w_1, \dots, w_m)^T = (X^{T}X)^{-1}X^{T}y^T $$ where X is an
-$n \times m$ matrix constructed from the $m$ given $n$-length "$x$"
-vectors and $y$ is as above. 
+A natural protocol is: 
 
-2. We compute $b$ with
-$b = \bar{y} - w^T \bar{x}$, where
-$\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x^{(i)}$ is the mean predictor
-vector and $\bar{y} = \frac{1}{n}\sum_{i=1}^{n} y_i$ is the mean
-response.
+1. Take as client input $$\mathbf{Y}=\begin{bmatrix}y_1\\y_2\\\vdots\\y_n\end{bmatrix},\space   \mathbf{X}=\begin{bmatrix}1&x_{11}&x_{12}&\dots&x_{1k}\\1&x_{21}&x_{22}&\dots&x_{2k}\\\vdots&\vdots&\vdots&\ddots&\vdots\\1&x_{n1}&x_{n2}&\dots&x_{nk}\end{bmatrix}$$ where the $y_i$'s are the responses and each row of the $\mathbf{X}$ matrix is one observation's independent variables.
+
+
+2. Output a model $$\hat{\mathbf{Y}}=\mathbf{X}\hat{\boldsymbol{\beta}}$$ that forms the line of best fit for our given client input and can additionally be input a set of new independent variables to generate predictions along the newly generated line.
+
+Our desired weight
+vector $\boldsymbol{\beta}$ can be computed with
+$$ \hat{\boldsymbol{\beta}} = (\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{Y} $$  
 
 The underlying parts, however, need more work. First, this approach
 requires matrix operations, of which our explorations are very
