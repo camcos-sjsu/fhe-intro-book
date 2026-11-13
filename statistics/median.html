@@ -677,20 +677,20 @@ window.Quarto = {
 
 <p>We can employ a similar method to find the median value. For this method, we assume for simplicity that all the numbers are distinct and <span class="math inline">\(N/2\)</span> is odd.</p>
 <ol type="1">
-<li>Create a matrix <span class="math inline">\(D\)</span> where <span class="math display">\[D_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).\]</span> We can just compute the same matrix and then run the sign function over every row. This looks like:</li>
+<li>Create a matrix <span class="math inline">\(D^{\text{sign}}\)</span> with entries <span class="math display">\[d^{\text{sign}}_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j).\]</span> We can just compute the same difference matrix <span class="math inline">\(D\)</span> and then run the sign function over every row, giving the rows <span class="math inline">\(d^{\text{sign}}_i := \mathtt{sign_{-1, 1,0}}(d_i)\)</span>. This looks like:</li>
 </ol>
 <p><span class="math display">\[
 \begin{array}{c|ccccc}
-  &amp; x_1 &amp; x_2 &amp; x_3 &amp; \cdots &amp; x_{N/2} \\
+  &amp; z_1 &amp; z_2 &amp; z_3 &amp; \cdots &amp; z_{N/2} \\
 \hline
-x_1 &amp; 0 &amp; -1 &amp; -1 &amp; \cdots &amp; -1 \\
-x_2 &amp; 1 &amp; 0 &amp; -1 &amp; \cdots &amp; -1 \\
-x_3 &amp; 1 &amp; 1 &amp; 0 &amp; \cdots &amp; -1 \\
+d^{\text{sign}}_1 &amp; 0 &amp; -1 &amp; -1 &amp; \cdots &amp; -1 \\
+d^{\text{sign}}_2 &amp; 1 &amp; 0 &amp; -1 &amp; \cdots &amp; -1 \\
+d^{\text{sign}}_3 &amp; 1 &amp; 1 &amp; 0 &amp; \cdots &amp; -1 \\
 \vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-x_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
+d^{\text{sign}}_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
 \end{array}
 \]</span></p>
-<p>though unlike <span class="math inline">\(D\)</span> from earlier, <span class="math inline">\(\delta_{i,j} \in \{-1, 1\}\)</span>. We assume the diagonals are assigned <span class="math inline">\(0\)</span> here.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>though unlike <span class="math inline">\(D\)</span> from earlier, <span class="math inline">\(d^{\text{sign}}_{i,j} \in \{-1, 1\}\)</span> off the diagonal.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <p>The example below works through <span class="math inline">\(z = (7, 2, 9, 4, 5)\)</span>, with the row of the median in orange.</p>
 <div class="hidden">
 <p><span class="math display">\[
@@ -698,7 +698,7 @@ x_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
 \]</span></p>
 </div>
 <p><span class="math display">\[
-\overset{\displaystyle D}{\begin{bmatrix}
+\overset{\displaystyle D^{\text{sign}}}{\begin{bmatrix}
 0 &amp; 1 &amp; -1 &amp; 1 &amp; 1 \\
 -1 &amp; 0 &amp; -1 &amp; -1 &amp; -1 \\
 1 &amp; 1 &amp; 0 &amp; 1 &amp; 1 \\
@@ -722,11 +722,11 @@ x_{N/2} &amp; 1 &amp; 1 &amp; 1 &amp; \cdots &amp; 0
 \medrow{1}
 \end{bmatrix}}
 \]</span></p>
-<p><strong>Step 1.</strong> Build <span class="math inline">\(D_{ij} = \mathtt{sign}(z_i - z_j)\)</span> with <span class="math inline">\(0\)</span> on the diagonal, so row <span class="math inline">\(i\)</span> counts <span class="math inline">\(+1\)</span> for each value below <span class="math inline">\(z_i\)</span> and <span class="math inline">\(-1\)</span> for each value above it.</p>
+<p><strong>Step 1.</strong> Build <span class="math inline">\(d^{\text{sign}}_{i,j} = \mathtt{sign_{-1, 1,0}}(z_i - z_j)\)</span> with <span class="math inline">\(0\)</span> on the diagonal, so row <span class="math inline">\(i\)</span> counts <span class="math inline">\(+1\)</span> for each value below <span class="math inline">\(z_i\)</span> and <span class="math inline">\(-1\)</span> for each value above it.</p>
 <p><strong>Step 2.</strong> Summing each row gives <span class="math inline">\(s = (2, -4, 4, -2, 0)\)</span>, and only the row of <span class="math inline">\(z_5 = 5\)</span> sums to <span class="math inline">\(0\)</span>, so <span class="math inline">\(m = (0, 0, 0, 0, 1)\)</span> and <span class="math inline">\(\mathtt{sum}(m * z) = 5\)</span>, the median.</p>
 <ol start="2" type="1">
 <li><p>Now, if <span class="math inline">\(z_i\)</span> were the median, then it would have an equal number of <span class="math inline">\(-1\)</span>s and <span class="math inline">\(1\)</span>s in its row, which is equivalent with having row sum <span class="math inline">\(0\)</span> (note that this implicitly assumes that there is no multiplicity of the median; more accurately, the median occurs an odd number of times).</p></li>
-<li><p>Thus, we can get a vector of the sums of the <span class="math inline">\(x_i\)</span> and then compute equality with zero: <span class="math display">\[m := ((x_1 + x_2 + \cdots + x_{N/2}) == 0)\]</span> to obtain a <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vector that points out which <em>index</em> the median falls in.</p></li>
+<li><p>Thus, we can add the rows <span class="math inline">\(d^{\text{sign}}_i\)</span> element-wise and then compute equality with zero: <span class="math display">\[m := ((d^{\text{sign}}_1 + d^{\text{sign}}_2 + \cdots + d^{\text{sign}}_{N/2}) == 0)\]</span> to obtain a <span class="math inline">\(0\)</span>-<span class="math inline">\(1\)</span> vector that points out which <em>index</em> the median falls in.</p></li>
 <li><p>If we are interested in the <em>value</em> of the median instead of the <em>index,</em> then we can just multiply <span class="math inline">\(\mathtt{sum}(m * z)\)</span>. Note that this sum only works if exactly one element is the median: if, say, two elements are the median, then we would get twice the median if we sum.</p></li>
 </ol>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">

@@ -675,12 +675,12 @@ window.Quarto = {
 </header>
 
 
-<p>A good example of a function that is directly unlocked by division is the <strong>softmax function</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, which takes a vector <span class="math inline">\(x = (x_1, \ldots, l_k) \in \mathbb{R_+^k}\)</span> and returns a probability distribution <span class="math inline">\(r(x) = (p_1, \ldots, p_k) \in (0,1)^k\)</span> as follows: <span class="math display">\[\rho(x)_i = \frac{e^{x_i}}{\sum_j e^{x_j}}.\]</span> The function is important for many applications, but especially recently in neural nets for turning vectors into probability distributions for decision making.</p>
+<p>A good example of a function that is directly unlocked by division is the <strong>softmax function</strong>, which takes a vector <span class="math inline">\(x = (x_1, \ldots, l_k) \in \mathbb{R_+^k}\)</span> and returns a probability distribution <span class="math inline">\(r(x) = (p_1, \ldots, p_k) \in (0,1)^k\)</span> as follows: <span class="math display">\[\rho(x)_i = \frac{e^{x_i}}{\sum_j e^{x_j}}.\]</span> The function is important for many applications, but especially recently in neural nets for turning vectors into probability distributions for decision making.</p>
 <p>The basic strategy is:</p>
 <ol type="1">
-<li>Make a vector <span class="math inline">\(x'\)</span> where <span class="math inline">\(x'_i = e^{x_i}\)</span> (this can be done by Taylor approximation or by asking the user to supply the exponentials);</li>
-<li>make a vector <span class="math inline">\(s\)</span> where all <span class="math inline">\(s_i = \mathtt{sum}(x_i)\)</span>;</li>
-<li>lastly, divide <span class="math inline">\(x'\)</span> by <span class="math inline">\(s\)</span>.</li>
+<li><p>Make a vector <span class="math inline">\(x'\)</span> where <span class="math inline">\(x'_i = e^{x_i}\)</span> (this can be done by Taylor approximation or by asking the user to supply the exponentials);</p></li>
+<li><p>Make a vector <span class="math inline">\(s\)</span> where all <span class="math inline">\(s_i = \mathtt{sum}(x_i)\)</span>;</p></li>
+<li><p>Lastly, divide <span class="math inline">\(x'\)</span> by <span class="math inline">\(s\)</span>.</p></li>
 </ol>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -697,12 +697,6 @@ window.Quarto = {
 </div>
 
 
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p><strong>Softmax function</strong> available from https://en.wikipedia.org/wiki/Softmax_function<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

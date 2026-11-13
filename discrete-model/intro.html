@@ -675,9 +675,26 @@ window.Quarto = {
 </header>
 
 
-<p>In the case that your domain has finite discrete values, any function on that domain can be represented by polynomials. Since there are a finite number of inputs, each polynomial may be interpolated to agree with the function of a finite number of points.</p>
-<p>A finite domain may be encoded by integers modulo something. We explore modular representation by roots of unity and <span class="math inline">\(k\)</span>-bit binary.</p>
-<p>We also discuss uses such as modular arithmetic, the sign function, and sorting, and consider the computational costs and numerical accuracy of these methods.</p>
+<p>In this section, we change the computational model. So far, each slot of a ciphertext has held an arbitrary complex number, and functions such as sign could only be approximated (recall the <a href="../sign/discrete-math.html">disclaimer</a> in Discrete Math). Here, we instead assume our inputs come from a finite, discrete set, such as integers in a fixed range. The allowed moves from <a href="../setup.html">Setup</a> stay the same; what changes is the kind of input we assume and how we store it in the slots.</p>
+<p>In the case that our domain has finite discrete values, any function on that domain can be represented by a polynomial. Since there are a finite number of inputs, we can interpolate a polynomial that agrees with the function at every one of them.</p>
+<p>For example, on the three-point set <span class="math inline">\(\{-1, 0, 1\}\)</span>, the polynomial <span class="math display">\[
+\frac{x^2 + x}{2}
+\]</span></p>
+<p>takes the values <span class="math inline">\(0, 0, 1\)</span> at <span class="math inline">\(x = -1, 0, 1\)</span> respectively. On this set, it agrees <em>exactly</em> with the indicator of <span class="math inline">\(x &gt; 0\)</span>. Unlike the sign approximations in Discrete Math, the polynomial only needs to be correct at the three allowed inputs, so it never has to jump: it just has to go from <span class="math inline">\(0\)</span> at <span class="math inline">\(x = 0\)</span> to <span class="math inline">\(1\)</span> at <span class="math inline">\(x = 1\)</span>, a whole unit away (compare with the accuracy windows in <a href="../sign/applicability.html">Sign Applicability</a>). CKKS arithmetic is still approximate, so the computed values will be close to <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span> rather than exactly equal, with errors on the order of the precision from <a href="../setup.html">Setup</a>.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span><strong>Remark</strong>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Of course, this depends on the user supplying their data in a discrete form. Since users encrypt their own inputs, they can supply not only <span class="math inline">\(x\)</span> but also its binary digits or its root-of-unity form (much like supplying inverses in <a href="../division/intro.html">Division</a>). The catch is that not every operation preserves this form: adding binary digits requires carrying, and multiplying numbers stored as roots of unity calls for a lookup table. So each choice of form makes certain things easier and other things harder.</p>
+</div>
+</div>
+<p>A finite domain may be encoded by integers modulo some fixed <span class="math inline">\(n\)</span>. We explore two such encodings: roots of unity and <span class="math inline">\(k\)</span>-bit binary. With this in mind, we discuss uses such as modular arithmetic, the sign function, and sorting, and consider the computational costs and numerical accuracy of these methods.</p>
 
 
 

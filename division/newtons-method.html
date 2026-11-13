@@ -26,7 +26,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -681,7 +701,7 @@ window.Quarto = {
 </header>
 
 
-<p>We considered another approach with Newton’s method<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, which finds the roots of a function <span class="math inline">\(f(x)\)</span>. In this case, we can find the decimal value of <span class="math inline">\(x^*=\frac{1}{d}\)</span> so that <span class="math inline">\(f(x)=\frac{1}{x}-x^*=0.\)</span> Think of <span class="math inline">\(x^*\)</span> as an unknown decimal that we’re looking for.</p>
+<p>We considered another approach with Newton’s method, which finds the roots of a function <span class="math inline">\(f(x)\)</span>. In this case, we can find the decimal value of <span class="math inline">\(x^*=\frac{1}{d}\)</span> so that <span class="math inline">\(f(x)=\frac{1}{x}-x^*=0.\)</span> Think of <span class="math inline">\(x^*\)</span> as an unknown decimal that we’re looking for.</p>
 <p>We use Newton’s formula <span class="math inline">\(f(x^*)\approx f(x_n)+f'(x_n)(x^*-x_n)\)</span>, and set <span class="math inline">\(f(x^*)=0:\)</span> <span class="math display">\[x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}\]</span></p>
 <p><span class="math display">\[x_n-\frac{f(x_n)}{f'(x_n)}=x_n-\frac{\frac{1}{x_n}-d}{\frac{-1}{x_n^2}}=x_n+x_n^2(\frac{1}{x_n}-d)=x_n+(x_n-x_n^2d)\]</span></p>
 <p><span class="math display">\[x_{n+1}=2x_n-x_n^2d\]</span></p>
@@ -695,14 +715,14 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>See an independently developed discussion in Prantl et al.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>See an independently developed discussion developed by <span class="citation" data-cites="Prantl_Horn_Engel_Bauer_Kounev_2025"><a href="../references.html#ref-Prantl_Horn_Engel_Bauer_Kounev_2025" role="doc-biblioref">[1]</a></span> Prant et al.</p>
 </div>
 </div>
 <p>This allows us to approximate <span class="math inline">\(1/x\)</span> in a chain of <span class="math inline">\(2n\)</span> multiplications and <span class="math inline">\(n\)</span> additions. We can do a simple test of approximating <span class="math inline">\(\frac{1}{48}\)</span> with Newton’s method versus a geometric series as follows:</p>
 <p><a href="#fig-newton-digits" class="quarto-xref">Figure&nbsp;<span>8.1</span></a> measures accuracy by the number of correct decimal digits, defined as <span class="math inline">\(-\log_{10}|\text{error}|\)</span>: an error of <span class="math inline">\(10^{-4}\)</span> is 4 correct digits. Both methods start from <span class="math inline">\(x_0 = 1/64\)</span> and are plotted after each iteration.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-newton-digits" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A line plot of correct decimal digits against integer iteration count from 0 to 13. Both lines start at about 2.3 digits at iteration 0. The orange dashed Newton line climbs steeply to about 11.3 digits at iteration 4, crossing the 10 digit line there. The blue dot-dash geometric series line rises steadily and reaches 10 digits at iteration 13." data-fig-align="center">
+<div id="fig-newton-digits" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A line plot of correct decimal digits against integer iteration count from 0 to 13. Both lines start at about 2.3 digits at iteration 0. The orange dashed Newton line climbs steeply to about 11.3 digits at iteration 4, crossing the 10 digit line there. The blue dot-dash geometric series line rises steadily and reaches 10 digits at iteration 13.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-newton-digits-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="newtons-method_files/figure-html/fig-newton-digits-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A line plot of correct decimal digits against integer iteration count from 0 to 13. Both lines start at about 2.3 digits at iteration 0. The orange dashed Newton line climbs steeply to about 11.3 digits at iteration 4, crossing the 10 digit line there. The blue dot-dash geometric series line rises steadily and reaches 10 digits at iteration 13." width="864">
@@ -756,16 +776,16 @@ Figure&nbsp;8.1: Correct decimal digits, <span class="math inline">\(-\log_{10}|
 </table>
 <p>Note: we only go to <span class="math inline">\(n=33\)</span> since <span class="math inline">\(\log_2(10^{10})\approx33\)</span>, where <span class="math inline">\(10^{-10}\)</span> is the approximate “round to zero” threshold. This would need a tweak to include negatives.</p>
 <p>What we want to do is to figure out where the divisor belongs based on where <span class="math inline">\(n\)</span> belongs, and then make our guess <span class="math inline">\(x_0\)</span> be based on the corresponding boundary bucket. Sadly, this does not work because we cannot (yet) do different executions depending on branching logic.</p>
-<p>Unless we try some more complex methods, we will need to come up with a universal <span class="math inline">\(x_0\)</span> guess<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> that will work regardless of what <span class="math inline">\(\frac{1}{x}\)</span> is.</p>
-<p>Fortunately, the basin of convergence<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> for Newton’s method approximation of <span class="math inline">\(\frac{1}{x}\)</span> is <span class="math inline">\(\big(0,\frac{2}{x}\big)\)</span> if <span class="math inline">\(x&gt;0\)</span> and <span class="math inline">\(\big(\frac{2}{x},0\big)\)</span> if <span class="math inline">\(x&lt;0\)</span>.</p>
+<p>Unless we try some more complex methods, we will need to come up with a universal <span class="math inline">\(x_0\)</span> guess <span class="citation" data-cites="Prantl_Horn_Engel_Iffländer_Beierlieb_Krupitzer_Bauer_Sakarvadia_Foster_Kounev_2024"><a href="../references.html#ref-Prantl_Horn_Engel_Iffländer_Beierlieb_Krupitzer_Bauer_Sakarvadia_Foster_Kounev_2024" role="doc-biblioref">[2]</a></span> that will work regardless of what <span class="math inline">\(\frac{1}{x}\)</span> is.</p>
+<p>Fortunately, the basin of convergence <span class="citation" data-cites="Knott_Venkataraman_Hannun_Sengupta_Ibrahim_Maaten_2022"><a href="../references.html#ref-Knott_Venkataraman_Hannun_Sengupta_Ibrahim_Maaten_2022" role="doc-biblioref">[3]</a></span> for Newton’s method approximation of <span class="math inline">\(\frac{1}{x}\)</span> is <span class="math inline">\(\big(0,\frac{2}{x}\big)\)</span> if <span class="math inline">\(x&gt;0\)</span> and <span class="math inline">\(\big(\frac{2}{x},0\big)\)</span> if <span class="math inline">\(x&lt;0\)</span>.</p>
 <ol type="1">
-<li>To guarantee convergence we can simply pick the closest number to zero that does not get eliminated by rounding, maybe <span class="math inline">\(\approx 10^{-10}\)</span> or <span class="math inline">\(-(10^{-10})\)</span>, depending on the sign of <span class="math inline">\(\frac{1}{x}\)</span> (which needs to be known), every time.</li>
-<li>If we want to account for the sign and have a Sign function, we would be able to capture it with something like <span class="math inline">\((x&lt;0)*(x_0=-(10^{-10}))+(x&gt;0)*(x_0=10^{-10})\)</span>. See Section IV for similar methods.</li>
+<li><p>To guarantee convergence we can simply pick the closest number to zero that does not get eliminated by rounding, maybe <span class="math inline">\(\approx 10^{-10}\)</span> or <span class="math inline">\(-(10^{-10})\)</span>, depending on the sign of <span class="math inline">\(\frac{1}{x}\)</span> (which needs to be known), every time.</p></li>
+<li><p>If we want to account for the sign and have a Sign function, we would be able to capture it with something like <span class="math inline">\((x&lt;0)*(x_0=-(10^{-10}))+(x&gt;0)*(x_0=10^{-10})\)</span>. See Section IV for similar methods.</p></li>
 </ol>
 <p><a href="#fig-newton-cobweb" class="quarto-xref">Figure&nbsp;<span>8.2</span></a> shows the iteration <span class="math inline">\(g(x) = 2x - dx^2\)</span> for <span class="math inline">\(d = 11\)</span> as a staircase between the curve and the line <span class="math inline">\(y = x\)</span>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-newton-cobweb" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A plot of the parabola g of x equals 2x minus 11 x squared as a solid grey curve and the line y equals x as a dashed grey line. An orange staircase starts at x equals 0.01 on the horizontal axis, steps up to the parabola and across to the line, and climbs toward the point where the curves meet at x equal to 1 over 11, about 0.0909. The steps shrink as they approach that fixed point, which sits at the top of the parabola." data-fig-align="center">
+<div id="fig-newton-cobweb" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A plot of the parabola g of x equals 2x minus 11 x squared as a solid grey curve and the line y equals x as a dashed grey line. An orange staircase starts at x equals 0.01 on the horizontal axis, steps up to the parabola and across to the line, and climbs toward the point where the curves meet at x equal to 1 over 11, about 0.0909. The steps shrink as they approach that fixed point, which sits at the top of the parabola.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-newton-cobweb-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="newtons-method_files/figure-html/fig-newton-cobweb-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A plot of the parabola g of x equals 2x minus 11 x squared as a solid grey curve and the line y equals x as a dashed grey line. An orange staircase starts at x equals 0.01 on the horizontal axis, steps up to the parabola and across to the line, and climbs toward the point where the curves meet at x equal to 1 over 11, about 0.0909. The steps shrink as they approach that fixed point, which sits at the top of the parabola." width="864">
@@ -804,15 +824,17 @@ Figure&nbsp;8.2: Cobweb diagram of the Newton iteration <span class="math inline
 </div>
 
 
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p><strong>Newton’s method</strong> available from https://en.wikipedia.org/wiki/Newton%27s_method<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Prantl et al.; <strong>Quo Vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using De Bello and polynomial approximations</strong> available from https://www.sciencedirect.com/science/article/pii/S2214212625001474#sec2<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Prantl et al.; <strong>De Bello Homomorphico: Investigation of the extensibility of the OpenFHE library with basic mathematical functions by means of common approaches using the example of the CKKS cryptosystem</strong> available from https://link.springer.com/article/10.1007/s10207-023-00781-0<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Knott et al.; <strong>CRYPTEN: Secure Multi-Party Computation Meets Machine Learning</strong> available from https://arxiv.org/pdf/2109.00984<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-Prantl_Horn_Engel_Bauer_Kounev_2025" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">T. Prantl, L. Horn, S. Engel, A. Bauer, and S. Kounev, <span>“Quo vadis CKKS: Comparison of the realization of basic mathematical functions for the homomorphic cryptosystem CKKS using de bello and polynomial approximations,”</span> <em>Journal of Information Security and Applications</em>, vol. 93, p. 104110, 2025, doi: <a href="https://doi.org/10.1016/j.jisa.2025.104110">10.1016/j.jisa.2025.104110</a>.</div>
+</div>
+<div id="ref-Prantl_Horn_Engel_Iffländer_Beierlieb_Krupitzer_Bauer_Sakarvadia_Foster_Kounev_2024" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[2] </div><div class="csl-right-inline">T. Prantl <em>et al.</em>, <span>“De bello homomorphico: Investigation of the extensibility of the OpenFHE library with basic mathematical functions by means of common approaches using the example of the CKKS cryptosystem,”</span> <em>International Journal of Information Security</em>, vol. 23, no. 2, pp. 1149–1169, Apr. 2024, doi: <a href="https://doi.org/10.1007/s10207-023-00781-0">10.1007/s10207-023-00781-0</a>.</div>
+</div>
+<div id="ref-Knott_Venkataraman_Hannun_Sengupta_Ibrahim_Maaten_2022" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[3] </div><div class="csl-right-inline">B. Knott, S. Venkataraman, A. Hannun, S. Sengupta, M. Ibrahim, and L. van der Maaten, <span>“CrypTen: Secure multi-party computation meets machine learning,”</span> no. arXiv:2109.00984, 2022, doi: <a href="https://doi.org/10.48550/arXiv.2109.00984">10.48550/arXiv.2109.00984</a>.</div>
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->

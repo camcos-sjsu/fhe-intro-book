@@ -704,16 +704,29 @@ window.Quarto = {
 </div>
 <p>Here is how we would generate the difference matrix:</p>
 <ol type="1">
-<li><p>Assuming we are in the inter-vectors case, we can assume the <span class="math inline">\(x_i\)</span> are given as <span class="math inline">\(u^{(i)} = (0, \ldots, 0, x_i, 0, \ldots, 0)\)</span>.</p></li>
-<li><p>We can “broadcast” the <span class="math inline">\(x_i\)</span> into every entry by computing <span class="math display">\[v^{(i)} := \mathtt{sum}(u^{(i)}) = (x_i, \ldots, x_i).\]</span></p></li>
+<li><p>Assuming we are in the inter-vectors case, we can assume the <span class="math inline">\(z_i\)</span> are given as <span class="math inline">\(u^{(i)} = (0, \ldots, 0, z_i, 0, \ldots, 0)\)</span>.</p></li>
+<li><p>We can “broadcast” the <span class="math inline">\(z_i\)</span> into every entry by computing <span class="math display">\[v^{(i)} := \mathtt{sum}(u^{(i)}) = (z_i, \ldots, z_i).\]</span></p></li>
 <li><p>Now we can separately compute:</p>
 <ul>
-<li><span class="math inline">\(d_{i}=x-v^{(i)}=(x_1-x_i,x_2-x_i,\dots,x_{N/2}-x_i)\)</span> for all <span class="math inline">\(i\)</span>.</li>
-<li>If we wanted the transpose instead, we can compute:<br>
-<span class="math inline">\(d'_{i}=v^{(i)}-x=(x_i-x_1, x_i-x_2,\dots, x_i-x_{N/2})\)</span>.</li>
+<li><span class="math inline">\(d_{i}=v^{(i)}-z=(z_i-z_1,z_i-z_2,\dots,z_i-z_{N/2})\)</span> for all <span class="math inline">\(i\)</span>. This is row <span class="math inline">\(i\)</span> of <span class="math inline">\(D\)</span>.</li>
+<li>If we wanted the transpose instead (column <span class="math inline">\(i\)</span> of <span class="math inline">\(D\)</span>), we can compute:<br>
+<span class="math inline">\(d'_{i}=z-v^{(i)}=(z_1-z_i, z_2-z_i,\dots, z_{N/2}-z_i)\)</span>. Since <span class="math inline">\(D_{j,i} = -D_{i,j}\)</span>, this is just <span class="math inline">\(-d_i\)</span>.</li>
 </ul></li>
-<li><p>We can think of the matrix as the combination of these vectors, though we might also want to isolate the use of our <span class="math inline">\(N/2\)</span> “difference vectors” of the form <span class="math display">\[d_{i} = (d_{i,1}, \ldots, d_{i,N/2}).\]</span></p></li>
+<li><p>We can think of the matrix as the combination of these vectors, though we might also want to isolate the use of our <span class="math inline">\(N/2\)</span> “difference vectors” of the form <span class="math display">\[d_{i} = (d_{i,1}, \ldots, d_{i,N/2}), \qquad d_{i,j} = D_{i,j} = z_i - z_j.\]</span></p></li>
 </ol>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span><strong>Notation</strong>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In the Mode and Median sections, <span class="math inline">\(z_i\)</span> always denotes a single input number, while <span class="math inline">\(d_i\)</span> denotes a whole row of <span class="math inline">\(D\)</span>, stored as one vector and processed element-wise.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -726,9 +739,9 @@ window.Quarto = {
 <div class="callout-body-container callout-body">
 <p><strong>Remark</strong>: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following:</p>
 <ol type="1">
-<li><p>Given an input vector <span class="math inline">\((x_1, \ldots, x_{N/2})\)</span>,</p></li>
+<li><p>Given an input vector <span class="math inline">\(z = (z_1, \ldots, z_{N/2})\)</span>,</p></li>
 <li><p>Define indicator vectors <span class="math inline">\(c_i = (0,0,\dots,1_i,0\dots,0)\)</span>.</p></li>
-<li><p>Compute <span class="math inline">\(x_i = \sum_{i=1}^{N/2}(c_i*x)\)</span>; this will isolate the <span class="math inline">\(x\)</span>’s vector value at index <span class="math inline">\(i\)</span>,</p></li>
+<li><p>Compute <span class="math inline">\(v^{(i)} = \mathtt{sum}(c_i*z) = (z_i, \ldots, z_i)\)</span>; the product <span class="math inline">\(c_i*z\)</span> isolates the value of <span class="math inline">\(z\)</span> at index <span class="math inline">\(i\)</span>, and the intravector sum broadcasts it to every entry,</p></li>
 </ol>
 <p>…and then the rest is the same as before.</p>
 </div>
