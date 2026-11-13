@@ -1,8 +1,18 @@
 # Discrete Computational Models
 
-In the case that your domain has finite discrete values, any function on that domain can be represented by polynomials. Since there are a finite number of inputs, each polynomial may be interpolated to agree with the function of a finite number of points.
+In this section, we change the computational model. So far, each slot of a ciphertext has held an arbitrary complex number, and functions such as sign could only be approximated (recall the [disclaimer](/sign/discrete-math.qmd) in Discrete Math). Here, we instead assume our inputs come from a finite, discrete set, such as integers in a fixed range. The allowed moves from [Setup](/setup.qmd) stay the same; what changes is the kind of input we assume and how we store it in the slots.
 
-A finite domain may be encoded by integers modulo something. We explore modular representation by roots of unity and $k$-bit binary.
+In the case that our domain has finite discrete values, any function on that domain can be represented by a polynomial. Since there are a finite number of inputs, we can interpolate a polynomial that agrees with the function at every one of them.
 
-We also discuss uses such as modular arithmetic, the sign function, and sorting, and consider the computational costs and numerical accuracy of these methods. 
+For example, on the three-point set $\{-1, 0, 1\}$, the polynomial
+$$
+\frac{x^2 + x}{2}
+$$
 
+takes the values $0, 0, 1$ at $x = -1, 0, 1$ respectively. On this set, it agrees *exactly* with the indicator of $x > 0$. Unlike the sign approximations in Discrete Math, the polynomial only needs to be correct at the three allowed inputs, so it never has to jump: it just has to go from $0$ at $x = 0$ to $1$ at $x = 1$, a whole unit away (compare with the accuracy windows in [Sign Applicability](/sign/applicability.qmd)). CKKS arithmetic is still approximate, so the computed values will be close to $0$ or $1$ rather than exactly equal, with errors on the order of the precision from [Setup](/setup.qmd).
+
+::: {.callout-tip icon="false" title="**Remark**"}
+Of course, this depends on the user supplying their data in a discrete form. Since users encrypt their own inputs, they can supply not only $x$ but also its binary digits or its root-of-unity form (much like supplying inverses in [Division](/division/intro.qmd)). The catch is that not every operation preserves this form: adding binary digits requires carrying, and multiplying numbers stored as roots of unity calls for a lookup table. So each choice of form makes certain things easier and other things harder.
+:::
+
+A finite domain may be encoded by integers modulo some fixed $n$. We explore two such encodings: roots of unity and $k$-bit binary. With this in mind, we discuss uses such as modular arithmetic, the sign function, and sorting, and consider the computational costs and numerical accuracy of these methods.
