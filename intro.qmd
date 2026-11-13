@@ -24,15 +24,13 @@ In this book, we explore functions that can be built under the CKKS homomorphic 
 
 3.  In [Discrete Math](sign/discrete-math.qmd) we study "discrete math" concepts that can be built from the sign function (which we do not have a good implementation for, but is an important primitive to have).
 
-4.  In [Difference Matrix](difference-matrix/intro.qmd) we explore applications of the branching logic built in discrete math, which can support statistical functions like mode and median.
+4.  In [Statistics](statistics/intro.qmd) we explore applications of the branching logic built in discrete math, which can support statistical functions like mode and median, and we look at statistical applications to linear regression.
 
-5.  In [Correlation and Related Functions](correlation-related/intro.qmd) we look at statistical applications to linear regression.
+5.  In [Sorting](sorting/intro.qmd) we explore sorting starting from a similar entry point as in conventional computing before quickly diverging down a different path based on constraints of the CKKS scheme.
 
-6.  In [Sorting](sorting/intro.qmd) we explore sorting starting from a similar entry point as in conventional computing before quickly diverging down a different path based on constraints of the CKKS scheme.
+6.  In [Discrete Computational](discrete-model/intro.qmd) we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.
 
-7.  In [Discrete Computational](discrete-model/intro.qmd) we explore some approaches with a different (discrete) computational model, such as modular arithmetic and a more robust (but still potentially costly) Inequality function.
-
-8.  We end with some more speculative approaches to various topics in [Other Explorations](other/intro.qmd), including an iterative approach to log and some linear algebra.
+7.  We end with some more speculative approaches to various topics in [Other Explorations](other/intro.qmd), including an iterative approach to log and some linear algebra.
 
 CKKS has the advantage of natively supporting real- and complex-valued input, as opposed to other FHE schemes which are primarily designed to compute on exact integers. CKKS also makes use of "batching" techniques à la SIMD @Flynn_1972 (Single Instruction, Multiple Data) which increase efficiency through parallelized computations: many values are "packed" into a single ciphertext and computed upon simultaneously.
 
