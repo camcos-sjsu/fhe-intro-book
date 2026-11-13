@@ -15,6 +15,7 @@ However, we can make this faster by noticing the following. Suppose we cycled by
 #| fig-align: center
 #| fig-width: 10
 #| fig-height: 6.2
+#| cache: true
 #| dev.args: !expr list(bg = "transparent")
 #| fig-cap: "Summing eight slots with three cycle-and-adds, shifting by 1, 2, then 4, forms a binary tree."
 #| fig-alt: "Four rows of eight boxes. The top row holds z1 through z8. After cycling by 1 and adding, each box holds a sum of two neighbors, such as z1 + z2; after cycling by 2, a sum of four, such as z1 + ... + z4; after cycling by 4, every box holds the sum of all 8, with indices wrapping from 8 back to 1. Orange boxes mark the entries that reach slot 1, and arrows run from the two inputs of each orange box into it, forming a binary tree."
@@ -127,6 +128,7 @@ The savings grow quickly with the number of slots (@fig-cycle-cost). For $N = 2^
 #| fig-width: 7
 #| fig-height: 4.2
 #| dev.args: !expr list(bg = "transparent")
+#| cache: true
 #| fig-cap: "Cycles needed to sum $n$ slots one at a time versus by cycle-and-add."
 #| fig-alt: "Log-log plot of cycles needed against the number of slots, from 2 to 2^15. Summing one at a time, a solid grey line, grows to 32,767 cycles; cycle-and-add, a dashed orange line, grows only to 15."
 library(ggplot2)

@@ -198,6 +198,7 @@ However, this gets fairly costly and noisy due to the multiplications in the app
 #| fig-align: center
 #| fig-width: 9
 #| fig-height: 4.6
+#| cache: true
 #| dev.args: !expr list(bg = "transparent")
 #| fig-cap: "The bubble sort network for eight inputs, with 7 passes, 28 layers, and 28 PairSorts. Only one PairSort runs in each layer."
 #| fig-alt: "A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions, one per layer, grouped into seven numbered passes. Each pass moves from the top of the vector downward and stops one position earlier than the pass before it, forming a staircase. Pass 1 has seven arrows and pass 7 has one. Each arrow points to the higher position, which receives the larger value."
