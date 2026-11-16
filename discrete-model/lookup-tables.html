@@ -938,6 +938,13 @@ u^k+v^k=\prod_{r=1}^k(u-r_iv).
 <p>Alternatively, we can use the identity <span class="math display">\[
 u^{2k}+v^{2k}=(u^k+v^k)^2-2(uv)^k.
 \]</span> If <span class="math inline">\((uv)^k\)</span> and $ u<sup>k+v</sup>k$ are already available, this requires just one ciphertext-ciphertext multiplication.</p>
+<p>For odd exponents, we can use</p>
+<p><span class="math display">\[
+u^{2k+1}+v^{2k+1} = (u^k+v^k)(u^{k+1}+v^{k+1})- (uv)^k(v+u)
+\]</span> Assuming we already have <span class="math inline">\((u^k+v^k)\)</span>, <span class="math inline">\((u^{k+1}+v^{k+1})\)</span>, <span class="math inline">\((uv)^k\)</span>, and <span class="math inline">\(v+u\)</span>, this requires 2 ciphertext–ciphertext multiplications.</p>
+<p>Since our inputs are <span class="math inline">\(n\)</span>-th roots of unity, we can also use conjugation: <span class="math display">\[
+u^{n-k}+v^{n-k}=\overline{u^k+v^k}.
+\]</span></p>
 </section>
 <section id="example-construction-and-contrasting-of-modular-multiplication-for-n-4" class="level3" data-number="27.0.6">
 <h3 data-number="27.0.6" class="anchored" data-anchor-id="example-construction-and-contrasting-of-modular-multiplication-for-n-4"><span class="header-section-number">27.0.6</span> Example: Construction and Contrasting of Modular Multiplication for n = 4</h3>
@@ -954,7 +961,7 @@ P(u,v)=\frac14\bigl[&amp;
 \end{aligned}
 \]</span></p>
 <p>For the bivariate method, calculating <span class="math inline">\(u^2,u^3,v^2,v^3\)</span> takes four multiplications. There are also nine mixed terms <span class="math inline">\(u^iv^j\)</span> with <span class="math inline">\(i,j\in\{1,2,3\}\)</span>, giving thirteen multiplications altogether.</p>
-<p>This method needs only three layers: two to obtain powers through <span class="math inline">\(u^3\)</span> and <span class="math inline">\(v^3\)</span>, and one more for the mixed terms.</p>
+<p>This method needs only three layers: two to obtain powers through <span class="math inline">\(u^3\)</span> and <span class="math inline">\(v^3\)</span>, and one more for the mixed terms. This count evaluates each mixed monomial separately. We can reduce the cost by grouping terms.</p>
 <p>With symmetry grouping, we have <span class="math display">\[
 \begin{aligned}
 P(u,v)=\frac14\bigl[
@@ -964,16 +971,34 @@ P(u,v)=\frac14\bigl[
 \bigr].
 \end{aligned}
 \]</span></p>
-<p>We can evaluate this in three multiplication layers: <span class="math display">\[
+<p>We can use the identities above to avoid computing <span class="math inline">\(u^2,v^2,u^3,v^3\)</span> separately. In particular, <span class="math display">\[
+u^2+v^2=(u+iv)(u-iv),
+\]</span> and <span class="math display">\[
+u^3+v^3=(u+v)(u^2+v^2-uv).
+\]</span></p>
+<p>This gives the following evaluation: <span class="math display">\[
 \begin{array}{c|l|c}
 \text{Layer} &amp; \text{Values computed} &amp; \text{Multiplications}\\
 \hline
-1 &amp; u^2,\ v^2,\ uv &amp; 3\\
-2 &amp; u^3=u^2u,\ v^3=v^2v,\ (uv)^2,\
-    uv(u+v),\ uv(u^2+v^2) &amp; 5\\
-3 &amp; (uv)^2(u+v),\ (uv)^3=(uv)^2(uv) &amp; 2
+1 &amp; uv,\quad u^2+v^2 &amp; 2\\
+2 &amp; u^3+v^3,\quad (uv)^2,\quad
+uv(u+v),\quad uv(u^2+v^2) &amp; 4\\
+3 &amp; (uv)^2(u+v),\quad (uv)^3 &amp; 2
 \end{array}
-\]</span> Thus, this evaluation uses <span class="math inline">\(3+5+2=10\)</span> multiplications and has multiplicative depth <span class="math inline">\(3\)</span>.</p>
+\]</span> Thus, this evaluation uses eight ciphertext-ciphertext multiplications and has multiplicative depth three.</p>
+<p>Since <span class="math inline">\(u\)</span>, <span class="math inline">\(v\)</span>, and <span class="math inline">\(uv\)</span> are fourth roots of unity, conjugation gives us <span class="math display">\[
+u^3+v^3=\overline{u+v},
+\qquad
+(uv)^3=\overline{uv}.
+\]</span> Thus, we can replace two of the multiplications above with conjugations. The remaining multiplications are <span class="math display">\[
+\begin{array}{c|l|c}
+\text{Layer} &amp; \text{Values computed} &amp; \text{Multiplications}\\
+\hline
+1 &amp; uv,\quad u^2+v^2=(u+iv)(u-iv) &amp; 2\\
+2 &amp; (uv)^2,\quad uv(u+v),\quad uv(u^2+v^2) &amp; 3\\
+3 &amp; (uv)^2(u+v) &amp; 1
+\end{array}
+\]</span> This evaluation uses six ciphertext-ciphertext multiplications at multiplicative depth three, together with two conjugations.</p>
 <p>For the single-variable polynomial, let <span class="math inline">\(c=2\)</span>. Thus,</p>
 <p><span class="math display">\[
 t(u,v)=u+v+2uv.
@@ -993,17 +1018,17 @@ Q(t)=1+\frac{1}{7072000}\bigl[&amp;
 \bigr].
 \end{aligned}
 \]</span> For the combined-input method, calculating <span class="math inline">\(t=u+v+cuv\)</span> takes one multiplication. Then, calculating <span class="math inline">\(t^2,\ldots,t^9\)</span> takes eight more. This method has multiplicative depth 5: One layer to calculate <span class="math inline">\(t\)</span>, and four more to get all powers through <span class="math inline">\(t^9\)</span>.</p>
-<p>Overall, the bivariate method has lower multiplicative depth but a greater number of multiplications.</p>
-<p><span class="math display">\[
-\begin{array}{c|ccc}
-&amp; \text{Univariate}
-&amp; \text{Bivariate}
-&amp; \text{Bivariate with symmetry}\\
+<p>Using symmetry, we reduce the number of multiplications from thirteen to eight. Conjugation saves another two multiplications for a new total of only six multiplications. <span class="math display">\[
+\begin{array}{l|ccc}
+\text{Method}
+&amp; \text{Multiplications} &amp; \text{Depth} &amp; \text{Conjugations}\\
 \hline
-\text{Encrypted multiplications} &amp; 9 &amp; 13 &amp; 10\\
-\text{Multiplicative depth} &amp; 5 &amp; 3 &amp; 3
+\text{Univariate, computing all powers} &amp; 9 &amp; 5 &amp; 0\\
+\text{Bivariate, separate monomials} &amp; 13 &amp; 3 &amp; 0\\
+\text{Bivariate with symmetry} &amp; 8 &amp; 3 &amp; 0\\
+\text{Bivariate with symmetry and conjugation} &amp; 6 &amp; 3 &amp; 2
 \end{array}
-\]</span></p>
+\]</span> The bivariate method with symmetry and conjugation is the most efficient method by our calculations.</p>
 
 
 <div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
