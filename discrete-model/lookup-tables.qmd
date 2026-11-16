@@ -289,6 +289,18 @@ $$
 If $(uv)^k$ and $ u^k+v^k$ are already available, this requires
 just one ciphertext-ciphertext multiplication.
 
+For odd exponents, we can use 
+
+$$
+u^{2k+1}+v^{2k+1} = (u^k+v^k)(u^{k+1}+v^{k+1})- (uv)^k(v+u)
+$$
+Assuming we already have $(u^k+v^k)$, $(u^{k+1}+v^{k+1})$, $(uv)^k$, and $v+u$, this requires 2 ciphertext--ciphertext multiplications.
+
+Since our inputs are $n$-th roots of unity, we can also use conjugation:
+$$
+u^{n-k}+v^{n-k}=\overline{u^k+v^k}.
+$$
+
 ### Example: Construction and Contrasting of Modular Multiplication for n = 4
 
 Below are the two methods of polynomial interpolation on the multiplication table with $n = 4$.
@@ -308,7 +320,7 @@ $$
 
 For the bivariate method, calculating $u^2,u^3,v^2,v^3$ takes four multiplications. There are also nine mixed terms $u^iv^j$ with $i,j\in\{1,2,3\}$, giving thirteen multiplications altogether.
 
-This method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms.
+This method needs only three layers: two to obtain powers through $u^3$ and $v^3$, and one more for the mixed terms. This count evaluates each mixed monomial separately. We can reduce the cost by grouping terms.
 
 
 With symmetry grouping, we have
@@ -322,18 +334,50 @@ P(u,v)=\frac14\bigl[
 \end{aligned}
 $$
 
-We can evaluate this in three multiplication layers:
+
+
+We can use the identities above to avoid computing $u^2,v^2,u^3,v^3$ separately. In particular,
+$$
+u^2+v^2=(u+iv)(u-iv),
+$$
+and
+$$
+u^3+v^3=(u+v)(u^2+v^2-uv).
+$$
+
+This gives the following evaluation:
 $$
 \begin{array}{c|l|c}
 \text{Layer} & \text{Values computed} & \text{Multiplications}\\
 \hline
-1 & u^2,\ v^2,\ uv & 3\\
-2 & u^3=u^2u,\ v^3=v^2v,\ (uv)^2,\ 
-    uv(u+v),\ uv(u^2+v^2) & 5\\
-3 & (uv)^2(u+v),\ (uv)^3=(uv)^2(uv) & 2
+1 & uv,\quad u^2+v^2 & 2\\
+2 & u^3+v^3,\quad (uv)^2,\quad
+uv(u+v),\quad uv(u^2+v^2) & 4\\
+3 & (uv)^2(u+v),\quad (uv)^3 & 2
 \end{array}
 $$
-Thus, this evaluation uses $3+5+2=10$ multiplications and has multiplicative depth $3$.
+Thus, this evaluation uses eight ciphertext-ciphertext multiplications and has multiplicative depth three.
+
+
+Since $u$, $v$, and $uv$ are fourth roots of unity, conjugation gives us
+$$
+u^3+v^3=\overline{u+v},
+\qquad
+(uv)^3=\overline{uv}.
+$$
+Thus, we can replace two of the multiplications above with conjugations. The remaining multiplications are
+$$
+\begin{array}{c|l|c}
+\text{Layer} & \text{Values computed} & \text{Multiplications}\\
+\hline
+1 & uv,\quad u^2+v^2=(u+iv)(u-iv) & 2\\
+2 & (uv)^2,\quad uv(u+v),\quad uv(u^2+v^2) & 3\\
+3 & (uv)^2(u+v) & 1
+\end{array}
+$$
+This evaluation uses six ciphertext-ciphertext multiplications
+at multiplicative depth three, together with two conjugations.
+
 
 
 
@@ -362,16 +406,17 @@ $$
 For the combined-input method, calculating $t=u+v+cuv$ takes one multiplication. Then, calculating $t^2,\ldots,t^9$ takes eight more. This method has multiplicative depth 5: One layer to calculate $t$, and four more to get all powers through $t^9$.
 
 
-Overall, the bivariate method has lower multiplicative depth but a greater number of multiplications. 
-
+Using symmetry, we reduce the number of multiplications from thirteen to eight. Conjugation saves another two multiplications for a new total of only six multiplications.
 $$
-\begin{array}{c|ccc}
-& \text{Univariate}
-& \text{Bivariate}
-& \text{Bivariate with symmetry}\\
+\begin{array}{l|ccc}
+\text{Method}
+& \text{Multiplications} & \text{Depth} & \text{Conjugations}\\
 \hline
-\text{Encrypted multiplications} & 9 & 13 & 10\\
-\text{Multiplicative depth} & 5 & 3 & 3
+\text{Univariate, computing all powers} & 9 & 5 & 0\\
+\text{Bivariate, separate monomials} & 13 & 3 & 0\\
+\text{Bivariate with symmetry} & 8 & 3 & 0\\
+\text{Bivariate with symmetry and conjugation} & 6 & 3 & 2
 \end{array}
 $$
+The bivariate method with symmetry and conjugation is the most efficient method by our calculations. 
 
