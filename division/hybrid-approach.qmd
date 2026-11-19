@@ -9,9 +9,12 @@ Perhaps the two approaches could be combined into a hybrid. The first one or two
 #| results: asis
 
 if (knitr::is_html_output()) {
-  cat("![hybrid_animation](https://hackmd.io/_uploads/S1Djilqbfe.gif)")
+  cat("![A simple animation for the Hybrid Approach](https://hackmd.io/_uploads/S1Djilqbfe.gif){#fig-hybrid-animation")
 } else {
 }
+
+
+
 ```
 
 @fig-hybrid-error compares the three approaches for $d = 11$. The horizontal axis counts the ciphertext multiplications each approach has spent, which is the expensive operation in CKKS, and the vertical axis shows how many decimal digits of error remain (each step down is a factor of 10 smaller).
