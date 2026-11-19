@@ -686,7 +686,7 @@ window.Quarto = {
 <ul>
 <li><p><strong>precision</strong> refers to a way an encryption of a number “decays with time” (as all known fully homomorphic schemes do). The basic idea is that after an operation, the new result will have some added mathematical noise.</p>
 <ul>
-<li><p>For example, adding <span class="math inline">\(Enc(r_*)\)</span> and <span class="math inline">\(Enc(s_*)\)</span> to get <span class="math inline">\(Enc(t_*)\)</span>, <span class="math inline">\(t_i=r_i+s_i+e_i\)</span> for some error <span class="math inline">\(e_i\)</span>, so it is good to always assume our numbers are possibly off by some “noise” which accumulates as more operations are done on them.</p></li>
+<li><p>For example, adding <span class="math inline">\(Enc(r_*)\)</span> and <span class="math inline">\(Enc(s_*)\)</span> to get <span class="math inline">\(Enc(t_*)\)</span>, <span class="math inline">\(t_i=r_i+s_i+e_i\)</span> for some error <span class="math inline">\(e_i\)</span>. We should always assume our numbers are possibly off by some “noise” which accumulates as more operations are done on them.</p></li>
 <li><p>This shouldn’t be too surprising (e.g.&nbsp;in Python, 0.1 + 0.3 is not exactly 0.4).</p></li>
 <li><p>As a default, we assume starting noise (lack of precision) is around <span class="math inline">\(10^{-10}\)</span>.</p></li>
 </ul></li>
@@ -699,10 +699,10 @@ window.Quarto = {
 </ul>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 19%">
-<col style="width: 29%">
-<col style="width: 25%">
-<col style="width: 25%">
+<col style="width: 23%">
+<col style="width: 27%">
+<col style="width: 24%">
+<col style="width: 24%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -733,7 +733,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>Therefore, as we build additional functions, we must keep in mind the cost of each individual function, since each auxiliary function builds into more complex functions.</p>
+<p>Therefore, as we build additional functions, we must keep in mind the cost of each individual function. This is because each auxiliary function builds into further complex functions.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
