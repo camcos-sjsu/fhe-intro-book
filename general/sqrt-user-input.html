@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>5&nbsp; The Square Root (and User Input) – fhe-intro-book</title>
+<title>5&nbsp; Square Root and User Input – fhe-intro-book</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -292,7 +292,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../general/intro.html">General Functions</a></li><li class="breadcrumb-item"><a href="../general/sqrt-user-input.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">The Square Root (and User Input)</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../general/intro.html">General Functions</a></li><li class="breadcrumb-item"><a href="../general/sqrt-user-input.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Square Root and User Input</span></a></li></ol></nav>
         <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -367,13 +367,13 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../general/taylor-approx.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Taylor Approximation (and Exponentiation)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Taylor Approximation and Exponentiation</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../general/sqrt-user-input.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">The Square Root (and User Input)</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Square Root and User Input</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -662,9 +662,9 @@ window.Quarto = {
 <main class="content" id="quarto-document-content" tabindex="-1">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../general/intro.html">General Functions</a></li><li class="breadcrumb-item"><a href="../general/sqrt-user-input.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">The Square Root (and User Input)</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../general/intro.html">General Functions</a></li><li class="breadcrumb-item"><a href="../general/sqrt-user-input.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Square Root and User Input</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">The Square Root (and User Input)</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Square Root and User Input</span></h1>
 </div>
 
 
@@ -681,7 +681,7 @@ window.Quarto = {
 </header>
 
 
-<p>We can similarly take the square root by expanding a Taylor series. The square root has no Taylor series at <span class="math inline">\(x=0\)</span>, but can be expanded elsewhere, such as at <span class="math inline">\(x=1\)</span>: <span class="math display">\[\sqrt{1-x} = 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16} - \frac{5 x^4}{128} - \frac{7 x^5}{256} + O(x^6) + \cdots \]</span> which converges when <span class="math inline">\(|x| \leq 1\)</span>.</p>
+<p>The quare root can be calculated by expanding a Taylor series. It has no Taylor series at <span class="math inline">\(x=0\)</span>, but can be expanded elsewhere, such as at <span class="math inline">\(x=1\)</span>: <span class="math display">\[\sqrt{1-x} = 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16} - \frac{5 x^4}{128} - \frac{7 x^5}{256} + O(x^6) + \cdots \]</span> which converges when <span class="math inline">\(|x| \leq 1\)</span>.</p>
 <p>However, if we give the user <span class="math inline">\(x\)</span>, it might be easier for the user to compute <span class="math inline">\(\sqrt{x}\)</span> on the client side! Thus, frequently we might just consider <em>not</em> doing some computation over FHE, given business logic allows us to do so.</p>
 <p>To summarize,</p>
 <ol type="1">
@@ -1231,8 +1231,8 @@ window.Quarto = {
   </script>
 <nav class="page-navigation" aria-label="Page">
   <div class="nav-page nav-page-previous">
-      <a href="../general/taylor-approx.html" class="pagination-link" aria-label="Taylor Approximation (and Exponentiation)">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Taylor Approximation (and Exponentiation)</span></span>
+      <a href="../general/taylor-approx.html" class="pagination-link" aria-label="Taylor Approximation and Exponentiation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Taylor Approximation and Exponentiation</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

@@ -75,23 +75,23 @@
   {
     "objectID": "general/taylor-approx.html",
     "href": "general/taylor-approx.html",
-    "title": "4  Taylor Approximation (and Exponentiation)",
+    "title": "4  Taylor Approximation and Exponentiation",
     "section": "",
     "text": "Beyond our base moves, many functions which are of interest to us can be approximated with Taylor approximation: approximate a function by the first few terms of its power series. This is fairly straightforward in CKKS, involving only a combination of basic moves: additions, powers (multiplications), and scalar divisions.\nWe show the Taylor approximation of the exponential function as an illustrative example: \\[e^z \\approx \\sum_{k=0}^{N} \\frac{z^k}{k!} = 1 + z + \\frac{z^2}{2!} + \\frac{z^3}{3!} + \\dots + \\frac{z^N}{N!}\\]\nFigure 4.1 compares these approximations with \\(e^z\\). Each one is accurate near \\(z = 0\\) and drifts away from it, and a larger \\(N\\) stays accurate over a wider range.\n\n\n\n\n\n\n\n\nFigure 4.1: Taylor approximations of \\(e^z\\) for \\(N = 2, 4, 6\\) compared with \\(e^z\\).\n\n\n\n\n\nOur main thoughts on Taylor approximation are:\n\nIn a purely mathematical setting, a higher \\(N\\) results in higher accuracy, yet in FHE, too large of an \\(N\\) can result in lower accuracy as noise accumulates. We desire a middle-ground \\(N\\) that produces a close approximation while mitigating cost and noise concerns.\nWe need to have a good sense of where our input lies for convergence assumptions. In general, there is a radius of convergence for \\(z\\) (or \\(x\\)), which in the exponential case is infinite. But even within the radius of convergence you may in practice want the assumed domain to be even tighter for faster convergence.\nIn several cases, it seems possible to employ “range reduction” techniques to tighten domains. For example, here we can make \\(x\\) smaller using \\(e^x = (e^{x/k})^k\\) – in other words, we approximate \\(e^{x/k}\\) then compute the \\(k\\)-th power of the result. Even better, when applicable, we may just pass the \\(k\\)-th power computation to the client.",
     "crumbs": [
       "General Functions",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taylor Approximation (and Exponentiation)</span>"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Taylor Approximation and Exponentiation</span>"
     ]
   },
   {
     "objectID": "general/sqrt-user-input.html",
     "href": "general/sqrt-user-input.html",
-    "title": "5  The Square Root (and User Input)",
+    "title": "5  Square Root and User Input",
     "section": "",
-    "text": "We can similarly take the square root by expanding a Taylor series. The square root has no Taylor series at \\(x=0\\), but can be expanded elsewhere, such as at \\(x=1\\): \\[\\sqrt{1-x} = 1 - \\frac{x}{2} - \\frac{x^2}{8} - \\frac{x^3}{16} - \\frac{5 x^4}{128} - \\frac{7 x^5}{256} + O(x^6) + \\cdots \\] which converges when \\(|x| \\leq 1\\).\nHowever, if we give the user \\(x\\), it might be easier for the user to compute \\(\\sqrt{x}\\) on the client side! Thus, frequently we might just consider not doing some computation over FHE, given business logic allows us to do so.\nTo summarize,\n\nWe can (and at times must) take Taylor series around points other than \\(x=0\\),\nHowever we frequently may be able to skirt the problem using user output (and input). This is an important idea going forward to reduce computational cost, but will be tabled for now. Note that this is only feasible when giving the input back to the user does not compromise security.\n\n\n\n\n\n\n\nTipRemark\n\n\n\nWe also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by \\(x\\), which is expensive. See Division for more information.",
+    "text": "The quare root can be calculated by expanding a Taylor series. It has no Taylor series at \\(x=0\\), but can be expanded elsewhere, such as at \\(x=1\\): \\[\\sqrt{1-x} = 1 - \\frac{x}{2} - \\frac{x^2}{8} - \\frac{x^3}{16} - \\frac{5 x^4}{128} - \\frac{7 x^5}{256} + O(x^6) + \\cdots \\] which converges when \\(|x| \\leq 1\\).\nHowever, if we give the user \\(x\\), it might be easier for the user to compute \\(\\sqrt{x}\\) on the client side! Thus, frequently we might just consider not doing some computation over FHE, given business logic allows us to do so.\nTo summarize,\n\nWe can (and at times must) take Taylor series around points other than \\(x=0\\),\nHowever we frequently may be able to skirt the problem using user output (and input). This is an important idea going forward to reduce computational cost, but will be tabled for now. Note that this is only feasible when giving the input back to the user does not compromise security.\n\n\n\n\n\n\n\nTipRemark\n\n\n\nWe also explored e.g. the Babylonian approximation method[^bab] for taking the square root, but that would involve dividing by \\(x\\), which is expensive. See Division for more information.",
     "crumbs": [
       "General Functions",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>The Square Root (and User Input)</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Square Root and User Input</span>"
     ]
   },
   {
