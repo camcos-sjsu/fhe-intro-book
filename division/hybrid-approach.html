@@ -52,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-85454a75ad7bd09e4de24724d71cdd5d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-49d857635d4dd5c100eb49d0275faa58.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -683,12 +683,7 @@ window.Quarto = {
 
 <p>The sum of the geometric series does most of its heavy lifting in the first few iterations, and then closes in slowly and expensively. Newton’s method has the opposite problem: the only universal good starting point would be too far to the edge of the basin, and would waste the bulk of its moves in the beginning, making almost no progress toward sufficient convergence.</p>
 <p>Perhaps the two approaches could be combined into a hybrid. The first one or two terms of the sum of the geometric series are less expensive and put us strongly within the basin of convergence, at which point we can put Newton in the driver’s seat. Our opening guess for Newton’s <span class="math inline">\(x_0\)</span> would be guaranteed to be in the convergence basin and well ahead of the default universal guess.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://hackmd.io/_uploads/S1Djilqbfe.gif" class="img-fluid figure-img"></p>
-<figcaption>hybrid_animation</figcaption>
-</figure>
-</div>
+<p><img src="https://hackmd.io/_uploads/S1Djilqbfe.gif" class="img-fluid" alt="A simple animation for the Hybrid Approach">{#fig-hybrid-animation</p>
 <p><a href="#fig-hybrid-error" class="quarto-xref">Figure&nbsp;<span>9.1</span></a> compares the three approaches for <span class="math inline">\(d = 11\)</span>. The horizontal axis counts the ciphertext multiplications each approach has spent, which is the expensive operation in CKKS, and the vertical axis shows how many decimal digits of error remain (each step down is a factor of 10 smaller).</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
