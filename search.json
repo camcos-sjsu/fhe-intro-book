@@ -97,12 +97,12 @@
   {
     "objectID": "general/logarithm.html",
     "href": "general/logarithm.html",
-    "title": "6  Logarithm (First Glance)",
+    "title": "6  Logarithm",
     "section": "",
-    "text": "As usual, the Taylor approximation is a good default, and immediately doable with basic moves here: additions, powers (multiplications), and scalar divisions.\nImportantly, as \\(\\log_2(x)\\) is undefined at \\(0\\), there is no Taylor expansion centered at \\(0\\) to use for approximation. We bypass this by approximating around \\(x=1\\), writing \\(x=1+u\\). Now we can use a standard Taylor series expansion: \\[\\log_2(1+u)=\\log_2(x) \\approx \\frac{1}{\\log_e(2)} \\sum_{k=1}^{N} (-1)^{k+1} \\frac{(x-1)^k}{k}\\] \\[= \\frac{1}{\\log_e(2)} \\Bigg[ (x-1) - \\frac{(x-1)^2}{2} + \\frac{(x-1)^3}{3} - \\frac{(x-1)^4}{4} + \\dots \\Bigg].\\]\nThe series only converges for \\(x \\in (0, 2]\\).\n\n\n\n\n\n\nTipRemark\n\n\n\nIn Discrete Math we will explore another approach to log which is not ripe now for practical use, but can give ideas on how to push FHE further.",
+    "text": "A logarithm can be taken through a Taylor approximation and immediately doable with basic moves such as: additions, powers (multiplications), and scalar divisions.\nImportantly, as \\(\\log_2(x)\\) is undefined at \\(0\\), there is no Taylor expansion centered at \\(0\\) to use for approximation. We bypass this by approximating around \\(x=1\\), writing \\(x=1+u\\). Now we can use a standard Taylor series expansion: \\[\\log_2(1+u)=\\log_2(x) \\approx \\frac{1}{\\log_e(2)} \\sum_{k=1}^{N} (-1)^{k+1} \\frac{(x-1)^k}{k}\\] \\[= \\frac{1}{\\log_e(2)} \\Bigg[ (x-1) - \\frac{(x-1)^2}{2} + \\frac{(x-1)^3}{3} - \\frac{(x-1)^4}{4} + \\dots \\Bigg].\\]\nThe series only converges for \\(x \\in (0, 2]\\).\n\n\n\n\n\n\nTipRemark\n\n\n\nIn Discrete Math we will explore another approach to log which is not ripe now for practical use, but can give ideas on how to push FHE further.",
     "crumbs": [
       "General Functions",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Logarithm (First Glance)</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Logarithm</span>"
     ]
   },
   {
