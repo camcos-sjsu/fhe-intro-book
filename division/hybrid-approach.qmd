@@ -9,7 +9,7 @@ Perhaps the two approaches could be combined into a hybrid. The first one or two
 #| results: asis
 
 if (knitr::is_html_output()) {
-  cat("![A simple animation for the Hybrid Approach](https://hackmd.io/_uploads/S1Djilqbfe.gif){#fig-hybrid-animation")
+  cat("![A simple animation for the Hybrid Approach](https://hackmd.io/_uploads/S1Djilqbfe.gif){#fig-hybrid-animation}")
 } else {
 }
 
