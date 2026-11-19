@@ -1,21 +1,28 @@
 # General Functions
 
-In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions: - sums - exponentiation - square root - log
+In this section, we design some general-use functions which may find place in subroutines used in the building of more complex functions:
 
-We will also be using these functions as examples to show **techniques** that would be useful in other scenarios. Specifically: 
+-   **sums**
 
-1. Exponentiation shows the power of **Taylor series**. 
+-   **exponentiation**
 
-2. The square root conveys the utility of **giving computation back to the user post-FHE**.
+-   **square root**
+
+-   **log**
+
+We will also be using these functions as examples to show **techniques** that would be useful in other scenarios.
+
+1.  Exponentiation shows the power of **Taylor series**.
+
+2.  The square root conveys the utility of **giving computation back to the user post-FHE**.
 
 ## Some Basics
 
-We are allowed to generate encoded vectors of any constant, c. $$ct_c=enc(c_1, c_2, \dots,c_{N/2})$$ Note that $c_i$ can be distinct from $c_j$ This allows us to do computations with pre-computed constant vectors $$c*enc(z_*)=enc(c,c,\dots,c)*enc(z_*)=enc(cz_1,cz_2,\dots,cz_{N/2})$$ 
-Since we have multiplication, it is easy to divide by *known constants*, since we can multiply by their inverse. Specifically, we can take $$\mathtt{enc}(z_*) * \mathtt{enc}(\frac{1}{c_*}) \rightarrow \mathtt{enc}(\frac{z_1}{c_1}, \ldots, \frac{z_{N/2}}{c_{N/2}})$$ by precomputing constants $1/c_*$ from $c_*$.
+We are allowed to generate encoded vectors of any constant, c. $$ct_c=enc(c_1, c_2, \dots,c_{N/2})$$ Note that $c_i$ can be distinct from $c_j$ This allows us to do computations with pre-computed constant vectors $$c*enc(z_*)=enc(c,c,\dots,c)*enc(z_*)=enc(cz_1,cz_2,\dots,cz_{N/2})$$ Since we have multiplication, it is easy to divide by *known constants*, since we can multiply by their inverse. Specifically, we can take $$\mathtt{enc}(z_*) * \mathtt{enc}(\frac{1}{c_*}) \rightarrow \mathtt{enc}(\frac{z_1}{c_1}, \ldots, \frac{z_{N/2}}{c_{N/2}})$$ by precomputing constants $1/c_*$ from $c_*$.
 
-### Selection Vector (a.k.a. One-Hot, Masking, Binary Vector)
+### Selection Vector (One-Hot, Masking, Binary Vector)
 
-Suppose we want certain elements in our ciphertext. We can encrypt a vector of ones (selected) and zeros (not selected) to decide on which elements are needed. For example, if we wanted to take only the first element of our vector $ct=enc(z_1,z_2,\dots z_{N/2})$, all we need is one multiplication with our pre-encrypted $ct_0=enc(1,0,0,\dots0)$ to obtain $$ct_*=ct_0*ct=enc(1,0,0,\dots,0)*enc(z_1,z_2,\dots, z_{N/2})=enc(z_1,0,0,\dots,0)$$
+Suppose we want certain elements in our ciphertext. We can encrypt a vector of ones (selected) and zeros (not selected) to decide on which elements are needed. For example, consider a scenario where we want to take only the first element of our vector $ct=enc(z_1,z_2,\dots z_{N/2})$. All we need is one multiplication with our pre-encrypted $ct_0=enc(1,0,0,\dots0)$ to obtain $$ct_*=ct_0*ct=enc(1,0,0,\dots,0)*enc(z_1,z_2,\dots, z_{N/2})=enc(z_1,0,0,\dots,0)$$
 
 ### Efficient Exponentiation (Repeated Squaring)
 
@@ -36,4 +43,3 @@ $X^5=X^2*X^3$ (three operations)
 $X^6=X^3*X^3$ (three operations) ... and so on.
 
 Therefore, we can obtain X to the $k^{th}$ exponent in $O(\log(k))$ operations.
-
