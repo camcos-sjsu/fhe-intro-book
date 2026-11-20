@@ -690,7 +690,12 @@ window.Quarto = {
 <p>After plugging back in, <span class="math display">\[\tanh(x)\approx x*\Big(1-\frac{2x}{2!}+\frac{4x^2}{3!}-\cdots\Big)*(1-r+r^2-r^3+\cdots)\]</span> Computing powers of <span class="math inline">\(r\)</span>, simplifying terms then finding the least common multiple for up to power <span class="math inline">\(9\)</span>, <span class="math display">\[\tanh(x)\approx \frac{2835x-945x^3+378x^5-153x^7+62x^9}{2835}-\cdots\]</span></p>
 <p>This series has a radius of convergence <span class="math inline">\(\pi/2\)</span> (the nearest singularities of <span class="math inline">\(\tanh\)</span> are at <span class="math inline">\(x=\pm i\pi/2\)</span>, where <span class="math inline">\(e^{-2x}=-1\)</span>), so it converges only for <span class="math inline">\(-\pi/2&lt;x&lt;\pi/2\)</span>, half the interval of the logistic series. As we show below, this is only a rescaling, not a real disadvantage.</p>
 <p>Note that <span class="math inline">\(\tanh\)</span> takes values in <span class="math inline">\((-1, 1)\)</span>, so this polynomial approximates <span class="math inline">\(\mathtt{sign}_{-1,1,0}(x) = -1 + 2\,\mathtt{sign}(x)\)</span> rather than our <span class="math inline">\(0/1\)</span> sign function. Solving for <span class="math inline">\(\mathtt{sign}(x)\)</span>, we use the rescaled version <span class="math display">\[\mathtt{sign}(x) \approx \frac{1+\tanh(x)}{2} \approx \frac{1}{2} + \frac{x}{2} - \frac{x^3}{6} + \frac{x^5}{15} - \frac{17x^7}{630} + \frac{31x^9}{2835}.\]</span> The halving and shift can be folded into the coefficients, so this costs nothing beyond the tanh polynomial. It’s also just the logistic polynomial evaluated at <span class="math inline">\(2x\)</span>, since <span class="math inline">\(\frac{1+\tanh(x)}{2} = \sigma(2x)\)</span>. That’s where the radius of <span class="math inline">\(\pi/2\)</span> comes from: the logistic series converges for <span class="math inline">\(|2x|&lt;\pi\)</span>.</p>
-<p><img src="https://hackmd.io/_uploads/Skm4LV9Zfe.png" class="img-fluid" alt="tanh_by_k_steepness"> <strong>Figure</strong>: different graphs of the function <span class="math inline">\(\tanh(kx)\)</span> with steepness parameter <span class="math inline">\(k\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/Skm4LV9Zfe.png" class="img-fluid figure-img"></p>
+<figcaption>Figure 13.1: Different graphs of the function tanh(kx) with steepness parameter k.</figcaption>
+</figure>
+</div>
 
 
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">

@@ -681,20 +681,27 @@ window.Quarto = {
 </header>
 
 
+<p>A <strong>sigmoid function</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> is an S-shaped curve that smoothly transitions between two values. It converges to the discontinuous sign function as its steepness increases, making such functions natural choices for our approximation.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://hackmd.io/_uploads/ryPBmCDFbe.png" class="img-fluid figure-img"></p>
-<figcaption>sign_approx</figcaption>
+<figcaption>Figure 12.1: Graphs of Smooth Approximations to sign(x)</figcaption>
 </figure>
 </div>
-<p>A <strong>sigmoid function</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> is an S-shaped curve that smoothly transitions between two values, essentially converging to the discontinuous sign function as its steepness increases, making such functions natural choices for our approximation. A common instance of a sigmoid function is the <strong>logistic function</strong>, which has standard definition <span class="math inline">\(\sigma(x) = \frac{1}{1+e^{-x}}\)</span>. We begin our approximation of logistic using the series expansion for exponentiation: <span class="math display">\[e^x\approx1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots\]</span></p>
+<p>A common instance of a sigmoid function is the <strong>logistic function</strong>, which has standard definition <span class="math inline">\(\sigma(x) = \frac{1}{1+e^{-x}}\)</span>. We begin our approximation of logistic using the series expansion for exponentiation: <span class="math display">\[e^x\approx1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots\]</span></p>
 <p><span class="math display">\[1+e^{-x}\approx2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}+\dots\]</span></p>
 <p><span class="math display">\[\sigma(x)=\frac{1}{1+e^{-x}}\approx\frac{1}{2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}}\]</span></p>
 <p><span class="math display">\[\sigma(x)\approx\frac{1}{2} \cdot \frac{1}{1 + \left(-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12} + \frac{x^4}{48} - \frac{x^5}{240} + \frac{x^6}{1440} - \frac{x^7}{10080} + \frac{x^8}{80640} - \frac{x^9}{725760}\right)}\]</span></p>
-<p>Denoting the entire term inside the parentheses as <span class="math inline">\(r\)</span>, i.e.&nbsp;<span class="math inline">\(r=-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12}+\dots\)</span> , we can then use the geometric series identity <span class="math inline">\(\frac{1}{1+r}=1-r+r^2-r^3+\dots\)</span> ; computing powers of <span class="math inline">\(r\)</span> then canceling/ simplifying, we arrive at</p>
+<p>We denote the entire term inside the parentheses as <span class="math inline">\(r\)</span>, i.e.&nbsp;<span class="math inline">\(r=-\frac{x}{2} + \frac{x^2}{4} - \frac{x^3}{12}+\dots\)</span> . We can then use the geometric series identity <span class="math inline">\(\frac{1}{1+r}=1-r+r^2-r^3+\dots\)</span> ; computing powers of <span class="math inline">\(r\)</span> then canceling/ simplifying. We arrive at</p>
 <p><span class="math display">\[\sigma(x)\approx\frac{725760+362880*x-30240*x^3+3024*x^5-306*x^7+31*x^9}{1451520}-\cdots\]</span></p>
-<p>which reduces to an ordinary polynomial multiplied with an integer reciprocal, legal under the CKKS moves! However… 1. in theory, this series will only converge within <span class="math inline">\(0&lt;x&lt;\pi\)</span>. This is for two separate reasons, one being that the “<span class="math inline">\(r\)</span>” term of the geometric series is <span class="math inline">\(e^{-x}\)</span>, which is greater than <span class="math inline">\(1\)</span> for <span class="math inline">\(x&lt;0\)</span> and will diverge. The other reason is that the nearest singularity to <span class="math inline">\(0\)</span> is at <span class="math inline">\(\pi\)</span>. 2. in practice, the approximation error is very large, and the function will quickly diverge.</p>
-<p><img src="https://hackmd.io/_uploads/Hy0MLEqbfe.png" class="img-fluid" alt="image"> <strong>Figure</strong>: different graphs of the function <span class="math inline">\(\sigma(kx)\)</span> with steepness parameter <span class="math inline">\(k\)</span>.</p>
+<p>which reduces to an ordinary polynomial multiplied with an integer reciprocal, legal under the CKKS moves!</p>
+<p>However… 1. in theory, this series will only converge within <span class="math inline">\(0&lt;x&lt;\pi\)</span>. This is for two separate reasons, one being that the “<span class="math inline">\(r\)</span>” term of the geometric series is <span class="math inline">\(e^{-x}\)</span>, which is greater than <span class="math inline">\(1\)</span> for <span class="math inline">\(x&lt;0\)</span> and will diverge. The other reason is that the nearest singularity to <span class="math inline">\(0\)</span> is at <span class="math inline">\(\pi\)</span>. 2. in practice, the approximation error is very large, and the function will quickly diverge.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://hackmd.io/_uploads/Hy0MLEqbfe.png" class="img-fluid figure-img"></p>
+<figcaption>Figure 12.2: Different graphs of the function sigma(kx) with steepness parameter k.</figcaption>
+</figure>
+</div>
 
 
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
