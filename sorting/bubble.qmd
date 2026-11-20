@@ -6,11 +6,10 @@ editor:
 
 ### Bubble Sort
 
-As a proof-of-concept, we choose to use **bubble sort**[^bubble-1] as a starting point for sorting.\
+As a proof-of-concept, we choose to use **bubble sort** as a starting point for sorting.\
 Despite being a well-known "slow" sorting algorithm, it is a good candidate for FHE prototyping because its operations are local: only swaps, with no dynamic memory allocation (which e.g. quicksort would need).
 Each of its steps is one operation on a pair of positions, so we define that operation first.
 
-[^bubble-1]: **Bubble sort** available from https://en.wikipedia.org/wiki/Bubble_sort
 
 ### PairSort {#sec-pairsort}
 
