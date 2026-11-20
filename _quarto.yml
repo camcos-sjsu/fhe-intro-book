@@ -62,7 +62,7 @@ book:
         - other/shannon-entropy.qmd
         - other/adaptive-division.qmd
         - other/logarithm-revisited.qmd
-    - part: conclusion.qmd
+    - conclusion.qmd
 
   appendices:
     - ckks-under-the-hood.qmd
