@@ -6,7 +6,7 @@ Here we compute the [difference matrix](/statistics/difference-matrix.qmd) $D$ f
 
 $$
 \begin{array}{c|ccccc}
-  & z_1 & z_2 & z_3 & \cdots & z_{N/2} \\
+  & d_1 & d_2 & d_3 & \cdots & d_{N/2} \\
 \hline
 d_1 & 0 & d_{1,2} & d_{1,3} & \cdots & d_{1,N/2} \\
 d_2 & d_{2,1} & 0 & d_{2,3} & \cdots & d_{2,N/2} \\
