@@ -174,7 +174,7 @@
     "href": "sign/intro.html",
     "title": "11  Sign Function",
     "section": "",
-    "text": "In many function constructions it would be of great value to have conditional logic, however, this is not immediate or straightforward in the CKKS setup. Though, we see an opportunity to do things in a “branchless” way via algebra. As a proof-of-concept (and a very important tool), we show computational approaches for a sign function that gives one of two possible values. Later we will use this function to build more powerful functions.\nTo approximate this naturally discontinuous function, we present two smooth avenues in the sigmoid family:",
+    "text": "In many function constructions it would be of great value to have conditional logic, however, this is not immediate or straightforward in the CKKS setup. Though, we see an opportunity to do things in a “branchless” way via algebra. As an important proof-of-concept, we show computational approaches for a sign function that gives one of two possible values. Later we will use this function to build more powerful functions.\nTo approximate this naturally discontinuous function, we present two smooth avenues in the sigmoid family:",
     "crumbs": [
       "Discrete Math",
       "<span class='chapter-number'>11</span>  <span class='chapter-title'>Sign Function</span>"
