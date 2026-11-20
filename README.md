@@ -25,13 +25,19 @@ Install the following packages in R studio:
 install.packages(c("knitr", "rmarkdown", "ggplot2", "dplyr", "gganimate", "gifski", "showtext", "sysfonts","TinyTex"))
 ```
 
-From the project folder, render the book:
+From the project folder, render the book.
 
+For HTML: 
 ``` sh
 quarto render
 ```
-
 Open `_book/index.html` to view it. To preview while editing, run `quarto preview` from the project folder instead.
+
+For PDF:
+``` sh
+quarto render --to pdf
+```
+Open `_book/fhe-intro-book.pdf to view it.
 
 ## Adding a new chapter to the book:
 
