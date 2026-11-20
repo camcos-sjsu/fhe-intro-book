@@ -10,10 +10,8 @@ Suppose we have a discrete random variable $X$ with possible outcomes
 $x_1,x_2,\dots,x_n$ each with corresponding probabilities
 $P(x_1), P(x_2),\dots,P(x_n)$.
 
-The **Shannon entropy**[^shannon-entropy-1] is defined as
+The **Shannon entropy** is defined as
 
-[^shannon-entropy-1]: **Entropy (information theory)** available from
-    https://en.wikipedia.org/wiki/Entropy\_(information_theory)
 
 $$H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i),$$
 
@@ -24,9 +22,8 @@ probability distribution, so all the input must be non-negative and add
 up to 1. 2. For sake of focus, we will assume that *this is already
 solved.* 3. Otherwise, this seems to be a routine case of a
 "normalization step" where each user input is divided by their sum,
-which is a combination of a **sum** and a **division** of the form $$
-P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}.
-$$
+which is a combination of a **sum** and a **division** of the form 
+$$ P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}. $$
 
 We should then end up with a vector $x = (P(x_1), \ldots, P(x_n))$.
 

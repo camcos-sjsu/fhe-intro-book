@@ -1,12 +1,8 @@
 # CKKS Under The Hood
-
-[^inferati]: https://faculty.kfupm.edu.sa/coe/mfelemban/SEC595/References/Introduction%20to%20the%20CKKS-HEAAN%20FHE%20Scheme.pdf?
-
-[^ckks]: https://eprint.iacr.org/2016/421.pdf
  
-For a reader desiring to take an "under the hood" look at CKKS, we provide an accelerated review here.  We refer to the original CKKS paper: "Homomorphic Encryption for Arithmetic of Approximate Numbers"[^ckks] as well as Inferati Inc.'s article "Introduction to the CKKS/HEAAN FHE Scheme"[^inferati].  In particular, we may ask, what exactly is a CKKS **ciphertext** as a mathematical object? 
+For a reader desiring to take an "under the hood" look at CKKS, we provide an accelerated review here.  We refer to the original CKKS paper: "Homomorphic Encryption for Arithmetic of Approximate Numbers" @Cheon_Kim_Kim_Song_2017 as well as Inferati Inc.'s article "Introduction to the CKKS/HEAAN FHE Scheme"@inferati2022introduction.  In particular, we may ask, what exactly is a CKKS **ciphertext** as a mathematical object? 
  
-Inferati describes the "main idea" of CKKS/HEAAN as combining a message/"**payload**" $\mu$ with the associated **noise**/error $e$, together generating the **plaintext** to be encryped, $\mu + e$.  Importantly, we can't separate the two to their exact values after encrypting.  The payload information ($\mu$, $e$, and payload/noise **budget** $q - (\mu + e)$ where $q$ is the "**ciphertext coefficient modulus**") is contained in a polynomial.  One additional polynomial is used for decryption.  For convenience, the polynomials are initially assumed to be of degree zero here.  So, structurally (in highly simplified terms): **a ciphertext in CKKS is** (typically) **a pair of polynomials**.
+Inferati describes the "main idea" of CKKS/HEAAN as combining a message/"**payload**" $\mu$ with the associated **noise**/error $e$, together generating the **plaintext** to be encrypted, $\mu + e$.  Importantly, we can't separate the two to their exact values after encrypting.  The payload information ($\mu$, $e$, and payload/noise **budget** $q - (\mu + e)$ where $q$ is the "**ciphertext coefficient modulus**") is contained in a polynomial.  One additional polynomial is used for decryption.  For convenience, the polynomials are initially assumed to be of degree zero here.  So, structurally (in highly simplified terms): **a ciphertext in CKKS is** (typically) **a pair of polynomials**.
  
 Both polynomials' coefficients are bounded by $q$:  as we compute on ciphertexts, the plaintext magnitude grows– we can perform computations until its coefficient values reach the specified bound.  In other words, CKKS ciphertext arithmetic is performed mod $q$ in a polynomial ring.  We choose a sufficiently large $q$ as to avoid "wraparound"/ output which may not make sense/be accurate to a client.  Essentially, we don't want magnitude to grow too large relative to the modulus $q$. 
 
