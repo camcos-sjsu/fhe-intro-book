@@ -84,6 +84,8 @@ format:
     toc: true
   pdf:
     pdf-engine: xelatex
+    documentclass: book
+    pdf-standard: ua-2
 
 # store any code computations 
 #execute: 
