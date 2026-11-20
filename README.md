@@ -2,12 +2,11 @@
 
 Introductory book on programmable computation within a fully homomorphic environment.
 
-## View the book on the web 
+## View the book on the web
 
-The book is available to read at the following site: 
-https://camcos-sjsu.github.io/fhe-intro-book/
+The book is available to read at the following site: https://camcos-sjsu.github.io/fhe-intro-book/
 
-Updates to the main branch are automatically published via the gh-pages branch on each new commit. 
+Updates to the main branch are automatically published via the gh-pages branch on each new commit.
 
 ## Render the book locally
 
@@ -23,7 +22,7 @@ cd fhe-intro-book
 Install the following packages in R studio:
 
 ``` r
-install.packages(c("knitr", "rmarkdown", "ggplot2", "dplyr", "gganimate", "gifski", "showtext", "sysfonts"))
+install.packages(c("knitr", "rmarkdown", "ggplot2", "dplyr", "gganimate", "gifski", "showtext", "sysfonts","TinyTex"))
 ```
 
 From the project folder, render the book:
