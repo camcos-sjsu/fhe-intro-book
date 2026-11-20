@@ -689,21 +689,17 @@ window.Quarto = {
 <p>In order to obtain the <span class="math inline">\(k^{th}\)</span> sample moment, we must perform three actions:</p>
 <ol type="1">
 <li><p>Compute <span class="math inline">\((x_1^k,x_2^k,\ldots,x_n^k)\)</span>.</p></li>
-<li><p>Compute <span class="math inline">\((x_1^k+x_2^k+\ldots+x_n^k)\)</span>.</p></li>
-</ol>
-<p>Performing the <a href="../general/intravector-sums.html">intra-vector sum</a> operation allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_{n}^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p>
-<ol start="3" type="1">
-<li>Divide by <span class="math inline">\(n\)</span> (a known constant) by multiplying by the vector <span class="math inline">\((1/n) \cdot (1, 1, \cdots, 1)\)</span>.</li>
+<li><p>Compute <span class="math inline">\((x_1^k+x_2^k+\ldots+x_n^k)\)</span>.</p>
+<p>Performing the <a href="../general/intravector-sums.html">intra-vector sum</a> operation allows us to get the vector <span class="math inline">\((x_1^k + \cdots + x_{n}^k)\cdot  (1,1, \cdots, 1)\)</span> in <span class="math inline">\(O(\log(n))\)</span> additional operations.</p></li>
+<li><p>Divide by <span class="math inline">\(n\)</span> (a known constant) by multiplying by the vector <span class="math inline">\((1/n) \cdot (1, 1, \cdots, 1)\)</span>.</p></li>
 </ol>
 <p>Naturally, the first sample moment only needs steps 2 and 3:</p>
 <p><span class="math display">\[m_1=\bar{x}=\frac{1}{n}\sum_{i=1}^nx_i\]</span></p>
 <p>We are then able to compute the following variations:</p>
 <ol type="1">
-<li><strong>Central moment</strong>: The <span class="math inline">\(k^{th}\)</span> population central moment of <span class="math inline">\(X\)</span> about mean <span class="math inline">\(\mu\)</span> is <span class="math display">\[E[(X-\mu)^k]=E[(X-E[X])^k].\]</span> The <span class="math inline">\(k^{th}\)</span> sample central moment of <span class="math inline">\(X\)</span> about mean <span class="math inline">\(\mu\)</span> is <span class="math display">\[m_k=\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^k\]</span></li>
-</ol>
-<p>Note: The <span class="math inline">\(2^{nd}\)</span> central moment is used to calculate the variance: <span class="math display">\[\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.\]</span></p>
-<ol start="2" type="1">
-<li><strong>Standardized moment</strong>: This is the population central moment but <span class="math inline">\(X-\mu\)</span> is scaled by the standard deviation <span class="math inline">\(\sigma\)</span> before exponentiation: <span class="math display">\[E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].\]</span> The sample standardized moment is then <span class="math display">\[\frac{m_k}{s^k}=\frac{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^k}{\sqrt{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2}^k}\]</span></li>
+<li><p><strong>Central moment</strong>: The <span class="math inline">\(k^{th}\)</span> population central moment of <span class="math inline">\(X\)</span> about mean <span class="math inline">\(\mu\)</span> is <span class="math display">\[E[(X-\mu)^k]=E[(X-E[X])^k].\]</span> The <span class="math inline">\(k^{th}\)</span> sample central moment of <span class="math inline">\(X\)</span> about mean <span class="math inline">\(\mu\)</span> is <span class="math display">\[m_k=\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^k\]</span></p>
+<p>Note: The <span class="math inline">\(2^{nd}\)</span> central moment is used to calculate the variance: <span class="math display">\[\mathtt{var}{(X)}=E[(X-E[X])^2]=E[X^2]-\mu^2.\]</span></p></li>
+<li><p><strong>Standardized moment</strong>: This is the population central moment but <span class="math inline">\(X-\mu\)</span> is scaled by the standard deviation <span class="math inline">\(\sigma\)</span> before exponentiation: <span class="math display">\[E\left[\left(\frac{X-\mu}{\sigma}\right)^k\right].\]</span> The sample standardized moment is then <span class="math display">\[\frac{m_k}{s^k}=\frac{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^k}{\sqrt{\frac{1}{n}\sum_{i=1}^n(x_i-\bar{x})^2}^k}\]</span></p></li>
 </ol>
 <div class="callout callout-style-default callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
