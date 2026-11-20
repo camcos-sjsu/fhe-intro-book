@@ -52,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-51f97550cb847c909903a7c8ae088504.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-87ec73848523cf9f72d0ce5695f13c04.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -686,7 +686,7 @@ window.Quarto = {
 <ul>
 <li><p><strong>precision</strong> refers to a way an encryption of a number “decays with time” (as all known fully homomorphic schemes do). The basic idea is that after an operation, the new result will have some added mathematical noise.</p>
 <ul>
-<li><p>For example, adding <span class="math inline">\(Enc(r_*)\)</span> and <span class="math inline">\(Enc(s_*)\)</span> to get <span class="math inline">\(Enc(t_*)\)</span>, <span class="math inline">\(t_i=r_i+s_i+e_i\)</span> for some error <span class="math inline">\(e_i\)</span>. We should always assume our numbers are possibly off by some “noise” which accumulates as more operations are done on them.</p></li>
+<li><p>For example, adding <span class="math inline">\(\mathtt{enc}(r_*)\)</span> and <span class="math inline">\(\mathtt{enc}(s_*)\)</span> to get <span class="math inline">\(\mathtt{enc}(t_*)\)</span>, <span class="math inline">\(t_i=r_i+s_i+e_i\)</span> for some error <span class="math inline">\(e_i\)</span>. We should always assume our numbers are possibly off by some “noise” which accumulates as more operations are done on them.</p></li>
 <li><p>This shouldn’t be too surprising (e.g.&nbsp;in Python, 0.1 + 0.3 is not exactly 0.4).</p></li>
 <li><p>As a default, we assume starting noise (lack of precision) is around <span class="math inline">\(10^{-10}\)</span>.</p></li>
 </ul></li>
