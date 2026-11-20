@@ -26,7 +26,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -52,8 +72,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-85454a75ad7bd09e4de24724d71cdd5d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-49d857635d4dd5c100eb49d0275faa58.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -723,17 +743,16 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>See <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> for some independent work on matrix inversion under FHE.</p>
+<p>See <span class="citation" data-cites="cryptoeprint:2025/1274"><a href="../references.html#ref-cryptoeprint:2025/1274" role="doc-biblioref">[1]</a></span> for some independent work on matrix inversion under FHE.</p>
 </div>
 </div>
 
 
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p>Seunghu Kim, Seongbong Choi, Hyung Tae Lee; <strong>Improved Matrix Inversion with Packed Ciphertexts using Fully Homomorphic Encryption</strong> available from https://eprint.iacr.org/2025/1274.pdf<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-cryptoeprint:2025/1274" class="csl-entry" role="listitem">
+<div class="csl-left-margin">[1] </div><div class="csl-right-inline">S. Kim, S. Choi, and H. T. Lee, <span>“Improved matrix inversion with packed ciphertexts using fully homomorphic encryption.”</span> Cryptology <span>ePrint</span> Archive, Paper 2025/1274, 2025. Available: <a href="https://eprint.iacr.org/2025/1274">https://eprint.iacr.org/2025/1274</a></div>
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
