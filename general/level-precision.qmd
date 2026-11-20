@@ -6,7 +6,7 @@ In this table,
 
 -   **precision** refers to a way an encryption of a number "decays with time" (as all known fully homomorphic schemes do). The basic idea is that after an operation, the new result will have some added mathematical noise.
 
-    -   For example, adding $Enc(r_*)$ and $Enc(s_*)$ to get $Enc(t_*)$, $t_i=r_i+s_i+e_i$ for some error $e_i$. We should always assume our numbers are possibly off by some "noise" which accumulates as more operations are done on them.
+    -   For example, adding $\mathtt{enc}(r_*)$ and $\mathtt{enc}(s_*)$ to get $\mathtt{enc}(t_*)$, $t_i=r_i+s_i+e_i$ for some error $e_i$. We should always assume our numbers are possibly off by some "noise" which accumulates as more operations are done on them.
 
     -   This shouldn't be too surprising (e.g. in Python, 0.1 + 0.3 is not exactly 0.4).
 
