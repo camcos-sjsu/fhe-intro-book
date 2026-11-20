@@ -70,11 +70,8 @@ division using Newton's method, as $$(I-M)^{-1} = I + M +M^2 + \cdots.$$
 However, there are still many moving parts under the hood.
 
 ::: {.callout-tip icon="false" title="**Remark**"}
-See [^linear-regression-1] for some independent work on matrix inversion
+See @cryptoeprint:2025/1274 for some independent work on matrix inversion
 under FHE.
 :::
 
-[^linear-regression-1]: Seunghu Kim, Seongbong Choi, Hyung Tae Lee;
-    **Improved Matrix Inversion with Packed Ciphertexts using Fully
-    Homomorphic Encryption** available from
-    https://eprint.iacr.org/2025/1274.pdf
+
