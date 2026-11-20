@@ -38,6 +38,7 @@ jobs:
             any::sysfonts
             any::rmarkdown
             any::curl
+            any::tinytex
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
