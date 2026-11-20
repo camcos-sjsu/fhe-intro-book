@@ -1,6 +1,6 @@
 ## Sign Function
 
-In many function constructions it would be of great value to have conditional logic, however, this is not immediate or straightforward in the CKKS setup. Though, we see an opportunity to do things in a "branchless" way via algebra. As a proof-of-concept (and a very important tool), we show computational approaches for a **sign** function that gives one of two possible values. Later we will use this function to build more powerful functions.
+In many function constructions it would be of great value to have conditional logic, however, this is not immediate or straightforward in the CKKS setup. Though, we see an opportunity to do things in a "branchless" way via algebra. As an important proof-of-concept, we show computational approaches for a **sign** function that gives one of two possible values. Later we will use this function to build more powerful functions.
 
 1.  We think of a "basic" sign function as a function $\mathtt{sign}(x)$ assigning a value of $0$ or $1$ depending on whether the input is respectively negative or positive.
     -   It is useful to think of the output value $1/2$ as a "necessary" evil for when the input is extremely close to $0$ (this will basically be a necessity since our computations are inherently continuous). In practice, we will try to avoid those values as purposefully appearing in our computations.
