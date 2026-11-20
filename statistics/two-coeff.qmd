@@ -9,25 +9,17 @@ editor:
 Given vectors $\mathbf{x}$ and $\mathbf{y}$, there are $2$ closely
 related quantities:
 
-1.  The **correlation coefficient**[^two-coeff-1], a measure of
+1.  The **correlation coefficient**, a measure of
     normalized linear association, is
     $$ r := r(x,y) =\frac{\sum_{i=1}^{N/2}(x_i-\bar{x})(y_i-\bar{y})}{\sqrt{\sum_{i=1}^{N/2}(x_i-\bar{x})^2\sum_{i=1}^{N/2}(y_i-\bar{y})^2}}.$$
 
 2.  Often people are instead interested in the square $r^2$, which is
-    called the **coefficient of determination**[^two-coeff-2].
+    called the **coefficient of determination**.
 
-3.  The **regression coefficient**[^two-coeff-3], a measure of linear
+3.  The **regression coefficient**, a measure of linear
     rate of change, is
     $$\beta = \frac{\sum_{i=1}^{N/2} (x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{N/2}(x_i-\bar{x})^2}$$
 
-[^two-coeff-1]: **Correlation coefficient** available from
-    https://en.wikipedia.org/wiki/Correlation_coefficient
-
-[^two-coeff-2]: **Coefficient of determination** available from
-    https://en.wikipedia.org/wiki/Coefficient_of_determination
-
-[^two-coeff-3]: **Linear regression** available from
-    https://en.wikipedia.org/wiki/Linear_regression
 
 These can be approached with the same general strategy:
 
