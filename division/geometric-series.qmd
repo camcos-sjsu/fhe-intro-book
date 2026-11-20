@@ -23,7 +23,7 @@ Note the correlation of $1/z_i$ with the number of iterations required: the coun
 #| results: asis
 
 if (knitr::is_html_output()) {
-  cat("![geom_animation](https://hackmd.io/_uploads/HJ7Q2lqWfx.gif)")
+  cat("![A simple animation of the Geometric Series](https://hackmd.io/_uploads/HJ7Q2lqWfx.gif){#fig-geom-animation}")
 } else {
 }
 ```

@@ -1,56 +1,73 @@
+---
+editor: 
+  markdown: 
+    wrap: 72
+---
+
 ## Linear Regression
 
 ### Simple Linear Regression
 
-Linear regression aims to find the line of best fit for a given set of data points. Recall the method of least squares,
-$$Y=\beta_0+\beta_1x+\epsilon$$
-where $\beta_0$ and $\beta_1$ are the regression coefficients of slope and intercept, Y is our response variable, x is our independent variable, and $\epsilon$ is our error, which now in FHE, includes additional computation error. 
+Linear regression aims to find the line of best fit for a given set of
+data points. Recall the method of least squares,
+$$Y=\beta_0+\beta_1x+\epsilon$$where $\beta_0$ and $\beta_1$ are the
+regression coefficients of slope and intercept, Y is our response
+variable, x is our independent variable, and $\epsilon$ is our error,
+which now in FHE, includes additional computation error.
 
-We assume a simple protocol where: 
+We assume a simple protocol where:
 
-1. Take as client input
-$x=(x_1, \dots, x_n)$ and $y=(y_1, \dots, y_n)$ 
+1.  Take as client input $x=(x_1, \dots, x_n)$ and $y=(y_1, \dots, y_n)$
 
-2. Output a model $$\hat{y}=\hat{\beta_1}x+\hat{\beta_0}$$ that forms the line of best fit (slope and intercept) for our given client input and can additionally be input any new independent variable to generate predictions along the newly generated line.
+2.  Output a model $$\hat{y}=\hat{\beta_1}x+\hat{\beta_0}$$ that forms
+    the line of best fit (slope and intercept) for our given client
+    input and can additionally be input any new independent variable to
+    generate predictions along the newly generated line.
 
-These are immediate from our work: 
+These are immediate from our work:
 
-1. We can first compute $\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i$ and
-$\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i$, which we can do since they are
-**means**. 
+1.  We can first compute $\bar{x}=\frac{1}{n}\sum_{i=1}^n x_i$ and
+    $\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i$, which we can do since they
+    are **means**.
 
-2. We can compute the slope coefficient
-$$ \hat{\beta_1} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}$$
+2.  We can compute the slope coefficient
+    $$ \hat{\beta_1} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}$$
 
-3. The result is then easily
-used to find the intercept $$\hat{\beta_0} = \bar{y} - \hat{\beta_1} \bar{x}$$ using a multiplication and a
-subtraction.
+3.  The result is then easily used to find the intercept using a
+    multiplication and a subtraction.
+    $$\hat{\beta_0} = \bar{y} - \hat{\beta_1} \bar{x}$$
 
 ### (Sketch of) Multiple Linear Regression
 
 **Multiple linear regression** extends the prior one-dimensional context
 to allow for each data point to take multiple input features/
-predictors. Recall the model for multiple linear regression: $$\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\boldsymbol{\epsilon}$$
+predictors. Recall the model for multiple linear regression:
+$$\mathbf{Y}=\mathbf{X}\boldsymbol{\beta}+\boldsymbol{\epsilon}$$
 
+A natural protocol is:
 
-A natural protocol is: 
+1.  Take as client input
+    $$\mathbf{Y}=\begin{bmatrix}y_1\\y_2\\\vdots\\y_n\end{bmatrix},\space   \mathbf{X}=\begin{bmatrix}1&x_{11}&x_{12}&\dots&x_{1k}\\1&x_{21}&x_{22}&\dots&x_{2k}\\\vdots&\vdots&\vdots&\ddots&\vdots\\1&x_{n1}&x_{n2}&\dots&x_{nk}\end{bmatrix}$$
+    where the $y_i$'s are the responses and each row of the $\mathbf{X}$
+    matrix is one observation's independent variables.
 
-1. Take as client input $$\mathbf{Y}=\begin{bmatrix}y_1\\y_2\\\vdots\\y_n\end{bmatrix},\space   \mathbf{X}=\begin{bmatrix}1&x_{11}&x_{12}&\dots&x_{1k}\\1&x_{21}&x_{22}&\dots&x_{2k}\\\vdots&\vdots&\vdots&\ddots&\vdots\\1&x_{n1}&x_{n2}&\dots&x_{nk}\end{bmatrix}$$ where the $y_i$'s are the responses and each row of the $\mathbf{X}$ matrix is one observation's independent variables.
+2.  Output a model
+    $$\hat{\mathbf{Y}}=\mathbf{X}\hat{\boldsymbol{\beta}}$$ that forms
+    the line of best fit for our given client input and can additionally
+    be input a set of new independent variables to generate predictions
+    along the newly generated line.
 
-
-2. Output a model $$\hat{\mathbf{Y}}=\mathbf{X}\hat{\boldsymbol{\beta}}$$ that forms the line of best fit for our given client input and can additionally be input a set of new independent variables to generate predictions along the newly generated line.
-
-Our desired weight
-vector $\boldsymbol{\beta}$ can be computed with
-$$ \hat{\boldsymbol{\beta}} = (\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{Y} $$  
+Our desired weight vector $\boldsymbol{\beta}$ can be computed with
+$$ \hat{\boldsymbol{\beta}} = (\mathbf{X}^{T}\mathbf{X})^{-1}\mathbf{X}^{T}\mathbf{Y} $$
 
 The underlying parts, however, need more work. First, this approach
 requires matrix operations, of which our explorations are very
-preliminary (see [Dot Products and Matrix Multiplication](/other/matrix-multiplication.qmd)). Most crucially, the central difficulty
-is that we would need to invert an $m \times m$ matrix; at a quick
-glance, we can inherently approach this similarly to division using
-Newton's method, as $$(I-M)^{-1} = I + M +M^2 + \cdots,$$ but there are
-still many moving parts under the hood.
+preliminary (see [Dot Products and Matrix
+Multiplication](/other/matrix-multiplication.qmd)). Most crucially, the
+central difficulty is that we would need to invert an $m \times m$
+matrix; at a quick glance, we can inherently approach this similarly to
+division using Newton's method, as $$(I-M)^{-1} = I + M +M^2 + \cdots.$$
+However, there are still many moving parts under the hood.
 
 ::: {.callout-tip icon="false" title="**Remark**"}
 See [^linear-regression-1] for some independent work on matrix inversion

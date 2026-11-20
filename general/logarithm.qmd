@@ -1,13 +1,11 @@
-## Logarithm (First Glance)
+## Logarithm
 
-As usual, the Taylor approximation is a good default, and immediately doable with basic moves here: additions, powers (multiplications), and scalar divisions. 
+A logarithm can be taken through a Taylor approximation and immediately doable with basic moves such as: additions, powers (multiplications), and scalar divisions.
 
-Importantly, as $\log_2(x)$ is undefined at $0$, there is no Taylor expansion centered at $0$ to use for approximation. We bypass this by approximating around $x=1$, writing $x=1+u$. Now we can use a standard Taylor series expansion:
-$$\log_2(1+u)=\log_2(x) \approx \frac{1}{\log_e(2)} \sum_{k=1}^{N} (-1)^{k+1} \frac{(x-1)^k}{k}$$
-$$= \frac{1}{\log_e(2)} \Bigg[ (x-1) - \frac{(x-1)^2}{2} + \frac{(x-1)^3}{3} - \frac{(x-1)^4}{4} + \dots \Bigg].$$
+Importantly, as $\log_2(x)$ is undefined at $0$, there is no Taylor expansion centered at $0$ to use for approximation. We bypass this by approximating around $x=1$, writing $x=1+u$. Now we can use a standard Taylor series expansion: $$\log_2(1+u)=\log_2(x) \approx \frac{1}{\log_e(2)} \sum_{k=1}^{N} (-1)^{k+1} \frac{(x-1)^k}{k}$$ $$= \frac{1}{\log_e(2)} \Bigg[ (x-1) - \frac{(x-1)^2}{2} + \frac{(x-1)^3}{3} - \frac{(x-1)^4}{4} + \dots \Bigg].$$
 
 The series only converges for $x \in (0, 2]$.
 
-:::{.callout-tip icon=false title="**Remark**"}
+::: {.callout-tip icon="false" title="**Remark**"}
 In [Discrete Math](/sign/logistic.qmd) we will explore another approach to log which is not ripe now for practical use, but can give ideas on how to push FHE further.
 :::

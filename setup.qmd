@@ -106,7 +106,7 @@ binary_figure <- function(op) {
 }
 ```
 
-Slot by slot, @fig-addition-example shows this.
+Slot by slot, @fig-addition-example demonstrates a simple example.
 
 ```{r}
 #| label: fig-addition-example
@@ -243,7 +243,6 @@ ggplot() +
   slot_coord(n_slots, 3) +
   slot_theme()
 ```
-
 
 This is not an exhaustive list of moves and part of open research is determining what other techniques are possible in CKKS. For the scope of our doc, we will assume this is the complete list of moves. We note two practical things that we will mostly ignore for the rest of our work:
 

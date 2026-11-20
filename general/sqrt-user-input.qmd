@@ -1,18 +1,15 @@
-## The Square Root (and User Input)
+## Square Root and User Input
 
-We can similarly take the square root by expanding a Taylor series. The square root has no Taylor series at $x=0$, but can be expanded elsewhere, such as at $x=1$: $$\sqrt{1-x} = 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16} - \frac{5 x^4}{128} - \frac{7 x^5}{256} + O(x^6) + \cdots $$ which converges when $|x| \leq 1$. 
+The quare root can be calculated by expanding a Taylor series. It has no Taylor series at $x=0$, but can be expanded elsewhere, such as at $x=1$: $$\sqrt{1-x} = 1 - \frac{x}{2} - \frac{x^2}{8} - \frac{x^3}{16} - \frac{5 x^4}{128} - \frac{7 x^5}{256} + O(x^6) + \cdots $$ which converges when $|x| \leq 1$.
 
-However, if we give the user $x$, it might be easier for the user to compute $\sqrt{x}$ on the client side! Thus, frequently we might just consider *not* doing some computation over FHE, given business logic allows us to do so. 
+However, if we give the user $x$, it might be easier for the user to compute $\sqrt{x}$ on the client side! Thus, frequently we might just consider *not* doing some computation over FHE, given business logic allows us to do so.
 
-To summarize, 
+To summarize,
 
-1. We can (and at times must) take Taylor series around points other than $x=0$, 
+1.  We can (and at times must) take Taylor series around points other than $x=0$,
 
-2. However we frequently may be able to skirt the problem using user output (and input). This is an important idea going forward to reduce computational cost, but will be tabled for now. Note that this is only feasible when giving the input back to the user does not compromise security.
+2.  However we frequently may be able to skirt the problem using user output (and input). This is an important idea going forward to reduce computational cost, but will be tabled for now. Note that this is only feasible when giving the input back to the user does not compromise security.
 
-
-:::{.callout-tip icon=false title="**Remark**"}
-
-We also explored e.g. the Babylonian approximation method for taking the square root, but that would involve dividing by $x$, which is expensive. See [Division](/division/intro.qmd) for more information.
-
+::: {.callout-tip icon="false" title="**Remark**"}
+We also explored e.g. the Babylonian approximation method\[\^bab\] for taking the square root, but that would involve dividing by $x$, which is expensive. See [Division](/division/intro.qmd) for more information.
 :::
