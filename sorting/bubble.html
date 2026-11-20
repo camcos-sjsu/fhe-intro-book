@@ -52,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-85454a75ad7bd09e4de24724d71cdd5d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-49d857635d4dd5c100eb49d0275faa58.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -688,7 +688,7 @@ window.Quarto = {
 </header>
 
 
-<p>As a proof-of-concept, we choose to use <strong>bubble sort</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> as a starting point for sorting.<br>
+<p>As a proof-of-concept, we choose to use <strong>bubble sort</strong> as a starting point for sorting.<br>
 Despite being a well-known “slow” sorting algorithm, it is a good candidate for FHE prototyping because its operations are local: only swaps, with no dynamic memory allocation (which e.g.&nbsp;quicksort would need). Each of its steps is one operation on a pair of positions, so we define that operation first.</p>
 <section id="sec-pairsort" class="level3" data-number="21.0.1">
 <h3 data-number="21.0.1" class="anchored" data-anchor-id="sec-pairsort"><span class="header-section-number">21.0.1</span> PairSort</h3>
@@ -749,7 +749,7 @@ Here is one draft:</p>
 </div>
 </div>
 <p><span class="math inline">\(O(n^2)\)</span> total comparisons (with <span class="math inline">\(O(n)\)</span> per pass) will entirely sort <span class="math inline">\(x\)</span>. However, this gets fairly costly and noisy due to the multiplications in the approximated comparisons.</p>
-<p><a href="#fig-bubble-network" class="quarto-xref">Figure&nbsp;<span>21.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p><a href="#fig-bubble-network" class="quarto-xref">Figure&nbsp;<span>21.1</span></a> shows the complete schedule for eight inputs. Each horizontal line is a vector position and each arrow is one PairSort, with the larger value moving toward the arrowhead.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div id="fig-bubble-network" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A sorting network with eight horizontal lines, one per vector position, read from left to right. Vertical arrows mark PairSort operations between neighboring positions, one per layer, grouped into seven numbered passes. Each pass moves from the top of the vector downward and stops one position earlier than the pass before it, forming a staircase. Pass 1 has seven arrows and pass 7 has one. Each arrow points to the higher position, which receives the larger value.">
@@ -770,8 +770,7 @@ Figure&nbsp;21.1: The bubble sort network for eight inputs, with 7 passes, 28 la
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p><strong>Bubble sort</strong> available from https://en.wikipedia.org/wiki/Bubble_sort<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Each layer (a column of arrows) is one batched sign evaluation, a single SIMD step, so the number of layers is the number of sequential comparison steps. Every layer holds a single PairSort, so this network needs 28 sequential comparison steps for 8 inputs.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Each layer (a column of arrows) is one batched sign evaluation, a single SIMD step, so the number of layers is the number of sequential comparison steps. Every layer holds a single PairSort, so this network needs 28 sequential comparison steps for 8 inputs.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
