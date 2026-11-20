@@ -694,8 +694,14 @@ window.Quarto = {
 <li><p><a href="../division/intro.html">Divide</a> (which might be costly).</p></li>
 </ol>
 <p>With some more detail:</p>
-<p>Given <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, we can compute vectors that contains their means: <span class="math inline">\(x_m=(\bar{x}, \bar{x}, \cdots)\)</span> and <span class="math inline">\(y_m(\bar{y},\bar{y}, \cdots)\)</span>. Then we can subtract to obtain <span class="math inline">\(\begin{align}x'&amp;=(x_1,x_2,\dots,x_{N/2})+(\bar{x})*(-1,-1,\dots,-1) \\
-&amp;=(x_1-\bar{x}, x_2-\bar{x},\dots,x_{N/2}-\bar{x})\end{align}\)</span> and similarly <span class="math inline">\(\begin{align} y'=(y_1-\bar{y}, y_2-\bar{y},\dots,y_{N/2}-\bar{y})\end{align}\)</span></p>
+<p>Given <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, we can compute vectors that contains their means: <span class="math inline">\(x_m=(\bar{x}, \bar{x}, \cdots)\)</span> and <span class="math inline">\(y_m(\bar{y},\bar{y}, \cdots)\)</span>. Then we can subtract to obtain:</p>
+<p><span class="math display">\[
+\begin{align}x'&amp;=(x_1,x_2,\dots,x_{N/2})+(\bar{x})*(-1,-1,\dots,-1) \\&amp;=(x_1-\bar{x}, x_2-\bar{x},\dots,x_{N/2}-\bar{x})\end{align}
+\]</span></p>
+<p>and similarly:</p>
+<p><span class="math display">\[
+\begin{align} y'=(y_1-\bar{y}, y_2-\bar{y},\dots,y_{N/2}-\bar{y})\end{align}
+\]</span></p>
 <p>Our task for <span class="math inline">\(r\)</span> then (the work for the regression coefficient is similar) becomes computing <span class="math display">\[ r(x',y') =\frac{\sum_{i=1}^{N/2}(x'_i)(y'_i)}{\sqrt{\sum_{i=1}^{N/2}(x_i')^2\sum_{i=1}^{N/2}(y'_i)^2}} \]</span></p>
 <ol type="1">
 <li><p>The numerator is the <a href="../general/intravector-sums.html">intra-vector sum</a> of <span class="math inline">\((x')*(y')\)</span>.</p></li>
