@@ -2,9 +2,8 @@
 
 ![sign_approx](https://hackmd.io/_uploads/ryPBmCDFbe.png)
 
-A **sigmoid function**[^sig] is an S-shaped curve that smoothly transitions between two values, essentially converging to the discontinuous sign function as its steepness increases, making such functions natural choices for our approximation. A common instance of a sigmoid function is the **logistic function**, which has standard definition $\sigma(x) = \frac{1}{1+e^{-x}}$. We begin our approximation of logistic using the series expansion for exponentiation: $$e^x\approx1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots$$
+A **sigmoid function** is an S-shaped curve that smoothly transitions between two values, essentially converging to the discontinuous sign function as its steepness increases, making such functions natural choices for our approximation. A common instance of a sigmoid function is the **logistic function**, which has standard definition $\sigma(x) = \frac{1}{1+e^{-x}}$. We begin our approximation of logistic using the series expansion for exponentiation: $$e^x\approx1+x+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots$$
 
-[^sig]: **Sigmoid function** available from https://en.wikipedia.org/wiki/Sigmoid_function
 
 $$1+e^{-x}\approx2-x+\frac{x^2}{2!}-\frac{x^3}{3!}+\frac{x^4}{4!}-\frac{x^5}{5!}+\frac{x^6}{6!}-\frac{x^7}{7!}+\frac{x^8}{8!}-\frac{x^9}{9!}+\dots$$
 

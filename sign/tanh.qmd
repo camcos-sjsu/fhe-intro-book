@@ -1,8 +1,7 @@
 ### Hyperbolic Tangent
 
-Also belonging to the sigmoid family is the hyperbolic tangent function[^ht]: $$\tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}=\frac{1-e^{-2x}}{1+e^{-2x}}$$
+Also belonging to the sigmoid family is the hyperbolic tangent function: $$\tanh(x)=\frac{e^x-e^{-x}}{e^x+e^{-x}}=\frac{1-e^{-2x}}{1+e^{-2x}}$$
 
-[^ht]: **Hyperbolic functions** available from https://en.wikipedia.org/wiki/Hyperbolic_functions
 
 where $e^{-2x}\approx1-2x+\frac{4x^2}{2!}-\frac{8x^3}{3!}+\cdots$ ,
 
