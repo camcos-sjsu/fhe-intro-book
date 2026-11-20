@@ -26,27 +26,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -72,8 +52,8 @@ div.csl-indent {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-85454a75ad7bd09e4de24724d71cdd5d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-49d857635d4dd5c100eb49d0275faa58.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -701,8 +681,8 @@ window.Quarto = {
 </header>
 
 
-<p>For a reader desiring to take an “under the hood” look at CKKS, we provide an accelerated review here. We refer to the original CKKS paper: “Homomorphic Encryption for Arithmetic of Approximate Numbers” <span class="citation" data-cites="Cheon_Kim_Kim_Song_2017"><a href="references.html#ref-Cheon_Kim_Kim_Song_2017" role="doc-biblioref">[1]</a></span> as well as Inferati Inc.’s article “Introduction to the CKKS/HEAAN FHE Scheme”<span class="citation" data-cites="inferati2022introduction"><a href="references.html#ref-inferati2022introduction" role="doc-biblioref">[2]</a></span>. In particular, we may ask, what exactly is a CKKS <strong>ciphertext</strong> as a mathematical object?</p>
-<p>Inferati describes the “main idea” of CKKS/HEAAN as combining a message/“<strong>payload</strong>” <span class="math inline">\(\mu\)</span> with the associated <strong>noise</strong>/error <span class="math inline">\(e\)</span>, together generating the <strong>plaintext</strong> to be encrypted, <span class="math inline">\(\mu + e\)</span>. Importantly, we can’t separate the two to their exact values after encrypting. The payload information (<span class="math inline">\(\mu\)</span>, <span class="math inline">\(e\)</span>, and payload/noise <strong>budget</strong> <span class="math inline">\(q - (\mu + e)\)</span> where <span class="math inline">\(q\)</span> is the “<strong>ciphertext coefficient modulus</strong>”) is contained in a polynomial. One additional polynomial is used for decryption. For convenience, the polynomials are initially assumed to be of degree zero here. So, structurally (in highly simplified terms): <strong>a ciphertext in CKKS is</strong> (typically) <strong>a pair of polynomials</strong>.</p>
+<p>For a reader desiring to take an “under the hood” look at CKKS, we provide an accelerated review here. We refer to the original CKKS paper: “Homomorphic Encryption for Arithmetic of Approximate Numbers”<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> as well as Inferati Inc.’s article “Introduction to the CKKS/HEAAN FHE Scheme”<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. In particular, we may ask, what exactly is a CKKS <strong>ciphertext</strong> as a mathematical object?</p>
+<p>Inferati describes the “main idea” of CKKS/HEAAN as combining a message/“<strong>payload</strong>” <span class="math inline">\(\mu\)</span> with the associated <strong>noise</strong>/error <span class="math inline">\(e\)</span>, together generating the <strong>plaintext</strong> to be encryped, <span class="math inline">\(\mu + e\)</span>. Importantly, we can’t separate the two to their exact values after encrypting. The payload information (<span class="math inline">\(\mu\)</span>, <span class="math inline">\(e\)</span>, and payload/noise <strong>budget</strong> <span class="math inline">\(q - (\mu + e)\)</span> where <span class="math inline">\(q\)</span> is the “<strong>ciphertext coefficient modulus</strong>”) is contained in a polynomial. One additional polynomial is used for decryption. For convenience, the polynomials are initially assumed to be of degree zero here. So, structurally (in highly simplified terms): <strong>a ciphertext in CKKS is</strong> (typically) <strong>a pair of polynomials</strong>.</p>
 <p>Both polynomials’ coefficients are bounded by <span class="math inline">\(q\)</span>: as we compute on ciphertexts, the plaintext magnitude grows– we can perform computations until its coefficient values reach the specified bound. In other words, CKKS ciphertext arithmetic is performed mod <span class="math inline">\(q\)</span> in a polynomial ring. We choose a sufficiently large <span class="math inline">\(q\)</span> as to avoid “wraparound”/ output which may not make sense/be accurate to a client. Essentially, we don’t want magnitude to grow too large relative to the modulus <span class="math inline">\(q\)</span>.</p>
 <p>Let’s examine the plaintext and ciphertext spaces (which are nearly the same) with more specificity. These spaces include elements of the polynomial ring <span class="math inline">\(R_q = \mathbb{Z}_q[x]/f(x)\)</span> where <span class="math inline">\(q\)</span> is as above and <span class="math inline">\(f(x)\)</span> now is the <strong>polynomial modulus</strong>. Elements of <span class="math inline">\(R_q\)</span> are polynomials with integer coefficients bounded by <span class="math inline">\(q\)</span> as described, and with degrees bounded by the degree of <span class="math inline">\(f(x)\)</span>. The most common choice for <span class="math inline">\(f(x)\)</span> is <span class="math inline">\(x^n + 1\)</span> with <span class="math inline">\(n\)</span>, the “<strong>ring dimension</strong>”, a power of <span class="math inline">\(2\)</span>. Why is this a nice choice?</p>
 <p>This such <span class="math inline">\(f(x)\)</span> is the <span class="math inline">\(2n\)</span>-th <strong>cyclotomic polynomial</strong> with roots being the <strong>primitive</strong> <span class="math inline">\(2n\)</span>-th <strong>roots of unity</strong> (review below). The polynomial then defines a power of two <strong>cyclotomic ring</strong>. We ask ourselves, if CKKS works with polynomials, but we want to encrypt vectors with values <span class="math inline">\(\in \mathbb{C}\)</span>, how do we connect those two representations? In highly simplified terms, by evaluating polynomials at the aforementioned roots <span class="math inline">\(\zeta_1, \dots, \zeta_n\)</span> of <span class="math inline">\(x^n + 1\)</span>, we are able to convert polynomials into vectors. The CKKS authors introduce this concept as the <strong>canonical embedding</strong>.</p>
@@ -715,14 +695,13 @@ window.Quarto = {
 <p>Referring to section 2.2 of the original CKKS paper: “The Cyclotomic Ring and Canonical Embedding”– first, let’s note that the canonical embedding is defined prior to reducing coefficients mod <span class="math inline">\(q\)</span>, also, the authors work with a real polynomial ring in their setup. Hence we consider the ring <span class="math inline">\(S = \mathbb{R}[x]/f(x)\)</span>. Elements of <span class="math inline">\(S\)</span> can be represented as polynomials <span class="math inline">\(a(X)=\sum^{N-1}_{j=0}a_jX^j\)</span> with corresponding coefficient vector <span class="math inline">\((a_0, \dots, a_{N-1}) \in \mathbb{R}^N\)</span>. The authors then define the canonical embedding as <span class="math inline">\(\sigma(a) = (a(\zeta^{j}_{M}))_{j \in \mathbb{Z}^{*}_{M}} \in \mathbb{C}^N\)</span>. This <span class="math inline">\(\sigma\)</span> maps a polynomial <span class="math inline">\(a(X) \in S\)</span> to the vector of its evaluations at the <span class="math inline">\(n\)</span> distinct roots of <span class="math inline">\(x^n + 1\)</span>. Also defined is the <strong>canonical embedding norm</strong> <span class="math inline">\(\|a\|^{\text{can}}_{\infty} = \|\sigma(a)\|_{\infty}\)</span> which has some useful properties the authors identify. The first property, submultiplicativity, appears particularly relevant: <span class="math inline">\(\forall a, b \in S, \|a \cdot b\|^{\text{can}}_{\infty} \le \|a\|^{\text{can}}_{\infty} \cdot \|b\|^{\text{can}}_{\infty}\)</span>. This property allows us to bound the magnitude of polynomial products, helping us keep track of plaintext magnitude growth during CKKS computations.</p>
 
 
-<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-Cheon_Kim_Kim_Song_2017" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[1] </div><div class="csl-right-inline">J. H. Cheon, A. Kim, M. Kim, and Y. Song, <span>“Homomorphic encryption for arithmetic of approximate numbers,”</span> in <em>Advances in cryptology – ASIACRYPT 2017</em>, vol. 10624, T. Takagi and T. Peyrin, Eds., in Lecture notes in computer science, vol. 10624., Cham: Springer International Publishing, 2017, pp. 409–437. doi: <a href="https://doi.org/10.1007/978-3-319-70694-8_15">10.1007/978-3-319-70694-8_15</a>.</div>
-</div>
-<div id="ref-inferati2022introduction" class="csl-entry" role="listitem">
-<div class="csl-left-margin">[2] </div><div class="csl-right-inline">Inferati Inc., <span>“Introduction to the <span>CKKS/HEAAN</span> <span>FHE</span> scheme.”</span> <a href="https://faculty.kfupm.edu.sa/coe/mfelemban/SEC595/References/Introduction%20to%20the%20CKKS-HEAAN%20FHE%20Scheme.pdf" class="uri">https://faculty.kfupm.edu.sa/coe/mfelemban/SEC595/References/Introduction%20to%20the%20CKKS-HEAAN%20FHE%20Scheme.pdf</a>, Washington, USA, Nov. 2022.</div>
-</div>
-</div>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>https://eprint.iacr.org/2016/421.pdf<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>https://faculty.kfupm.edu.sa/coe/mfelemban/SEC595/References/Introduction%20to%20the%20CKKS-HEAAN%20FHE%20Scheme.pdf?<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
