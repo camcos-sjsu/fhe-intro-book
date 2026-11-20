@@ -52,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-51f97550cb847c909903a7c8ae088504.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-87ec73848523cf9f72d0ce5695f13c04.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -685,7 +685,7 @@ window.Quarto = {
 <p><a href="#fig-tech-tree" class="quarto-xref">Figure&nbsp;<span>16.1</span></a> shows how the difference matrix method fits together, read from left to right. The basic moves build the difference matrix and sign. Sign gives equality and max, and the difference matrix and equality then combine into the median and the mode, with max also feeding the mode.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div id="fig-tech-tree" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A flowchart read from left to right. A grey band labeled basic moves holds component-wise multiplication, addition, and cycle. All three feed into both the difference matrix and sign. Sign feeds into both equality and max. The difference matrix and equality both feed into median and mode, and max feeds into mode." data-fig-align="center">
+<div id="fig-tech-tree" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A flowchart read from left to right. A grey band labeled basic moves holds component-wise multiplication, addition, and cycle. All three feed into both the difference matrix and sign. Sign feeds into both equality and max. The difference matrix and equality both feed into median and mode, and max feeds into mode.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-tech-tree-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="difference-matrix_files/figure-html/fig-tech-tree-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A flowchart read from left to right. A grey band labeled basic moves holds component-wise multiplication, addition, and cycle. All three feed into both the difference matrix and sign. Sign feeds into both equality and max. The difference matrix and equality both feed into median and mode, and max feeds into mode." width="864">
@@ -709,7 +709,7 @@ Figure&nbsp;16.1: The tech tree for this section. The basic moves in the grey ba
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Remark</strong>: our method is general enough that we should be able to compute <span class="math inline">\(D\)</span> where <span class="math inline">\(D_{ij} = f(z_i, z_j)\)</span> for some function <span class="math inline">\(f\)</span>. We mention this but do not use the more general method in this work.</p>
+<p><strong>Remark</strong>: Our method is general enough that we should be able to compute <span class="math inline">\(D\)</span> where <span class="math inline">\(D_{ij} = f(z_i, z_j)\)</span> for some function <span class="math inline">\(f\)</span>. We mention this but do not use the more general method in this work.</p>
 </div>
 </div>
 <p>Here is how we would generate the difference matrix:</p>
@@ -747,13 +747,13 @@ Figure&nbsp;16.1: The tech tree for this section. The basic moves in the grey ba
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Remark</strong>: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following:</p>
+<p><strong>Remark</strong>: The above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following:</p>
 <ol type="1">
 <li><p>Given an input vector <span class="math inline">\(z = (z_1, \ldots, z_{N/2})\)</span>,</p></li>
 <li><p>Define indicator vectors <span class="math inline">\(c_i = (0,0,\dots,1_i,0\dots,0)\)</span>.</p></li>
 <li><p>Compute <span class="math inline">\(v^{(i)} = \mathtt{sum}(c_i*z) = (z_i, \ldots, z_i)\)</span>; the product <span class="math inline">\(c_i*z\)</span> isolates the value of <span class="math inline">\(z\)</span> at index <span class="math inline">\(i\)</span>, and the intravector sum broadcasts it to every entry,</p></li>
 </ol>
-<p>…and then the rest is the same as before.</p>
+<p>… and then the rest is the same as before.</p>
 </div>
 </div>
 

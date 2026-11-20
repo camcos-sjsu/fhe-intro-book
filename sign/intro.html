@@ -52,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-51f97550cb847c909903a7c8ae088504.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-87ec73848523cf9f72d0ce5695f13c04.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -687,17 +687,11 @@ window.Quarto = {
 <ul>
 <li>It is useful to think of the output value <span class="math inline">\(1/2\)</span> as a “necessary” evil for when the input is extremely close to <span class="math inline">\(0\)</span> (this will basically be a necessity since our computations are inherently continuous). In practice, we will try to avoid those values as purposefully appearing in our computations.</li>
 </ul></li>
-<li>We can generalize into any Heaviside-type function<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> that takes two possible values via the following: <span class="math display">\[\mathtt{sign}_{a,b,c}(x) = a + (b-a)\mathtt{sign}(x-c),\]</span> which gives values <span class="math inline">\(a\)</span> for <span class="math inline">\(x &lt; c\)</span>, <span class="math inline">\(b\)</span> for <span class="math inline">\(x &gt; c\)</span>, and <span class="math inline">\((a+b)/2\)</span> for <span class="math inline">\(x = c\)</span> (though it is advised to avoid being dependent on the “true equality” case). We can then think of the “original” <span class="math inline">\(\mathtt{sign(x)}\)</span> as <span class="math inline">\(\mathtt{sign_{0,1,0}(x)}\)</span>.</li>
+<li>We can generalize into any Heaviside-type function[^intro-1] that takes two possible values via the following: <span class="math display">\[\mathtt{sign}_{a,b,c}(x) = a + (b-a)\mathtt{sign}(x-c),\]</span> which gives values <span class="math inline">\(a\)</span> for <span class="math inline">\(x &lt; c\)</span>, <span class="math inline">\(b\)</span> for <span class="math inline">\(x &gt; c\)</span>, and <span class="math inline">\((a+b)/2\)</span> for <span class="math inline">\(x = c\)</span> (though it is advised to avoid being dependent on the “true equality” case). We can then think of the “original” <span class="math inline">\(\mathtt{sign(x)}\)</span> as <span class="math inline">\(\mathtt{sign_{0,1,0}(x)}\)</span>.</li>
 </ol>
 <p>To approximate this naturally discontinuous function, we present two smooth avenues in the sigmoid family:</p>
 
 
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p><strong>Heaviside step function</strong> available from https://en.wikipedia.org/wiki/Heaviside_step_function<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
