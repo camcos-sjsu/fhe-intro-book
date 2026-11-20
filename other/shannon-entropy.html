@@ -52,8 +52,8 @@ ul.task-list li input[type="checkbox"] {
 <script id="quarto-axe-checker-options" type="text/plain">dHJ1ZQ==</script>
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-85454a75ad7bd09e4de24724d71cdd5d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-49d857635d4dd5c100eb49d0275faa58.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-54d7b74891dfc556e0a7a6e5f6e86bc1.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-55d2d29e5c79788f86521ac3e9e7cd0a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -630,6 +630,12 @@ window.Quarto = {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../conclusion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">37</span>&nbsp; <span class="chapter-title">Concluding Remarks and Future Directions</span></span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" aria-controls="quarto-sidebar-section-9" aria-expanded="true">
@@ -682,12 +688,10 @@ window.Quarto = {
 
 
 <p>Suppose we have a discrete random variable <span class="math inline">\(X\)</span> with possible outcomes <span class="math inline">\(x_1,x_2,\dots,x_n\)</span> each with corresponding probabilities <span class="math inline">\(P(x_1), P(x_2),\dots,P(x_n)\)</span>.</p>
-<p>The <strong>Shannon entropy</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> is defined as</p>
+<p>The <strong>Shannon entropy</strong> is defined as</p>
 <p><span class="math display">\[H(x):=-\sum_{i=1}^nP(x_i)\log P(x_i),\]</span></p>
 <p>where <span class="math inline">\(P(x_i)\)</span> represents the probability of each outcome <span class="math inline">\(x_i\)</span>.</p>
-<p>First, commenting on the input: 1. Shannon entropy only works on a probability distribution, so all the input must be non-negative and add up to 1. 2. For sake of focus, we will assume that <em>this is already solved.</em> 3. Otherwise, this seems to be a routine case of a “normalization step” where each user input is divided by their sum, which is a combination of a <strong>sum</strong> and a <strong>division</strong> of the form <span class="math display">\[
-P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}.
-\]</span></p>
+<p>First, commenting on the input: 1. Shannon entropy only works on a probability distribution, so all the input must be non-negative and add up to 1. 2. For sake of focus, we will assume that <em>this is already solved.</em> 3. Otherwise, this seems to be a routine case of a “normalization step” where each user input is divided by their sum, which is a combination of a <strong>sum</strong> and a <strong>division</strong> of the form <span class="math display">\[ P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}. \]</span></p>
 <p>We should then end up with a vector <span class="math inline">\(x = (P(x_1), \ldots, P(x_n))\)</span>.</p>
 <p>Now, we need the logarithms of the probabilities. These can also be done in various ways; when applicable, we black-box the details, deferring to previous sections: 1. we can use a Taylor series approximation, centered necessarily away from <span class="math inline">\(0\)</span>. 2. we can have the user simply give the <span class="math inline">\(\log(x_i)\)</span> as part of their input.</p>
 <p>In any case, we should end up with a vector <span class="math inline">\(l\)</span> with each <span class="math inline">\(l_i = \log(P(x_i))\)</span>.</p>
@@ -696,12 +700,6 @@ P(x_i)=\frac{x_i}{\sum_{j=1}^{n} x_j}.
 <p>In production, any method would require extensive testing to prevent blowup.</p>
 
 
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p><strong>Entropy (information theory)</strong> available from https://en.wikipedia.org/wiki/Entropy_(information_theory)<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
