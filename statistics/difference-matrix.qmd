@@ -1,11 +1,11 @@
 # Difference Matrix Method
 
-A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, the naive methods require branching logic, which we don't have. We introduce what we call the **difference matrix method** which will allow us to implement both statistics in a similar way (though still requiring tools from the [Discrete Math](/sign/intro.qmd) section, especially Equality and Max).
+A standard triad of summary statistics is the mean, median, and mode. The mean is a natural consequence of summations and moments. For the median and mode, we can't use branching logic for the naive methods. We introduce what we call the **difference matrix method** which will allow us to implement both statistics in a similar way (though still requiring tools from the [Discrete Math](/sign/intro.qmd) section, especially Equality and Max).
 
-The tech tree below shows how the difference matrix method fits together, read from left to right. The basic moves build the difference matrix and sign. Sign gives equality and max, and the difference matrix and equality then combine into the median and the mode, with max also feeding the mode.
+@fig-tech-tree shows how the difference matrix method fits together, read from left to right. The basic moves build the difference matrix and sign. Sign gives equality and max, and the difference matrix and equality then combine into the median and the mode, with max also feeding the mode.
 
 ```{r}
-#| label: dm-tech-tree
+#| label: fig-tech-tree
 #| echo: false
 #| warning: false
 #| message: false
@@ -114,22 +114,20 @@ Here is how we would generate the difference matrix:
     -   If we wanted the transpose instead (column $i$ of $D$), we can compute:\
         $d'_{i}=z-v^{(i)}=(z_1-z_i, z_2-z_i,\dots, z_{N/2}-z_i)$. Since $D_{j,i} = -D_{i,j}$, this is just $-d_i$.
 
-
 4.  We can think of the matrix as the combination of these vectors, though we might also want to isolate the use of our $N/2$ "difference vectors" of the form $$d_{i} = (d_{i,1}, \ldots, d_{i,N/2}), \qquad d_{i,j} = D_{i,j} = z_i - z_j.$$
 
 ::: {.callout-tip icon="false" title="**Notation**"}
 In the Mode and Median sections, $z_i$ always denotes a single input number, while $d_i$ denotes a whole row of $D$, stored as one vector and processed element-wise.
 :::
 
-
 ::: {.callout-tip icon="false" title="**Info**"}
 **Remark**: the above assumes the inter-vectors case. If we wanted the intra-vectors case, we can do something like the following:
 
-1. Given an input vector $z = (z_1, \ldots, z_{N/2})$,
+1.  Given an input vector $z = (z_1, \ldots, z_{N/2})$,
 
 2.  Define indicator vectors $c_i = (0,0,\dots,1_i,0\dots,0)$.
 
-3. Compute $v^{(i)} = \mathtt{sum}(c_i*z) = (z_i, \ldots, z_i)$; the product $c_i*z$ isolates the value of $z$ at index $i$, and the intravector sum broadcasts it to every entry,
+3.  Compute $v^{(i)} = \mathtt{sum}(c_i*z) = (z_i, \ldots, z_i)$; the product $c_i*z$ isolates the value of $z$ at index $i$, and the intravector sum broadcasts it to every entry,
 
 ...and then the rest is the same as before.
 :::
