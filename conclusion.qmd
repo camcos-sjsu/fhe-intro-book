@@ -2,7 +2,7 @@
 
 We begin by acknowledging our sponsor, 0xPARC, and supervisors, Dr. Dashiell Fryer and Dr. Yan Zhang.  We thank you for your invaluable support, collaboration and mentorship.
 
-Our work can serve as an introductory textbook of sorts on mathematical foundations, computational methods and applications of FHE.  Readers are exposed to a wide range of operations, algorithms and more, including: function approximations, division, comparisons, statistical computations, sorting, and matrix operations, alongside compelling alternative, discrete computational representations, and some notes on the underlying mechanics of CKKS.
+Our work can serve as an introductory textbook on mathematical foundations, computational methods and applications of FHE.  Readers are exposed to a wide range of operations, algorithms and more, including: function approximations, division, comparisons, statistical computations, sorting, and matrix operations, alongside compelling alternative, discrete computational representations, and some notes on the underlying mechanics of CKKS.
 
 Looking forward, we see a wide range of opportunities for future work in this context.  We will begin by discussing where there may be room for concrete mathematical advancement or continued work, and subsequently theorize a bit on general future directions and real-world applications in this field.  
 
