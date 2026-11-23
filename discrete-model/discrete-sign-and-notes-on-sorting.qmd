@@ -9,7 +9,55 @@ Suppose we know that our data consists of integers in the range $[-b,b]$, and we
 
 So, if our inputs are stored as residues modulo $2b+1$, we can create a sign function by interpolating a polynomial which sends $1,\ldots,b$ to $1$, $b+1,\ldots,2b$ to $-1$, and $0$ to $0$.
 
-Alternatively, if our values are stored as roots of unity, let $\xi$ be a primitive $(2b+1)$-st root of unity. Then interpolate on the discrete points $\xi^0,\ldots,\xi^{2b}$, sending $\xi^1,\ldots,\xi^b$ to $1$, $\xi^{b+1},\ldots,\xi^{2b}$ to $-1$, and $\xi^0=1$ to $0$. This gives us the sign of the original integer directly from its root of unity representation.
+Alternatively, if our values are stored as roots of unity, let $\xi$ be a primitive $(2b+1)$-st root of unity. Then interpolate on the discrete points $\xi^0,\ldots,\xi^{2b}$, sending $\xi^1,\ldots,\xi^b$ to $1$, $\xi^{b+1},\ldots,\xi^{2b}$ to $-1$, and $\xi^0=1$ to $0$. This gives us the sign of the original integer directly from its root of unity representation by a $2b$ degree polynomial.
+
+
+However, we can do better than this. Take $n = 2b+2$ for symmetry with $\zeta = e^{2\pi i/n}$ as usual. Encode each integer $a$ in $[-b,b]$ as $\zeta^a$, leaving the root $\zeta^{b+1} = -1$ unused. First, notice that the sign depends entirely on the imaginary part of the root. That is, roots which represent a positive number are located on the upper half of the unit circle (positive imaginary value), and roots which represent a negative number are located on the lower half of the unit circle (negative imaginary value). The integer $0$ is represented by $\zeta^0 = 1$, which has imaginary part $0$.
+
+Additionally, notice that roots reflected across the imaginary axis have the same imaginary part. In particular, $\zeta^k$ and $\zeta^{b+1-k}$ have the same imaginary part for $1 \leq k \leq b$. Thus, the $b$ roots on the upper half of the unit circle have only $\lceil b/2 \rceil$ distinct positive imaginary parts. This gives $2\lceil b/2 \rceil + 1$ distinct imaginary parts in total.
+
+Thus, to find the sign of $a$ given $\zeta^a$, we can interpolate a
+polynomial $P$ on these $2\lceil b/2 \rceil + 1$ points, sending each
+positive imaginary part to $1$, each negative imaginary part to $-1$,
+and $0$ to $0$. Then
+$$
+    \operatorname{sign}(a) = P\bigl(\operatorname{Im}(\zeta^a)\bigr).
+$$
+
+We can make one further improvement by using the fact that the sign function is odd. That is, $\operatorname{sign}(-a) = -\operatorname{sign}(a)$. Suppose we choose a polynomial $P$ with only odd-degree terms. Then $P(-h) = -P(h)$ and $P(0) = 0$. Thus, if we can find such a polynomial that takes the value $1$ at each positive imaginary part, it will also take the value $-1$ at each negative imaginary part.
+
+Let $h_1,\ldots,h_m$ be the distinct positive imaginary parts, where $m = \lceil b/2 \rceil$. We have $m$ conditions to satisfy, so we take the first $m$ odd powers and write
+$$
+    P(y) = c_1 y + c_2 y^3 + \cdots + c_m y^{2m-1}.
+$$
+For each $h_i$, the condition $P(h_i) = 1$ gives one linear equation in the coefficients $c_1,\ldots,c_m$. Thus, we can find $P$ by solving the linear system
+$$
+\begin{pmatrix}
+    h_1    & h_1^3    & \cdots & h_1^{2m-1} \\
+    h_2    & h_2^3    & \cdots & h_2^{2m-1} \\
+    \vdots & \vdots   &        & \vdots     \\
+    h_m    & h_m^3    & \cdots & h_m^{2m-1}
+\end{pmatrix}
+\begin{pmatrix}
+    c_1 \\ c_2 \\ \vdots \\ c_m
+\end{pmatrix}
+=
+\begin{pmatrix}
+    1 \\ 1 \\ \vdots \\ 1
+\end{pmatrix}.
+$$
+Thus, for integers in $[-b,b]$, we get sign using a polynomial with only $m=\lceil b/2\rceil$ terms and degree at most $2m-1$.
+
+#### Cost comparisons
+We compare with the original interpolation on the $(2b+1)$-st roots of unity,
+using conjugation in both methods.
+
+For the original method, let $z=\zeta^a$, where $\zeta$ is a primitive $(2b+1)$-st root of unity. Since $z^{2b+1-k}=\overline{z^k}$, we only need to compute $z^2,\ldots,z^b$. This takes $b-1$ multiplications at depth $\lceil\log_2 b\rceil$.
+
+For our method, Let $m=\lceil b/2\rceil$ and $d=2m-1$. We need the odd powers $y,y^3,\ldots,y^d$. Repeated squaring gives the powers $y^2,y^4,y^8,\ldots$ through degree $d$ in $\lfloor\log_2 d\rfloor$ multiplications. Each of the $m-1$ odd powers after $y$ takes one more multiplication. For example, $y^7=y^4y^3$. Computingpowers gives
+$m-1+\lfloor\log_2 d\rfloor$ multiplications at depth $\lceil\log_2 d\rceil$.
+
+For example, when $b=7$, the original method takes $6$ multiplications at depth $3$, while our method takes $5$ at the same depth. Both methods need to reach degree $7$, but our method can skip $y^6$.
 
 ### Comparisons
 
