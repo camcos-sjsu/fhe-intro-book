@@ -1,0 +1,77 @@
+---
+title: "FA 2026 Presentation"
+author: "Presenter Names"
+institute: "San José State University"
+editor: visual
+format:
+  beamer:
+    theme: Madrid
+    aspectratio: 169
+    fontsize: 11pt
+    slide-level: 2
+    section-titles: false
+    include-in-header:
+      text: |
+        \setbeamertemplate{navigation symbols}{}
+        \setbeamertemplate{footline}[frame number]
+---
+
+# Introduction
+
+## About the Project
+
+# Building the Book
+
+<!-- Yav -->
+
+## Quarto and the Tech Stack
+
+# A Quick Review of FHE
+
+<!-- Robert -->
+
+## FHE and CKKS
+
+# Sorting
+
+<!-- Nazeem and Kei -->
+
+## Sorting
+
+## Rank-Based Sorting
+
+## Sorting Results
+
+# Discrete Methods
+
+<!-- Sam -->
+
+## Modular Arithmetic and Roots of Unity
+
+## Lookup Tables
+
+## Using Function Structure
+
+<!-- Ren
+# Additional Topic
+
+## Topic Title
+-->
+
+<!-- Ulla or Kevin
+# Applications
+
+## Applications
+-->
+
+# Conclusion
+
+<!-- Ulla -->
+
+## Summary and Future Research
+
+<!-- Dwyer
+## Reflections
+-->
+
+## Questions?
