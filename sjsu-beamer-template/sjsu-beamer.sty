@@ -1,0 +1,109 @@
+% SJSU Beamer theme
+% Based on the SJSU University Marks page and Brand Style Guide.
+% Use official marks supplied by SJSU; do not redraw or modify them.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{sjsu-beamer}[2026/11/24 San Jose State University Beamer theme]
+
+\RequirePackage{tikz}
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{ifthen}
+\RequirePackage{iftex}
+
+% SJSU primary palette from the Brand Style Guide.
+\definecolor{SJSUBlue}{HTML}{0055A2}
+\definecolor{SJSUGold}{HTML}{E5A823}
+\definecolor{SJSUGray}{HTML}{939597}
+\definecolor{SJSUDarkGray}{HTML}{53565A}
+\definecolor{SJSULightGray}{HTML}{D2D2D2}
+
+\mode<presentation>{
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+  \setbeamercolor{normal text}{fg=SJSUDarkGray,bg=white}
+  \setbeamercolor{structure}{fg=SJSUBlue}
+  \setbeamercolor{alerted text}{fg=SJSUGold}
+  \setbeamercolor{frametitle}{fg=white,bg=SJSUBlue}
+  \setbeamercolor{title}{fg=white}
+  \setbeamercolor{subtitle}{fg=white!86}
+  \setbeamercolor{author}{fg=white!90}
+  \setbeamercolor{institute}{fg=white!82}
+  \setbeamercolor{date}{fg=white!82}
+  \setbeamercolor{block title}{fg=white,bg=SJSUBlue}
+  \setbeamercolor{block body}{fg=SJSUDarkGray,bg=SJSULightGray!25}
+  \setbeamercolor{block title alerted}{fg=SJSUDarkGray,bg=SJSUGold}
+  \setbeamercolor{block body alerted}{fg=SJSUDarkGray,bg=SJSUGold!12}
+  \setbeamercolor{block title example}{fg=white,bg=SJSUDarkGray}
+  \setbeamercolor{block body example}{fg=SJSUDarkGray,bg=SJSUDarkGray!8}
+  \setbeamerfont{title}{size=\Large,series=\bfseries}
+  \setbeamerfont{frametitle}{size=\large,series=\bfseries}
+  \setbeamerfont{block title}{series=\bfseries}
+  \setbeamertemplate{itemize item}{\color{SJSUGold}\small$\blacktriangleright$}
+  \setbeamertemplate{itemize subitem}{\color{SJSUBlue}\scriptsize$\blacktriangleright$}
+}
+
+\newcommand{\sjsulogo}{assets/sjsu-primary-mark.png}
+\newcommand{\sjsufootertext}{San José State University}
+\newcommand{\sjsuunit}{Department or unit name}
+\newcommand{\sjsucontact}{department@sjsu.edu}
+\newcommand{\sjsusetup}[1]{\setkeys{sjsu}{#1}}
+
+\makeatletter
+\define@key{sjsu}{logo}{\renewcommand{\sjsulogo}{#1}}
+\define@key{sjsu}{unit}{\renewcommand{\sjsuunit}{#1}}
+\define@key{sjsu}{footer}{\renewcommand{\sjsufootertext}{#1}}
+\define@key{sjsu}{contact}{\renewcommand{\sjsucontact}{#1}}
+\makeatother
+
+\setbeamertemplate{headline}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[SJSUGold] (current page.north west) rectangle ([xshift=\paperwidth,yshift=-2.2pt]current page.north west);
+  \end{tikzpicture}%
+}
+
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.92cm,dp=0.26cm,leftskip=0.45cm,rightskip=0.45cm]{frametitle}
+    \insertframetitle\ifx\insertframesubtitle\@empty\else\\[-1pt]{\usebeamerfont{framesubtitle}\usebeamercolor[fg]{subtitle}\insertframesubtitle}\fi
+  \end{beamercolorbox}%
+}
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.72\paperwidth,ht=2.6ex,dp=1.1ex,leftskip=.45cm]{author in head/foot}%
+      \scriptsize\color{SJSUDarkGray}\sjsufootertext\quad|\quad\sjsuunit
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.28\paperwidth,ht=2.6ex,dp=1.1ex,rightskip=.45cm plus 1fil]{date in head/foot}%
+      \scriptsize\color{SJSUBlue}\insertframenumber\,/\,\inserttotalframenumber
+    \end{beamercolorbox}%
+  }%
+  \vskip0pt%
+}
+
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[SJSUBlue] (current page.south west) rectangle (current page.north east);
+    \fill[SJSUGold] (current page.south west) rectangle ([xshift=\paperwidth,yshift=0.24cm]current page.south west);
+    \fill[SJSUDarkGray!36] ([xshift=.72\paperwidth]current page.south west) -- (current page.north east) -- (current page.north west) -- cycle;
+  \end{tikzpicture}%
+  \vspace*{0.35cm}
+  \begin{flushleft}
+    \hspace*{0.55cm}\includegraphics[height=1.0cm]{\sjsulogo}
+    \vspace{1.05cm}
+
+    \hspace*{0.55cm}\begin{minipage}{0.82\paperwidth}
+      \usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par
+      \ifx\insertsubtitle\@empty\else\vspace{0.25cm}{\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}\fi
+      \vspace{0.65cm}{\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
+      \vspace{0.12cm}{\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute\par}
+      \vspace{0.12cm}{\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
+    \end{minipage}
+  \end{flushleft}
+}
+
+\AtBeginDocument{%
+  \ifxetex\else\ifluatex\else
+    \PackageWarning{sjsu-beamer}{For brand-compatible fonts, compile with XeLaTeX or LuaLaTeX. Falling back to sans-serif.}
+  \fi\fi
+}

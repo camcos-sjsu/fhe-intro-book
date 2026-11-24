@@ -1,0 +1,70 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+% Compile with XeLaTeX or LuaLaTeX for the recommended sans-serif text stack.
+% The pdfLaTeX branch keeps the example usable on minimal TeX installations.
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{lmodern}
+\else
+  \usepackage{fontspec}
+  \setsansfont{TeX Gyre Heros}
+\fi
+\usepackage{sjsu-beamer}
+\sjsusetup{unit=Department or unit name,footer=San José State University}
+
+\title{Presentation Title}
+\subtitle{A concise supporting subtitle}
+\author{Presenter Name}
+\institute{Department or unit name}
+\date{November 2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\begin{frame}{A clear, story-first frame}
+  \begin{itemize}
+    \item Use the main message as the visual hierarchy.
+    \item Keep supporting copy short and easy to scan.
+    \item Use SJSU Blue for structure and SJSU Gold as an accent.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Research or project overview}
+  \begin{columns}[T,onlytextwidth]
+    \column{.48\textwidth}
+      \begin{block}{Key idea}
+        Put the most important takeaway here. Prefer one idea per block.
+      \end{block}
+    \column{.48\textwidth}
+      \begin{alertblock}{Callout}
+        Use gold sparingly for emphasis, status, or a next step.
+      \end{alertblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Example figure area}
+  \centering
+  \begin{tikzpicture}
+    \fill[SJSUBlue!12,rounded corners=2pt] (0,0) rectangle (9.5,3.9);
+    \draw[SJSUBlue,line width=1.2pt] (0.5,0.7) -- (3.0,1.8) -- (5.2,1.35) -- (7.7,3.05) -- (9.0,2.45);
+    \fill[SJSUGold] (3.0,1.8) circle (2.5pt);
+    \fill[SJSUGold] (7.7,3.05) circle (2.5pt);
+    \node[align=center,text=SJSUDarkGray] at (4.75,0.28) {Replace this area with an approved figure or authentic SJSU imagery};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Closing takeaway}
+  \centering
+  \vfill
+  {\usebeamerfont{title}\color{SJSUBlue}One memorable conclusion.\par}
+  \vspace{0.35cm}
+  {\color{SJSUDarkGray}\sjsucontact\par}
+  \vfill
+\end{frame}
+
+\end{document}
